@@ -1,0 +1,22 @@
+﻿<Application x:Class="DatPhatAcc.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:DatPhatAcc"
+             xmlns:viewmodel="clr-namespace:DatPhatAcc.ViewModels"
+             xmlns:view="clr-namespace:DatPhatAcc.Views">
+    <!--StartupUri="MainWindow.xaml-->
+    <Application.Resources>
+        <!--<DataTemplate DataType="{x:Type TypeName=viewmodel:MainViewModel}">
+            <view:MainView></view:MainView>
+        </DataTemplate>-->
+
+        <DataTemplate DataType="{x:Type TypeName=viewmodel:HomeViewModel}">
+            <view:HomeView></view:HomeView>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type TypeName=viewmodel:SettingViewModel}">
+            <view:SettingView></view:SettingView>
+        </DataTemplate>
+
+    </Application.Resources>
+</Application>
