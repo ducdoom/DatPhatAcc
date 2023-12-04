@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels;
+using DatPhatAcc.ViewModels.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
@@ -18,8 +19,9 @@ namespace DatPhatAcc
             IServiceCollection services = new ServiceCollection();
 
             services.AddSingleton<MainViewModel>();
-            services.AddSingleton<HomeViewModel>();
+            services.AddSingleton<SyncPurchaseViewModel>();
             services.AddSingleton<SettingViewModel>();
+            services.AddSingleton<ShareViewModel>();
 
             services.AddSingleton<MainWindow>(x => new MainWindow()
             {
@@ -29,6 +31,7 @@ namespace DatPhatAcc
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<Func<Type, ObservableObject>>(serviceProvider => viewModelType => (ObservableObject)serviceProvider.GetRequiredService(viewModelType));
 
+            
             _serviceProvider = services.BuildServiceProvider();
         }
 
@@ -38,6 +41,8 @@ namespace DatPhatAcc
             mainWindow.Show();
             base.OnStartup(e);
         }
+
+       
     }
 
 }

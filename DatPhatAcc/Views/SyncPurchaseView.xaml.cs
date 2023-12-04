@@ -18,9 +18,9 @@ namespace DatPhatAcc.Views
     /// <summary>
     /// Interaction logic for HomeView.xaml
     /// </summary>
-    public partial class HomeView : UserControl
+    public partial class SyncPurchaseView : UserControl
     {
-        public HomeView()
+        public SyncPurchaseView()
         {
             InitializeComponent();
         }

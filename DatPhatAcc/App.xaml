@@ -1,22 +1,29 @@
-﻿<Application x:Class="DatPhatAcc.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:DatPhatAcc"
-             xmlns:viewmodel="clr-namespace:DatPhatAcc.ViewModels"
-             xmlns:view="clr-namespace:DatPhatAcc.Views">
-    <!--StartupUri="MainWindow.xaml-->
+﻿<Application
+    x:Class="DatPhatAcc.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:DatPhatAcc"
+    xmlns:view="clr-namespace:DatPhatAcc.Views"
+    xmlns:viewmodel="clr-namespace:DatPhatAcc.ViewModels">
+    <!--  StartupUri="MainWindow.xaml  -->
     <Application.Resources>
-        <!--<DataTemplate DataType="{x:Type TypeName=viewmodel:MainViewModel}">
-            <view:MainView></view:MainView>
-        </DataTemplate>-->
 
-        <DataTemplate DataType="{x:Type TypeName=viewmodel:HomeViewModel}">
-            <view:HomeView></view:HomeView>
+        <!--  This demonstrates how to associate Views with their respective ViewModels using Data Templates  -->
+        <DataTemplate DataType="{x:Type TypeName=viewmodel:SyncPurchaseViewModel}">
+            <view:SyncPurchaseView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type TypeName=viewmodel:SettingViewModel}">
-            <view:SettingView></view:SettingView>
+            <view:SettingView />
         </DataTemplate>
+
+        <ResourceDictionary x:Key="Dic1">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
 
     </Application.Resources>
 </Application>
