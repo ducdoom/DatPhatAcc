@@ -6,6 +6,7 @@
     <Style TargetType="Button">
         <Setter Property="Height" Value="30" />
         <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Background" Value="#EADDFF"></Setter>
     </Style>
 
     <Style TargetType="dxg:TableView">
@@ -13,7 +14,7 @@
         <Setter Property="ShowAutoFilterRow" Value="True" />
         <Setter Property="ShowCriteriaInAutoFilterRow" Value="True" />
         <Setter Property="ShowSearchPanelMode" Value="Always" />
-        <Setter Property="SearchDelay" Value="200" />
+        <Setter Property="SearchDelay" Value="300" />
     </Style>
 
     <Style TargetType="dxg:GridColumn">
