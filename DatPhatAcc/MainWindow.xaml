@@ -10,7 +10,7 @@
     Title="MainWindow"
     Width="1366"
     Height="768"
-    d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+    d:DataContext="{d:DesignInstance Type={x:Type viewmodels:MainViewModel}}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
@@ -18,10 +18,10 @@
 
 
         <Menu DockPanel.Dock="Top">
-            <MenuItem Command="{Binding NavigateToHomeCommand}" Header="Hệ thống">
+            <MenuItem Header="Hệ thống">
                 <MenuItem Command="{Binding ExitAppCommand}" Header="Thoát" />
             </MenuItem>
-            <MenuItem Command="{Binding NavigateToHomeCommand}" Header="Nhập hàng" />
+            <MenuItem Command="{Binding NavigateToSyncPurchaseViewCommand}" Header="Nhập hàng" />
             <MenuItem Command="{Binding NavigateToSettingCommand}" Header="Hóa đơn" />
         </Menu>
 
@@ -37,7 +37,9 @@
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <GroupBox Grid.Row="0" Header="Thành Công" />
+                <GroupBox Grid.Row="0" Header="Thành Công">
+                    <Button Content="Button1" />
+                </GroupBox>
                 <GroupBox Grid.Row="1" Header="Misa" />
             </Grid>
             <ContentPresenter Grid.Column="1" Content="{Binding NavigationService.CurrentView}" />

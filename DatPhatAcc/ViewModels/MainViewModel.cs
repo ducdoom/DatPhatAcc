@@ -1,13 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DatPhatAcc.Services;
-using System.Diagnostics;
 using System.Windows;
 
 namespace DatPhatAcc.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
+        public MainViewModel()
+        {
+
+        }
+
         public MainViewModel(INavigationService navigationService)
         {
             NavigationService = navigationService;
@@ -16,8 +20,9 @@ namespace DatPhatAcc.ViewModels
         [ObservableProperty]
         private INavigationService navigationService;
 
+
         [RelayCommand]
-        private void NavigateToHome()
+        private void NavigateToSyncPurchaseView()
         {
             NavigationService.Navigate<SyncPurchaseViewModel>();
         }

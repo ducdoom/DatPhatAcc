@@ -7,22 +7,22 @@
     xmlns:viewmodel="clr-namespace:DatPhatAcc.ViewModels">
     <!--  StartupUri="MainWindow.xaml  -->
     <Application.Resources>
+        <ResourceDictionary>
 
-        <!--  This demonstrates how to associate Views with their respective ViewModels using Data Templates  -->
-        <DataTemplate DataType="{x:Type TypeName=viewmodel:SyncPurchaseViewModel}">
-            <view:SyncPurchaseView />
-        </DataTemplate>
+            <!--  This demonstrates how to associate Views with their respective ViewModels using Data Templates  -->
+            <DataTemplate DataType="{x:Type TypeName=viewmodel:SyncPurchaseViewModel}">
+                <view:SyncPurchaseView />
+            </DataTemplate>
 
-        <DataTemplate DataType="{x:Type TypeName=viewmodel:SettingViewModel}">
-            <view:SettingView />
-        </DataTemplate>
+            <DataTemplate DataType="{x:Type TypeName=viewmodel:SettingViewModel}">
+                <view:SettingView />
+            </DataTemplate>
 
-        <ResourceDictionary x:Key="Dic1">
+            <!--  Styles  -->
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Resources/Styles/Colors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Resources/Styles/Styles.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
         </ResourceDictionary>
 
     </Application.Resources>

@@ -4,6 +4,7 @@ using DatPhatAcc.ViewModels;
 using DatPhatAcc.ViewModels.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
+using Application = System.Windows.Application;
 
 namespace DatPhatAcc
 {

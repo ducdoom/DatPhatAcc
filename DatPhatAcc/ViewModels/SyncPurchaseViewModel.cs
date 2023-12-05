@@ -1,18 +1,13 @@
 ﻿using AsyncAwaitBestPractices;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+using DatPhatAcc.Models.DTO;
 using DatPhatAcc.ViewModels.Shared;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DatPhatAcc.ViewModels
 {
-    public partial class SyncPurchaseViewModel: ObservableObject
+    public partial class SyncPurchaseViewModel : ObservableObject
     {
         private ShareViewModel _shareViewModel;
         public SyncPurchaseViewModel(ShareViewModel shareViewModel)
@@ -22,15 +17,22 @@ namespace DatPhatAcc.ViewModels
         }
 
         [ObservableProperty]
-        private ObservableCollection<AccountingDbContext.Customer> customers;
+        private ObservableCollection<CustomerDTO> customers = new();
 
-        
+
         private async Task LoadCustomersAsync()
         {
             AccountingDbContext.ACCOUNTINGContext aCCOUNTINGContext = new();
-            
-            var customers = await aCCOUNTINGContext.Customers.ToArrayAsync();
-            Customers = new ObservableCollection<AccountingDbContext.Customer>(customers);
+
+            var customerList = await aCCOUNTINGContext.Customers
+                .Select(x => new CustomerDTO
+                {
+                    CustomerId = x.CustomerId,
+                    CustomerName = x.CustomerName,
+                    TaxCode = x.Taxcode
+                })
+                .ToArrayAsync();
+            Customers = new ObservableCollection<CustomerDTO>(customerList);
         }
     }
 }

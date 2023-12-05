@@ -14,7 +14,7 @@ namespace DatPhatAcc.Services
 
 
         [ObservableProperty]
-        private ObservableObject currentView;
+        private ObservableObject? currentView;
 
         public NavigationService(Func<Type, ObservableObject> viewModelFactory)
         {
