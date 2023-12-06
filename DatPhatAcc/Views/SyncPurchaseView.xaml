@@ -42,7 +42,7 @@
                     <dxe:DateEdit DateTime="{Binding FromDate}" />
                     <TextBlock Text="Đến ngày:" />
                     <dxe:DateEdit DateTime="{Binding ToDate}" />
-                    <Button Command="" />
+                    <Button Command="{Binding SearchTransactionOverviewCommand}" Content="Tìm kiếm" />
                 </StackPanel>
 
                 <Grid Grid.Row="1">
@@ -51,34 +51,53 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <dxg:GridControl
-                        Grid.Column="0"
-                        ItemsSource="{Binding Customers}"
-                        SelectedItems="{Binding SelectedCustomers}"
-                        SelectionMode="MultipleRow">
+                    <GroupBox Grid.Column="0" Header="Tìm kiếm NCC">
+                        <dxg:GridControl
+                            ItemsSource="{Binding Customers}"
+                            SelectedItems="{Binding SelectedCustomers}"
+                            SelectionMode="MultipleRow">
 
-                        <dxg:GridControl.View>
-                            <dxg:TableView ShowCheckBoxSelectorColumn="True" />
-                        </dxg:GridControl.View>
-                        <dxg:GridColumn
-                            AllowEditing="False"
-                            FieldName="CustomerId"
-                            Header="Mã NCC" />
-                        <dxg:GridColumn
-                            AllowEditing="False"
-                            FieldName="TaxCode"
-                            Header="MST" />
-                        <dxg:GridColumn
-                            AllowEditing="False"
-                            FieldName="CustomerName"
-                            Header="Tên NCC" />
-                    </dxg:GridControl>
+                            <dxg:GridControl.View>
+                                <dxg:TableView ShowCheckBoxSelectorColumn="True" />
+                            </dxg:GridControl.View>
+                            <dxg:GridColumn
+                                AllowEditing="False"
+                                FieldName="CustomerId"
+                                Header="Mã NCC" />
+                            <dxg:GridColumn
+                                AllowEditing="False"
+                                FieldName="TaxCode"
+                                Header="MST" />
+                            <dxg:GridColumn
+                                AllowEditing="False"
+                                FieldName="CustomerName"
+                                Header="Tên NCC" />
+                        </dxg:GridControl>
+                    </GroupBox>
 
-                    <dxg:GridControl Grid.Column="1">
-                        <dxg:GridControl.View>
-                            <dxg:TableView ShowGroupPanel="False" ShowSearchPanelMode="Never" />
-                        </dxg:GridControl.View>
-                    </dxg:GridControl>
+                    <GroupBox Grid.Column="1" Header="Phiếu nhập">
+                        <dxg:GridControl ItemsSource="{Binding TransactionOverviews}" SelectionMode="MultipleRow">
+                            <dxg:GridControl.View>
+                                <dxg:TableView
+                                    ShowAutoFilterRow="False"
+                                    ShowCheckBoxSelectorColumn="True"
+                                    ShowGroupPanel="False"
+                                    ShowSearchPanelMode="Never" />
+                            </dxg:GridControl.View>
+                            <dxg:GridColumn
+                                AllowEditing="False"
+                                FieldName="TransactionDate"
+                                Header="Ngày tháng" />
+                            <dxg:GridColumn
+                                AllowEditing="False"
+                                FieldName="TotalPriceVat"
+                                Header="Số tiền">
+                                <dxg:GridColumn.EditSettings>
+                                    <dxe:TextEditSettings DisplayFormat="N0" />
+                                </dxg:GridColumn.EditSettings>
+                            </dxg:GridColumn>
+                        </dxg:GridControl>
+                    </GroupBox>
                 </Grid>
             </Grid>
         </Grid>

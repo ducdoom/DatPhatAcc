@@ -5,21 +5,23 @@
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid">
 
     <Style TargetType="Button">
-        <Setter Property="Height" Value="30" />
+        <Setter Property="Height" Value="25" />
         <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Margin" Value="3" />
 
     </Style>
 
     <Style TargetType="dxg:GridControl">
         <Setter Property="Margin" Value="3" />
     </Style>
-    
+
     <Style TargetType="dxg:TableView">
         <Setter Property="AutoWidth" Value="True" />
         <Setter Property="ShowAutoFilterRow" Value="True" />
         <Setter Property="ShowCriteriaInAutoFilterRow" Value="True" />
         <Setter Property="ShowSearchPanelMode" Value="Always" />
         <Setter Property="SearchDelay" Value="300" />
+        <Setter Property="ShowTotalSummary" Value="True" />
     </Style>
 
     <Style TargetType="dxg:GridColumn">
@@ -31,5 +33,11 @@
         <Setter Property="Mask" Value="dd/MM/yyyy" />
         <Setter Property="MaskType" Value="DateTimeAdvancingCaret" />
         <Setter Property="MaskUseAsDisplayFormat" Value="True" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Margin" Value="3" />
+    </Style>
+
+    <Style TargetType="GroupBox">
+        <Setter Property="Margin" Value="3" />
     </Style>
 </ResourceDictionary>

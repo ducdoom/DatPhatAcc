@@ -12,7 +12,7 @@ namespace DatPhatAcc.Services
             _accountingContext = new();
         }
 
-        public async Task<CustomerDTO[]> GetCustomers()
+        public async Task<IEnumerable<CustomerDTO>> GetCustomers()
         {
             var customerList = await _accountingContext.Customers
                 .Select(x => new CustomerDTO
@@ -31,7 +31,7 @@ namespace DatPhatAcc.Services
             int fromTranDate = Convert.ToInt32(fromDate.ToTranDate());
             int toTranDate = Convert.ToInt32(toDate.ToTranDate());
 
-            var transactionOverviews = _accountingContext.Transactions.Where(
+            var transactionOverviews = await _accountingContext.Transactions.Where(
                  x => Convert.ToInt32(x.TransDate) >= fromTranDate
                  && Convert.ToInt32(x.TransDate) <= toTranDate
                  )
@@ -40,7 +40,9 @@ namespace DatPhatAcc.Services
                      TransactionId = x.TransactionId,
                      TranDate = x.TransDate,
                      TotalPriceVat = x.TotalPriceVat
-                 });
+                 })
+                 .OrderBy(x => x.TranDate)
+                 .ToArrayAsync();
 
             return transactionOverviews;
         }
