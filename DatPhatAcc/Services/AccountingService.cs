@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DatPhatAcc.Converters;
+using DatPhatAcc.Models.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace DatPhatAcc.Services
 {
@@ -12,14 +9,40 @@ namespace DatPhatAcc.Services
         private AccountingDbContext.ACCOUNTINGContext _accountingContext;
         public AccountingService()
         {
-            _accountingContext = new(); 
+            _accountingContext = new();
         }
 
-        public async Task<List<AccountingDbContext.Customer>> GetCustomers()
+        public async Task<CustomerDTO[]> GetCustomers()
         {
-            return await _accountingContext.Customers
-                
-                .ToListAsync();
+            var customerList = await _accountingContext.Customers
+                .Select(x => new CustomerDTO
+                {
+                    CustomerId = x.CustomerId,
+                    CustomerName = x.CustomerName,
+                    TaxCode = x.Taxcode
+                })
+                .ToArrayAsync();
+
+            return customerList;
+        }
+
+        public async Task<IEnumerable<TransactionOverview>> SearchTransactionOverview(DateTime fromDate, DateTime toDate)
+        {
+            int fromTranDate = Convert.ToInt32(fromDate.ToTranDate());
+            int toTranDate = Convert.ToInt32(toDate.ToTranDate());
+
+            var transactionOverviews = _accountingContext.Transactions.Where(
+                 x => Convert.ToInt32(x.TransDate) >= fromTranDate
+                 && Convert.ToInt32(x.TransDate) <= toTranDate
+                 )
+                 .Select(x => new TransactionOverview
+                 {
+                     TransactionId = x.TransactionId,
+                     TranDate = x.TransDate,
+                     TotalPriceVat = x.TotalPriceVat
+                 });
+
+            return transactionOverviews;
         }
 
 
