@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:fa="http://schemas.fontawesome.io/icons/"
     xmlns:local="clr-namespace:DatPhatAcc.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:DatPhatAcc.ViewModels"
@@ -25,7 +26,7 @@
         <Grid Grid.Row="0">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="40" />
+                    <RowDefinition Height="38" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
@@ -61,7 +62,15 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <Button Command="{Binding SearchTransactionOverviewCommand}" Content="Tìm kiếm" />
+                    <Button Command="{Binding SearchTransactionOverviewCommand}">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <fa:FontAwesome Icon="Search" VerticalAlignment="Center" HorizontalAlignment="Center"  Margin="0,0,3,0"/>
+                                
+                                <TextBlock Text="Tìm kiếm" />
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
                 </StackPanel>
 
                 <Grid Grid.Row="1">
@@ -95,7 +104,10 @@
                     </GroupBox>
 
                     <GroupBox Grid.Column="1" Header="Danh sách giao dịch">
-                        <dxg:GridControl ItemsSource="{Binding TransactionOverviews}" SelectionMode="MultipleRow">
+                        <dxg:GridControl
+                            ItemsSource="{Binding TransactionOverviews}"
+                            SelectedItems="{Binding SelectedTransactionOverviews}"
+                            SelectionMode="MultipleRow">
                             <dxg:GridControl.View>
                                 <dxg:TableView
                                     ShowAutoFilterRow="False"
@@ -107,6 +119,10 @@
                                 AllowEditing="False"
                                 FieldName="TransactionDate"
                                 Header="Ngày tháng" />
+                            <dxg:GridColumn
+                                AllowEditing="False"
+                                FieldName="TransactionId"
+                                Header="Mã giao dịch" />
                             <dxg:GridColumn
                                 AllowEditing="False"
                                 FieldName="TotalPriceVat"
@@ -126,6 +142,7 @@
                         </dxg:GridControl>
                     </GroupBox>
                 </Grid>
+
             </Grid>
         </Grid>
 
@@ -135,7 +152,72 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
+            <GroupBox Grid.Column="0" Header="Chi tiết giao dịch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="38" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <TextBlock Margin="{StaticResource DefaultMargin}" Text="Vat" />
+                        <ComboBox ItemsSource="{Binding ListVats}" SelectedItem="{Binding SelectedListVat}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding VatName}" />
+                                        <TextBlock Grid.Column="1" Text="% - " />
+                                        <TextBlock Grid.Column="2" Text="{Binding VatValue}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button Command="{Binding GetTranDetailCommand}" Content="Xem chi tiết" />
+                    </StackPanel>
+                    <dxg:GridControl Grid.Row="1" ItemsSource="{Binding TransDetailDTOs}">
+                        <dxg:GridControl.View>
+                            <dxg:TableView
+                                ShowAutoFilterRow="False"
+                                ShowCheckBoxSelectorColumn="True"
+                                ShowGroupPanel="False"
+                                ShowSearchPanelMode="Never" />
+                        </dxg:GridControl.View>
 
+                        <dxg:GridColumn
+                            AllowEditing="False"
+                            FieldName="GoodID"
+                            Header="Mã hàng" />
+                        <dxg:GridColumn
+                            AllowEditing="False"
+                            FieldName="GoodName"
+                            Header="Tên hàng" />
+                        <dxg:GridColumn
+                            AllowEditing="False"
+                            FieldName="GoodName"
+                            Header="Số lượng" />
+                        <dxg:GridColumn
+                            AllowEditing="False"
+                            FieldName="TotalPriceVat"
+                            Header="Số tiền">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N0" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+
+                        <dxg:GridControl.TotalSummary>
+                            <dxg:GridSummaryItem
+                                CalculationMode="Mixed"
+                                FieldName="TotalPriceVat"
+                                SummaryType="Sum" />
+
+                        </dxg:GridControl.TotalSummary>
+                    </dxg:GridControl>
+                </Grid>
+            </GroupBox>
 
             <Button Grid.Column="1" Content="Test" />
         </Grid>

@@ -28,7 +28,7 @@ namespace DatPhatAcc.Services
             return customerList;
         }
 
-        public async Task<IEnumerable<TransactionOverview>> SearchPurchaseTransactionOverview(DateTime fromDate, DateTime toDate, IEnumerable<CustomerDTO> customerDTOs, TransType transType)
+        public async Task<IEnumerable<TransactionOverview>> SearchTransactionOverview(DateTime fromDate, DateTime toDate, IEnumerable<CustomerDTO> customerDTOs, TransType transType)
         {
             int fromTranDate = Convert.ToInt32(fromDate.ToTranDate());
             int toTranDate = Convert.ToInt32(toDate.ToTranDate());
@@ -44,6 +44,7 @@ namespace DatPhatAcc.Services
                  .Select(x => new TransactionOverview
                  {
                      TransactionId = x.TransactionId,
+                     TransCode = x.TransCode,
                      TranDate = x.TransDate,
                      TotalPriceVat = x.TotalPriceVat
                  })
@@ -57,6 +58,35 @@ namespace DatPhatAcc.Services
         {
             using ACCOUNTINGContext accountingContext = new();
             return await accountingContext.TransTypes.ToArrayAsync();
+        }
+
+        public async Task<IEnumerable<ListVat>> GetListVatsAsync()
+        {
+            using ACCOUNTINGContext accountingContext = new();
+            return await accountingContext.ListVats.ToArrayAsync();
+        }
+
+        public async Task<IEnumerable<TransDetailDTO>> GetTransDetailDTOsAsync(IEnumerable<TransactionOverview> transactionOverviews, int vatValue)
+        {
+            using ACCOUNTINGContext accountingContext = new();
+
+            TransactionOverview transaction = transactionOverviews.First();
+
+
+            var transDetails = await accountingContext.TransDetails
+                .Where(x => transactionOverviews.Select(x => x.TransactionId).Contains(x.TransactionId))
+                .Join(accountingContext.Goods, transDetail => transDetail.GoodId, good => good.GoodId,
+                (transDetail, good) => new TransDetailDTO()
+                {
+                    TransactionId = transDetail.TransactionId,
+                    GoodId = transDetail.GoodId,
+                    ShortName = good.ShortName,
+                    Quantity = transDetail.Quantity ?? 0,
+                    VatValue = vatValue,
+                    TotalPriceVat = (transaction.TransCode.Equals("01") ? transDetail.TotalImpPriceVat : transDetail.TotalExpPriceVat) ?? 0
+                })
+                .ToArrayAsync();
+            return transDetails;
         }
     }
 }

@@ -53,4 +53,9 @@
         <Setter Property="Margin" Value="{StaticResource DefaultMargin}" />
     </Style>
 
+    <Style TargetType="TextBlock">
+        <Setter Property="VerticalAlignment" Value="Center" />
+
+    </Style>
+
 </ResourceDictionary>

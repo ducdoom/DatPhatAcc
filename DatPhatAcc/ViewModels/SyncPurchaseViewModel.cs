@@ -23,8 +23,14 @@ namespace DatPhatAcc.ViewModels
         private async void Init()
         {
             LoadCustomersAsync().SafeFireAndForget();
-            await LoadTransTypes();
+            Task loadTransTypesTask = LoadTransTypesAsync();
+            Task loadListVatsTask = LoadListVatsAsync();
+
+            await loadTransTypesTask;
             SelectedTransTypes = TransTypes.First(trantype => trantype.TransCode.Equals("01"));
+
+            await loadListVatsTask;
+            SelectedListVat = ListVats.First(listVat => listVat.VatValue.Equals(10));
         }
 
 
@@ -46,6 +52,19 @@ namespace DatPhatAcc.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<TransactionOverview> transactionOverviews = new();
+        [ObservableProperty]
+        private ObservableCollection<TransactionOverview> selectedTransactionOverviews = new();
+
+        [ObservableProperty]
+        private ObservableCollection<TransDetailDTO> transDetailDTOs = new();
+        [ObservableProperty]
+        private TransDetailDTO selectedTransDetailDTO = new();
+
+        [ObservableProperty]
+        private ObservableCollection<ListVat> listVats = new();
+        [ObservableProperty]
+        private ListVat selectedListVat = new();
+
 
         private async Task LoadCustomersAsync()
         {
@@ -53,17 +72,30 @@ namespace DatPhatAcc.ViewModels
             Customers = new ObservableCollection<CustomerDTO>(customerList);
         }
 
-        private async Task LoadTransTypes()
+        private async Task LoadTransTypesAsync()
         {
             var transTypes = await accountingService.GetTransTypesAsync();
             TransTypes = new ObservableCollection<TransType>(transTypes);
         }
 
+        private async Task LoadListVatsAsync()
+        {
+            var listVats = await accountingService.GetListVatsAsync();
+            ListVats = new ObservableCollection<ListVat>(listVats);
+        }
+
         [RelayCommand]
         private async Task SearchTransactionOverview()
         {
-            var transactionOverviews = await accountingService.SearchPurchaseTransactionOverview(FromDate, ToDate, SelectedCustomers, SelectedTransTypes);
+            var transactionOverviews = await accountingService.SearchTransactionOverview(FromDate, ToDate, SelectedCustomers, SelectedTransTypes);
             TransactionOverviews = new ObservableCollection<TransactionOverview>(transactionOverviews);
+        }
+
+        [RelayCommand]
+        private async Task GetTranDetail()
+        {
+            var transDetailDTOs = await accountingService.GetTransDetailDTOsAsync(SelectedTransactionOverviews, SelectedListVat.VatValue);
+            TransDetailDTOs = new ObservableCollection<TransDetailDTO>(transDetailDTOs);
         }
     }
 }
