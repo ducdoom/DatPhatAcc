@@ -26,7 +26,7 @@ namespace DatPhatAcc.Services
             return customerList;
         }
 
-        public async Task<IEnumerable<TransactionOverview>> SearchTransactionOverview(DateTime fromDate, DateTime toDate)
+        public async Task<IEnumerable<TransactionOverview>> SearchPurchaseTransactionOverview(DateTime fromDate, DateTime toDate, IEnumerable<CustomerDTO> customerDTOs)
         {
             int fromTranDate = Convert.ToInt32(fromDate.ToTranDate());
             int toTranDate = Convert.ToInt32(toDate.ToTranDate());
@@ -34,6 +34,8 @@ namespace DatPhatAcc.Services
             var transactionOverviews = await _accountingContext.Transactions.Where(
                  x => Convert.ToInt32(x.TransDate) >= fromTranDate
                  && Convert.ToInt32(x.TransDate) <= toTranDate
+                 && customerDTOs.Select(x => x.CustomerId).Contains(x.ImportId)
+                 && x.TransCode.Equals("01") //import nhập hàng
                  )
                  .Select(x => new TransactionOverview
                  {

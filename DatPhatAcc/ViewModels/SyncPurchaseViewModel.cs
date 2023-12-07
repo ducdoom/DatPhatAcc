@@ -1,11 +1,9 @@
 ﻿using AsyncAwaitBestPractices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DatPhatAcc.Converters;
 using DatPhatAcc.Models.DTO;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 
 namespace DatPhatAcc.ViewModels
@@ -44,7 +42,7 @@ namespace DatPhatAcc.ViewModels
         [RelayCommand]
         private async Task SearchTransactionOverview()
         {
-            var transactionOverviews = await accountingService.SearchTransactionOverview(FromDate,ToDate);
+            var transactionOverviews = await accountingService.SearchPurchaseTransactionOverview(FromDate, ToDate, SelectedCustomers);
             TransactionOverviews = new ObservableCollection<TransactionOverview>(transactionOverviews);
         }
     }
