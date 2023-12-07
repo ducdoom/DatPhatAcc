@@ -37,9 +37,9 @@ namespace DatPhatAcc.Services
             var transactionOverviews = await accountingContext.Transactions.Where(
                  x => Convert.ToInt32(x.TransDate) >= fromTranDate
                  && Convert.ToInt32(x.TransDate) <= toTranDate
-                 && customerDTOs.Select(x => x.CustomerId).Contains(x.ExportId)
-                 && x.TransCode.Equals(transType.TransCode) //import nhập hàng
-                 && x.Status.Equals("1") //đã duyệt                 
+                 && (customerDTOs.Select(x => x.CustomerId).Contains(x.ImportId) || customerDTOs.Select(x => x.CustomerId).Contains(x.ExportId))
+                 && x.TransCode.Equals(transType.TransCode)
+                 && x.Status.Equals("1")
                  )
                  .Select(x => new TransactionOverview
                  {

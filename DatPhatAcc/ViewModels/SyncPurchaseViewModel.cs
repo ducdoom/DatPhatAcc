@@ -17,9 +17,16 @@ namespace DatPhatAcc.ViewModels
         public SyncPurchaseViewModel(ShareViewModel shareViewModel)
         {
             _shareViewModel = shareViewModel;
-            LoadCustomersAsync().SafeFireAndForget();
-            LoadTransTypes().SafeFireAndForget();
+            Init();
         }
+
+        private async void Init()
+        {
+            LoadCustomersAsync().SafeFireAndForget();
+            await LoadTransTypes();
+            SelectedTransTypes = TransTypes.First(trantype => trantype.TransCode.Equals("01"));
+        }
+
 
         [ObservableProperty]
         private ObservableCollection<CustomerDTO> customers = new();
