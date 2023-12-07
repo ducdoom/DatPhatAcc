@@ -1,6 +1,7 @@
 ﻿using AsyncAwaitBestPractices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DatPhatAcc.AccountingDbContext;
 using DatPhatAcc.Models.DTO;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
@@ -11,13 +12,13 @@ namespace DatPhatAcc.ViewModels
     public partial class SyncPurchaseViewModel : ObservableObject
     {
         private ShareViewModel _shareViewModel;
-        private AccountingDbContext.ACCOUNTINGContext _aCCOUNTINGContext = new();
         private AccountingService accountingService = new();
 
         public SyncPurchaseViewModel(ShareViewModel shareViewModel)
         {
             _shareViewModel = shareViewModel;
             LoadCustomersAsync().SafeFireAndForget();
+            LoadTransTypes().SafeFireAndForget();
         }
 
         [ObservableProperty]
@@ -30,6 +31,12 @@ namespace DatPhatAcc.ViewModels
         [ObservableProperty]
         private DateTime toDate = DateTime.Now;
 
+
+        [ObservableProperty]
+        private ObservableCollection<TransType> transTypes = new();
+        [ObservableProperty]
+        private TransType selectedTransTypes = new();
+
         [ObservableProperty]
         private ObservableCollection<TransactionOverview> transactionOverviews = new();
 
@@ -39,10 +46,16 @@ namespace DatPhatAcc.ViewModels
             Customers = new ObservableCollection<CustomerDTO>(customerList);
         }
 
+        private async Task LoadTransTypes()
+        {
+            var transTypes = await accountingService.GetTransTypesAsync();
+            TransTypes = new ObservableCollection<TransType>(transTypes);
+        }
+
         [RelayCommand]
         private async Task SearchTransactionOverview()
         {
-            var transactionOverviews = await accountingService.SearchPurchaseTransactionOverview(FromDate, ToDate, SelectedCustomers);
+            var transactionOverviews = await accountingService.SearchPurchaseTransactionOverview(FromDate, ToDate, SelectedCustomers, SelectedTransTypes);
             TransactionOverviews = new ObservableCollection<TransactionOverview>(transactionOverviews);
         }
     }

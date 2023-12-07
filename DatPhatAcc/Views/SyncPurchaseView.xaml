@@ -12,7 +12,6 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     Background="White"
-    
     mc:Ignorable="d">
 
 
@@ -45,6 +44,23 @@
                     <dxe:DateEdit DateTime="{Binding FromDate}" />
                     <TextBlock Text="Đến ngày:" />
                     <dxe:DateEdit DateTime="{Binding ToDate}" />
+                    <TextBlock Text="Loại giao dịch" />
+                    <ComboBox ItemsSource="{Binding TransTypes}" SelectedItem="{Binding SelectedTransTypes}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding TransCode}" />
+                                    <TextBlock Grid.Column="1" Text=" - " />
+                                    <TextBlock Grid.Column="2" Text="{Binding TransName}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                     <Button Command="{Binding SearchTransactionOverviewCommand}" Content="Tìm kiếm" />
                 </StackPanel>
 
@@ -78,7 +94,7 @@
                         </dxg:GridControl>
                     </GroupBox>
 
-                    <GroupBox Grid.Column="1" Header="Phiếu nhập">
+                    <GroupBox Grid.Column="1" Header="Danh sách giao dịch">
                         <dxg:GridControl ItemsSource="{Binding TransactionOverviews}" SelectionMode="MultipleRow">
                             <dxg:GridControl.View>
                                 <dxg:TableView
@@ -99,6 +115,14 @@
                                     <dxe:TextEditSettings DisplayFormat="N0" />
                                 </dxg:GridColumn.EditSettings>
                             </dxg:GridColumn>
+
+                            <dxg:GridControl.TotalSummary>
+                                <dxg:GridSummaryItem
+                                    CalculationMode="Mixed"
+                                    FieldName="TotalPriceVat"
+                                    SummaryType="Sum" />
+
+                            </dxg:GridControl.TotalSummary>
                         </dxg:GridControl>
                     </GroupBox>
                 </Grid>
