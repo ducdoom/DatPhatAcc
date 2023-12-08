@@ -2,7 +2,6 @@
     x:Class="DatPhatAcc.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:DatPhatAcc"
     xmlns:view="clr-namespace:DatPhatAcc.Views"
     xmlns:viewmodel="clr-namespace:DatPhatAcc.ViewModels">
     <!--  StartupUri="MainWindow.xaml  -->

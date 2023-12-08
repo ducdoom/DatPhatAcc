@@ -39,6 +39,7 @@ namespace DatPhatAcc
         protected override void OnStartup(StartupEventArgs e)
         {
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+            
             mainWindow.Show();
             base.OnStartup(e);
         }

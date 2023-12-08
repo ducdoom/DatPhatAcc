@@ -69,21 +69,26 @@ namespace DatPhatAcc.Services
         public async Task<IEnumerable<TransDetailDTO>> GetTransDetailDTOsAsync(IEnumerable<TransactionOverview> transactionOverviews, int vatValue)
         {
             using ACCOUNTINGContext accountingContext = new();
-
             TransactionOverview transaction = transactionOverviews.First();
-
 
             var transDetails = await accountingContext.TransDetails
                 .Where(x => transactionOverviews.Select(x => x.TransactionId).Contains(x.TransactionId))
                 .Join(accountingContext.Goods, transDetail => transDetail.GoodId, good => good.GoodId,
                 (transDetail, good) => new TransDetailDTO()
-                {
-                    TransactionId = transDetail.TransactionId,
+                {                    
                     GoodId = transDetail.GoodId,
                     ShortName = good.ShortName,
-                    Quantity = transDetail.Quantity ?? 0,
-                    VatValue = vatValue,
+                    Quantity = transDetail.Quantity ?? 0,                  
                     TotalPriceVat = (transaction.TransCode.Equals("01") ? transDetail.TotalImpPriceVat : transDetail.TotalExpPriceVat) ?? 0
+                })
+                .GroupBy(x => new { x.GoodId, x.ShortName })
+                .Select(group => new TransDetailDTO
+                {
+                    GoodId = group.Key.GoodId,
+                    ShortName = group.Key.ShortName,
+                    Quantity = group.Sum(x => x.Quantity),
+                    VatValue = vatValue,
+                    TotalPriceVat = group.Sum(x => x.TotalPriceVat)
                 })
                 .ToArrayAsync();
             return transDetails;

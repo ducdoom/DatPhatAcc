@@ -65,8 +65,8 @@
                     <Button Command="{Binding SearchTransactionOverviewCommand}">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
-                                <fa:FontAwesome Icon="Search" VerticalAlignment="Center" HorizontalAlignment="Center"  Margin="0,0,3,0"/>
-                                
+
+
                                 <TextBlock Text="Tìm kiếm" />
                             </StackPanel>
                         </Button.Content>
@@ -189,28 +189,45 @@
 
                         <dxg:GridColumn
                             AllowEditing="False"
-                            FieldName="GoodID"
+                            FieldName="GoodId"
                             Header="Mã hàng" />
                         <dxg:GridColumn
                             AllowEditing="False"
-                            FieldName="GoodName"
+                            FieldName="ShortName"
                             Header="Tên hàng" />
-                        <dxg:GridColumn
-                            AllowEditing="False"
-                            FieldName="GoodName"
-                            Header="Số lượng" />
-                        <dxg:GridColumn
+                        <dxg:GridColumn FieldName="Quantity" Header="Số lượng">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N0" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="Price" Header="Đơn giá">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N0" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="TotalPrice" Header="Thành tiền">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N0" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="VatValue" Header="Vat">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings ItemsSource="{Binding ListVats}" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <!--<dxg:GridColumn
                             AllowEditing="False"
                             FieldName="TotalPriceVat"
                             Header="Số tiền">
                             <dxg:GridColumn.EditSettings>
                                 <dxe:TextEditSettings DisplayFormat="N0" />
                             </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
+                        </dxg:GridColumn>-->
 
                         <dxg:GridControl.TotalSummary>
                             <dxg:GridSummaryItem
                                 CalculationMode="Mixed"
+                                DisplayFormat="{}{0:N0}"
                                 FieldName="TotalPriceVat"
                                 SummaryType="Sum" />
 
