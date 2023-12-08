@@ -5,6 +5,7 @@ using DatPhatAcc.AccountingDbContext;
 using DatPhatAcc.Models.DTO;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
+using DevExpress.Xpf.Grid;
 using System.Collections.ObjectModel;
 
 namespace DatPhatAcc.ViewModels
@@ -62,9 +63,18 @@ namespace DatPhatAcc.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<ListVat> listVats = new();
-        [ObservableProperty]
-        private ListVat selectedListVat = new();
 
+        private ListVat selectedListVat = new();
+        public ListVat SelectedListVat
+        {
+            get => selectedListVat;
+            set
+            {
+                selectedListVat = value;
+                OnPropertyChanged();
+                SetAllVarTranDetails(value);
+            }
+        }
 
         private async Task LoadCustomersAsync()
         {
@@ -94,8 +104,23 @@ namespace DatPhatAcc.ViewModels
         [RelayCommand]
         private async Task GetTranDetail()
         {
-            var transDetailDTOs = await accountingService.GetTransDetailDTOsAsync(SelectedTransactionOverviews, SelectedListVat.VatValue);
+            var transDetailDTOs = await accountingService.GetTransDetailDTOsAsync(SelectedTransactionOverviews, SelectedListVat);
             TransDetailDTOs = new ObservableCollection<TransDetailDTO>(transDetailDTOs);
+        }
+
+        private void SetAllVarTranDetails(ListVat listVat)
+        {
+            foreach (var transDetailDTO in TransDetailDTOs)
+            {
+                transDetailDTO.VatValue = listVat.VatValue;
+                transDetailDTO.TotalPriceVat = transDetailDTO.TotalPrice * (1m + listVat.VatValue / 100m);
+            }
+        }
+
+        [RelayCommand]
+        private void SelectTransDetail(TransDetailDTO transDetailDTO)
+        {
+            SelectedTransDetailDTO = transDetailDTO; ///here
         }
     }
 }

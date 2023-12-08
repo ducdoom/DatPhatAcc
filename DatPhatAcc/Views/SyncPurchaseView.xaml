@@ -46,19 +46,17 @@
                     <TextBlock Text="Đến ngày:" />
                     <dxe:DateEdit DateTime="{Binding ToDate}" />
                     <TextBlock Text="Loại giao dịch" />
-                    <ComboBox ItemsSource="{Binding TransTypes}" SelectedItem="{Binding SelectedTransTypes}">
+                    <ComboBox
+                        Width="210"
+                        ItemsSource="{Binding TransTypes}"
+                        SelectedItem="{Binding SelectedTransTypes}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <ColumnDefinition />
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal">
                                     <TextBlock Grid.Column="0" Text="{Binding TransCode}" />
                                     <TextBlock Grid.Column="1" Text=" - " />
                                     <TextBlock Grid.Column="2" Text="{Binding TransName}" />
-                                </Grid>
+                                </StackPanel>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -160,7 +158,10 @@
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
                         <TextBlock Margin="{StaticResource DefaultMargin}" Text="Vat" />
-                        <ComboBox ItemsSource="{Binding ListVats}" SelectedItem="{Binding SelectedListVat}">
+                        <ComboBox
+                            Width="80"
+                            ItemsSource="{Binding ListVats}"
+                            SelectedItem="{Binding SelectedListVat}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>
@@ -170,18 +171,20 @@
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Grid.Column="0" Text="{Binding VatName}" />
-                                        <TextBlock Grid.Column="1" Text="% - " />
-                                        <TextBlock Grid.Column="2" Text="{Binding VatValue}" />
+                                        <TextBlock Grid.Column="1" Text=" %" />
+                                        <!--<TextBlock Grid.Column="2" Text="{Binding VatValue}" />-->
                                     </Grid>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
                         <Button Command="{Binding GetTranDetailCommand}" Content="Xem chi tiết" />
                     </StackPanel>
-                    <dxg:GridControl Grid.Row="1" ItemsSource="{Binding TransDetailDTOs}">
+                    <dxg:GridControl
+                        Name="gridTranDetail"
+                        Grid.Row="1"
+                        ItemsSource="{Binding TransDetailDTOs}">
                         <dxg:GridControl.View>
                             <dxg:TableView
-                                ShowAutoFilterRow="False"
                                 ShowCheckBoxSelectorColumn="True"
                                 ShowGroupPanel="False"
                                 ShowSearchPanelMode="Never" />
@@ -195,6 +198,18 @@
                             AllowEditing="False"
                             FieldName="ShortName"
                             Header="Tên hàng" />
+
+                        <dxg:GridColumn Width="30" Header="+">
+                            <dxg:GridColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type dxg:GridControl}}, Path=DataContext.SelectTransDetailCommand}"
+                                        CommandParameter="{Binding Path=RowData.Row}"
+                                        Content="+" />
+                                </DataTemplate>
+                            </dxg:GridColumn.CellTemplate>
+                        </dxg:GridColumn>
+
                         <dxg:GridColumn FieldName="Quantity" Header="Số lượng">
                             <dxg:GridColumn.EditSettings>
                                 <dxe:TextEditSettings DisplayFormat="N0" />
@@ -210,25 +225,13 @@
                                 <dxe:TextEditSettings DisplayFormat="N0" />
                             </dxg:GridColumn.EditSettings>
                         </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="VatValue" Header="Vat">
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:ComboBoxEditSettings ItemsSource="{Binding ListVats}" />
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
-                        <!--<dxg:GridColumn
-                            AllowEditing="False"
-                            FieldName="TotalPriceVat"
-                            Header="Số tiền">
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings DisplayFormat="N0" />
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>-->
+                        <dxg:GridColumn FieldName="VatValue" Header="Vat" />
 
                         <dxg:GridControl.TotalSummary>
                             <dxg:GridSummaryItem
                                 CalculationMode="Mixed"
                                 DisplayFormat="{}{0:N0}"
-                                FieldName="TotalPriceVat"
+                                FieldName="TotalPrice"
                                 SummaryType="Sum" />
 
                         </dxg:GridControl.TotalSummary>

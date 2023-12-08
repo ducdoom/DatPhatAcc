@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DatPhatAcc.AccountingDbContext;
+using System.Collections.ObjectModel;
 
 namespace DatPhatAcc.Models.DTO
 {
@@ -8,7 +10,7 @@ namespace DatPhatAcc.Models.DTO
         private decimal _price;
         private decimal _totalPrice;
 
-        public string TransactionId { get; set; } = string.Empty;
+        //public string TransactionId { get; set; } = string.Empty;
         public string GoodId { get; set; } = string.Empty;
         public string ShortName { get; set; } = string.Empty;
 
@@ -21,7 +23,7 @@ namespace DatPhatAcc.Models.DTO
                 _quantity = value;
                 _totalPrice = _quantity * _price; // When Quantity changes, update TotalPrice
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(TotalPrice));
+                OnPropertyChanged(nameof(TotalPrice));              
             }
         }
 
@@ -37,11 +39,16 @@ namespace DatPhatAcc.Models.DTO
             }
         }
 
+
         private int _vatValue = 0;
         public int VatValue
         {
             get => _vatValue;
-            set => _vatValue = value;
+            set
+            {
+                _vatValue = value;
+                OnPropertyChanged();
+            }
         }
 
         private decimal _totalPriceVat = decimal.Zero;

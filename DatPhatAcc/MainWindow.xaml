@@ -15,13 +15,12 @@
     mc:Ignorable="d">
 
     <DockPanel>
-
-
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Hệ thống">
                 <MenuItem Command="{Binding RestartAppCommand}" Header="Khởi động lại" />
                 <MenuItem Command="{Binding ExitAppCommand}" Header="Thoát" />
             </MenuItem>
+            
             <MenuItem Header="Hàng hóa">
                 <MenuItem Command="{Binding NavigateToSyncPurchaseViewCommand}" Header="Nhập hàng" />
                 <MenuItem Header="Xuất hàng" />
@@ -31,7 +30,7 @@
         </Menu>
 
 
-        <Grid>
+        <!--<Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150" />
                 <ColumnDefinition />
@@ -47,7 +46,7 @@
                 </GroupBox>
                 <GroupBox Grid.Row="1" Header="Misa" />
             </Grid>
+        </Grid>-->
             <ContentPresenter Grid.Column="1" Content="{Binding NavigationService.CurrentView}" />
-        </Grid>
     </DockPanel>
 </Window>

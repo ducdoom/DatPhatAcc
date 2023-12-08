@@ -11,7 +11,7 @@
     <Thickness x:Key="DefaultMargin">3</Thickness>
 
     <Style TargetType="Control">
-        <Setter Property="FontSize" Value="12"></Setter>
+        <Setter Property="FontSize" Value="12" />
     </Style>
 
 
@@ -38,6 +38,7 @@
         <Setter Property="ShowSearchPanelMode" Value="Always" />
         <Setter Property="SearchDelay" Value="300" />
         <Setter Property="ShowTotalSummary" Value="True" />
+        <Setter Property="AllowDragDrop" Value="True" />
     </Style>
 
     <Style TargetType="dxg:GridColumn">

@@ -1,6 +1,7 @@
 ﻿using DatPhatAcc.AccountingDbContext;
 using DatPhatAcc.Converters;
 using DatPhatAcc.Models.DTO;
+using DevExpress.Mvvm.Native;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatPhatAcc.Services
@@ -66,7 +67,7 @@ namespace DatPhatAcc.Services
             return await accountingContext.ListVats.ToArrayAsync();
         }
 
-        public async Task<IEnumerable<TransDetailDTO>> GetTransDetailDTOsAsync(IEnumerable<TransactionOverview> transactionOverviews, int vatValue)
+        public async Task<IEnumerable<TransDetailDTO>> GetTransDetailDTOsAsync(IEnumerable<TransactionOverview> transactionOverviews, ListVat selectedlistVat)
         {
             using ACCOUNTINGContext accountingContext = new();
             TransactionOverview transaction = transactionOverviews.First();
@@ -87,10 +88,11 @@ namespace DatPhatAcc.Services
                     GoodId = group.Key.GoodId,
                     ShortName = group.Key.ShortName,
                     Quantity = group.Sum(x => x.Quantity),
-                    VatValue = vatValue,
+                    VatValue = selectedlistVat.VatValue,
                     TotalPriceVat = group.Sum(x => x.TotalPriceVat)
                 })
                 .ToArrayAsync();
+
             return transDetails;
         }
     }

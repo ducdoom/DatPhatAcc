@@ -39,8 +39,10 @@ namespace DatPhatAcc
         protected override void OnStartup(StartupEventArgs e)
         {
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-            
+            MainViewModel mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
+            mainViewModel.NavigationService.Navigate<SyncPurchaseViewModel>();
             mainWindow.Show();
+
             base.OnStartup(e);
         }
 
