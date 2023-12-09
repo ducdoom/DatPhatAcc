@@ -6,6 +6,7 @@ using DatPhatAcc.Models.DTO;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
 using DevExpress.Xpf.Grid;
+using Force.DeepCloner;
 using System.Collections.ObjectModel;
 
 namespace DatPhatAcc.ViewModels
@@ -65,7 +66,8 @@ namespace DatPhatAcc.ViewModels
         [ObservableProperty]
         private TransDetailDTO selectedTransDetailDTO = new();
 
-
+        [ObservableProperty]
+        private decimal invoiceTotalAmount = 0m;
 
         [ObservableProperty]
         private ObservableCollection<ListVat> listVats = new();
@@ -126,7 +128,17 @@ namespace DatPhatAcc.ViewModels
         [RelayCommand]
         private void AddTransDetailToTemp(TransDetailDTO transDetailDTO)
         {
-            TempTransDetailDTOs.Add(transDetailDTO);
+            TransDetailDTO newTransDetail = transDetailDTO.DeepClone();                  
+            TempTransDetailDTOs.Add(newTransDetail);
+        }
+
+        [RelayCommand]
+        private void AddAllTransDetailToTemp(TransDetailDTO transDetailDTO)
+        {
+            foreach(var transDetail in TransDetailDTOs)
+            {
+                AddTransDetailToTemp(transDetail);
+            }
         }
 
         [RelayCommand]
@@ -134,5 +146,29 @@ namespace DatPhatAcc.ViewModels
         {
             TempTransDetailDTOs.Remove(transDetailDTO);
         }
+
+        [RelayCommand]
+        private void RemoveAllTransDetailFromTemp(TransDetailDTO transDetailDTO)
+        {
+            TempTransDetailDTOs.Clear();
+        }
+
+        [RelayCommand]
+        private void ReCalculateTotalPrice()
+        {
+            if (TempTransDetailDTOs.Count == 0) return;
+            //check if invoice total amount is not digit then return
+            //if (!decimal.TryParse(InvoiceTotalAmount.ToString(), out decimal invoiceTotalAmount)) return;
+
+
+            decimal sum = TempTransDetailDTOs.Sum(x => x.TotalPrice);
+            decimal rate = InvoiceTotalAmount / sum;
+
+            foreach (var transDetail in TempTransDetailDTOs)
+            {
+                transDetail.TotalPrice *= rate;
+            }
+        }
+
     }
 }

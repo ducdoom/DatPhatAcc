@@ -1,1 +1,7 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" />
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="Primary" Color="#7033FF" />
+    <SolidColorBrush x:Key="Success" Color="#96CA7E" />
+    <SolidColorBrush x:Key="Danger" Color="#E17386" />
+
+    <SolidColorBrush x:Key="BackgroundColor" Color="#F5F2FF" />
+</ResourceDictionary>

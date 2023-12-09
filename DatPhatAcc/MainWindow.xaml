@@ -7,12 +7,14 @@
     xmlns:mainview="clr-namespace:DatPhatAcc.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:DatPhatAcc.ViewModels"
-    Title="MainWindow"
+    Title="Thành Công - Misa"
     Width="1366"
     Height="768"
+    Background="{StaticResource BackgroundColor}"
     d:DataContext="{d:DesignInstance Type={x:Type viewmodels:MainViewModel}}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
+
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -20,7 +22,7 @@
                 <MenuItem Command="{Binding RestartAppCommand}" Header="Khởi động lại" />
                 <MenuItem Command="{Binding ExitAppCommand}" Header="Thoát" />
             </MenuItem>
-            
+
             <MenuItem Header="Hàng hóa">
                 <MenuItem Command="{Binding NavigateToSyncPurchaseViewCommand}" Header="Nhập hàng" />
                 <MenuItem Header="Xuất hàng" />
@@ -47,6 +49,6 @@
                 <GroupBox Grid.Row="1" Header="Misa" />
             </Grid>
         </Grid>-->
-            <ContentPresenter Grid.Column="1" Content="{Binding NavigationService.CurrentView}" />
+        <ContentPresenter Grid.Column="1" Content="{Binding NavigationService.CurrentView}" />
     </DockPanel>
 </Window>

@@ -1,11 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using DatPhatAcc.AccountingDbContext;
 using System.Collections.ObjectModel;
 
 namespace DatPhatAcc.Models.DTO
 {
-   
-    public class TransDetailDTO: ObservableObject
+
+    public class TransDetailDTO : ObservableObject
     {
         private decimal _price;
         private decimal _totalPrice;
@@ -23,7 +22,7 @@ namespace DatPhatAcc.Models.DTO
                 _quantity = value;
                 _totalPrice = _quantity * _price; // When Quantity changes, update TotalPrice
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(TotalPrice));              
+                OnPropertyChanged(nameof(TotalPrice));
             }
         }
 
@@ -39,7 +38,7 @@ namespace DatPhatAcc.Models.DTO
             }
         }
 
-        private ObservableCollection<int> listVatValue = new();
+        private ObservableCollection<int> listVatValue = new() { 0, 5, 8, 10 };
         public ObservableCollection<int> ListVatValue
         {
             get => listVatValue;
@@ -70,7 +69,7 @@ namespace DatPhatAcc.Models.DTO
         public decimal TotalPriceVat
         {
             get => _totalPriceVat;
-            set 
+            set
             {
                 _totalPriceVat = value;
                 _totalPrice = _totalPriceVat / (1m + _vatValue / 100m); // When TotalPriceVat changes, update TotalPrice
@@ -79,7 +78,7 @@ namespace DatPhatAcc.Models.DTO
                 OnPropertyChanged(nameof(TotalPrice));
                 OnPropertyChanged(nameof(Price));
             }
-            
+
         }
 
         public decimal TotalPrice

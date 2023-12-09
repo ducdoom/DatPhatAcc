@@ -8,7 +8,7 @@
 
     <sys:Double x:Key="ControlHeight">26</sys:Double>
     <!--  defaul margin values variable  -->
-    <Thickness x:Key="DefaultMargin">2</Thickness>
+    <Thickness x:Key="DefaultMargin">3</Thickness>
 
     <Style TargetType="Control">
         <Setter Property="FontSize" Value="12" />
@@ -28,7 +28,8 @@
 
 
     <Style TargetType="dxg:GridControl">
-        <Setter Property="Margin" Value="{StaticResource DefaultMargin}" />
+        <!--<Setter Property="Margin" Value="{StaticResource DefaultMargin}" />-->
+        <Setter Property="AllowLiveDataShaping" Value="True" />
 
     </Style>
 
@@ -42,7 +43,7 @@
         <Setter Property="AllowDragDrop" Value="True" />
         <Setter Property="SearchPanelParseMode" Value="Exact" />
         <Setter Property="CheckBoxSelectorColumnWidth" Value="25" />
-        
+        <Setter Property="RowMinHeight" Value="26" />
 
     </Style>
 
@@ -65,6 +66,17 @@
 
     <Style TargetType="TextBlock">
         <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style TargetType="TextBox">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="{StaticResource DefaultMargin}" />
+        <Setter Property="Height" Value="{StaticResource ControlHeight}" />
+    </Style>
+
+    <Style TargetType="dxe:TextEdit">
+        <!--<Setter Property="Margin" Value="{StaticResource DefaultMargin}" />-->
+        <Setter Property="Height" Value="{StaticResource ControlHeight}" />
     </Style>
 
 </ResourceDictionary>
