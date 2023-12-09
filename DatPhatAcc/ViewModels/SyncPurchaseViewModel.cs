@@ -58,8 +58,14 @@ namespace DatPhatAcc.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<TransDetailDTO> transDetailDTOs = new();
+        
+
+        [ObservableProperty]
+        private ObservableCollection<TransDetailDTO> tempTransDetailDTOs = new();
         [ObservableProperty]
         private TransDetailDTO selectedTransDetailDTO = new();
+
+
 
         [ObservableProperty]
         private ObservableCollection<ListVat> listVats = new();
@@ -118,9 +124,15 @@ namespace DatPhatAcc.ViewModels
         }
 
         [RelayCommand]
-        private void SelectTransDetail(TransDetailDTO transDetailDTO)
+        private void AddTransDetailToTemp(TransDetailDTO transDetailDTO)
         {
-            SelectedTransDetailDTO = transDetailDTO; ///here
+            TempTransDetailDTOs.Add(transDetailDTO);
+        }
+
+        [RelayCommand]
+        private void RemoveTransDetailFromTemp(TransDetailDTO transDetailDTO)
+        {
+            TempTransDetailDTOs.Remove(transDetailDTO);
         }
     }
 }

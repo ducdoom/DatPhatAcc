@@ -39,6 +39,17 @@ namespace DatPhatAcc.Models.DTO
             }
         }
 
+        private ObservableCollection<int> listVatValue = new();
+        public ObservableCollection<int> ListVatValue
+        {
+            get => listVatValue;
+            set
+            {
+                listVatValue = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private int _vatValue = 0;
         public int VatValue
@@ -47,7 +58,11 @@ namespace DatPhatAcc.Models.DTO
             set
             {
                 _vatValue = value;
+                _totalPrice = _totalPriceVat / (1m + _vatValue / 100m); // When VatValue changes, update TotalPrice
+                _price = _quantity > 0 ? _totalPrice / _quantity : 0; // When VatValue changes, update Price
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(TotalPrice));
+                OnPropertyChanged(nameof(Price));
             }
         }
 

@@ -10,7 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:DatPhatAcc.ViewModels"
     d:DataContext="{d:DesignInstance Type={x:Type viewmodels:SyncPurchaseViewModel}}"
-    d:DesignHeight="450"
+    d:DesignHeight="600"
     d:DesignWidth="800"
     Background="White"
     mc:Ignorable="d">
@@ -73,8 +73,8 @@
 
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="5*" />
                     </Grid.ColumnDefinitions>
 
                     <GroupBox Grid.Column="0" Header="Tìm kiếm NCC">
@@ -84,7 +84,7 @@
                             SelectionMode="MultipleRow">
 
                             <dxg:GridControl.View>
-                                <dxg:TableView ShowCheckBoxSelectorColumn="True" />
+                                <dxg:TableView ShowCheckBoxSelectorColumn="True" ShowTotalSummary="False" />
                             </dxg:GridControl.View>
                             <dxg:GridColumn
                                 AllowEditing="False"
@@ -172,7 +172,6 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Grid.Column="0" Text="{Binding VatName}" />
                                         <TextBlock Grid.Column="1" Text=" %" />
-                                        <!--<TextBlock Grid.Column="2" Text="{Binding VatValue}" />-->
                                     </Grid>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
@@ -199,11 +198,13 @@
                             FieldName="ShortName"
                             Header="Tên hàng" />
 
-                        <dxg:GridColumn Width="30" Header="+">
+                        <dxg:GridColumn>
                             <dxg:GridColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button
-                                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type dxg:GridControl}}, Path=DataContext.SelectTransDetailCommand}"
+                                        Width="32"
+                                        Height="20"
+                                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type dxg:GridControl}}, Path=DataContext.AddTransDetailToTempCommand}"
                                         CommandParameter="{Binding Path=RowData.Row}"
                                         Content="+" />
                                 </DataTemplate>
@@ -225,7 +226,11 @@
                                 <dxe:TextEditSettings DisplayFormat="N0" />
                             </dxg:GridColumn.EditSettings>
                         </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="VatValue" Header="Vat" />
+                        <dxg:GridColumn FieldName="VatValue" Header="Vat">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings  />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
 
                         <dxg:GridControl.TotalSummary>
                             <dxg:GridSummaryItem
@@ -239,7 +244,79 @@
                 </Grid>
             </GroupBox>
 
-            <Button Grid.Column="1" Content="Test" />
+            <GroupBox Grid.Column="1" Header="Bảng tạm">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="38" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <dxg:GridControl Grid.Row="1" ItemsSource="{Binding TempTransDetailDTOs}">
+                        <dxg:GridControl.View>
+                            <dxg:TableView
+                                ShowCheckBoxSelectorColumn="True"
+                                ShowGroupPanel="False"
+                                ShowSearchPanelMode="Never" />
+                        </dxg:GridControl.View>
+
+                        <dxg:GridColumn
+                            AllowEditing="False"
+                            FieldName="GoodId"
+                            Header="Mã hàng" />
+                        <dxg:GridColumn
+                            AllowEditing="False"
+                            FieldName="ShortName"
+                            Header="Tên hàng" />
+                        <dxg:GridColumn>
+                            <dxg:GridColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        Width="32"
+                                        Height="20"
+                                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type dxg:GridControl}}, Path=DataContext.RemoveTransDetailFromTempCommand}"
+                                        CommandParameter="{Binding Path=RowData.Row}"
+                                        Content="-" />
+                                </DataTemplate>
+                            </dxg:GridColumn.CellTemplate>
+                        </dxg:GridColumn>
+
+                        <dxg:GridColumn FieldName="Quantity" Header="Số lượng">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N0" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="Price" Header="Đơn giá">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N0" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="TotalPrice" Header="Thành tiền">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N0" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="VatValue" Header="Vat">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings ItemsSource="{Binding ListVatValue}" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+
+                        <dxg:GridControl.TotalSummary>
+                            <dxg:GridSummaryItem
+                                DisplayFormat="{}{0:N0}"
+                                FieldName="GoodId"
+                                SummaryType="Count" />
+
+                            <dxg:GridSummaryItem
+                                CalculationMode="Mixed"
+                                DisplayFormat="{}{0:N0}"
+                                FieldName="TotalPrice"
+                                SummaryType="Sum" />
+
+                        </dxg:GridControl.TotalSummary>
+                    </dxg:GridControl>
+                </Grid>
+            </GroupBox>
         </Grid>
     </Grid>
 </UserControl>
