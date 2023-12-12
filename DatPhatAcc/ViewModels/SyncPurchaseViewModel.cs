@@ -5,9 +5,10 @@ using DatPhatAcc.AccountingDbContext;
 using DatPhatAcc.Models.DTO;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
-using DevExpress.Xpf.Grid;
 using Force.DeepCloner;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace DatPhatAcc.ViewModels
 {
@@ -15,6 +16,7 @@ namespace DatPhatAcc.ViewModels
     {
         private ShareViewModel _shareViewModel;
         private AccountingService accountingService = new();
+        
 
         public SyncPurchaseViewModel(ShareViewModel shareViewModel)
         {
@@ -59,7 +61,7 @@ namespace DatPhatAcc.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<TransDetailDTO> transDetailDTOs = new();
-        
+
 
         [ObservableProperty]
         private ObservableCollection<TransDetailDTO> tempTransDetailDTOs = new();
@@ -128,14 +130,14 @@ namespace DatPhatAcc.ViewModels
         [RelayCommand]
         private void AddTransDetailToTemp(TransDetailDTO transDetailDTO)
         {
-            TransDetailDTO newTransDetail = transDetailDTO.DeepClone();                  
+            TransDetailDTO newTransDetail = transDetailDTO.DeepClone();
             TempTransDetailDTOs.Add(newTransDetail);
         }
 
         [RelayCommand]
         private void AddAllTransDetailToTemp(TransDetailDTO transDetailDTO)
         {
-            foreach(var transDetail in TransDetailDTOs)
+            foreach (var transDetail in TransDetailDTOs)
             {
                 AddTransDetailToTemp(transDetail);
             }
@@ -168,6 +170,45 @@ namespace DatPhatAcc.ViewModels
             {
                 transDetail.TotalPrice *= rate;
             }
+        }
+
+        [RelayCommand]
+        private void CreatePurchaseImportExcelFile()
+        {
+            SaveFileDialog saveFileDialog = new();
+            saveFileDialog.Filter = "Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+            saveFileDialog.FilterIndex = 1;
+            saveFileDialog.RestoreDirectory = true;
+
+            if (saveFileDialog.ShowDialog() == false)
+            {
+                return;
+            }
+
+            string path = saveFileDialog.FileName;
+
+            MisaHelper.MisaHelper misaHelper = new();
+            misaHelper.Purchase.PurchaseImportData.TransactionDate = new DateTime(2024, 1, 1);
+            misaHelper.Purchase.PurchaseImportData.InvoiceNumber = "0";
+            
+            //misaHelper.Purchase.PurchaseImportData.ImportProducts = new List<MisaHelper.Models.ImportProduct>();
+            foreach (TransDetailDTO product in TempTransDetailDTOs)
+            {
+                misaHelper.Purchase.PurchaseImportData.ImportProducts.Add(new MisaHelper.Models.ImportProduct
+                {
+                    ProductId = product.GoodId,
+                    Quantity = (double)product.Quantity,
+                    Price = (double)product.Price,
+                    TotalPrice = (double)product.TotalPrice,
+                    VatRate = (double)product.VatValue,
+                    VatAmount = (double)product.VatAmount
+                });
+            }
+
+            bool success = misaHelper.Purchase.CreatePurchaseImportExcelFile(path);
+            if (success)
+                MessageBox.Show("Tạo file excel thành công");
+
         }
 
     }

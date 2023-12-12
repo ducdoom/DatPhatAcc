@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatPhatAcc", "DatPhatAcc\DatPhatAcc.csproj", "{D888632C-415A-4198-A316-86ED89B7D10F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatPhatAcc", "DatPhatAcc\DatPhatAcc.csproj", "{D888632C-415A-4198-A316-86ED89B7D10F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MisaHelper", "MisaHelper\MisaHelper.csproj", "{3EB9E6BC-1F55-430C-8D54-8481899F24FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{D888632C-415A-4198-A316-86ED89B7D10F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D888632C-415A-4198-A316-86ED89B7D10F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D888632C-415A-4198-A316-86ED89B7D10F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EB9E6BC-1F55-430C-8D54-8481899F24FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EB9E6BC-1F55-430C-8D54-8481899F24FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EB9E6BC-1F55-430C-8D54-8481899F24FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EB9E6BC-1F55-430C-8D54-8481899F24FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

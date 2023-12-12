@@ -90,15 +90,18 @@
                             <dxg:GridColumn
                                 AllowEditing="False"
                                 FieldName="CustomerId"
-                                Header="Mã NCC" />
+                                Header="Mã NCC"
+                                Style="{StaticResource ContainsFilter}" />
                             <dxg:GridColumn
                                 AllowEditing="False"
                                 FieldName="TaxCode"
-                                Header="MST" />
+                                Header="MST"
+                                Style="{StaticResource ContainsFilter}" />
                             <dxg:GridColumn
                                 AllowEditing="False"
                                 FieldName="CustomerName"
-                                Header="Tên NCC" />
+                                Header="Tên NCC"
+                                Style="{StaticResource ContainsFilter}" />
                         </dxg:GridControl>
                     </GroupBox>
 
@@ -209,11 +212,13 @@
                         <dxg:GridColumn
                             AllowEditing="False"
                             FieldName="GoodId"
-                            Header="Mã hàng" />
+                            Header="Mã hàng"
+                            Style="{StaticResource ContainsFilter}" />
                         <dxg:GridColumn
                             AllowEditing="False"
                             FieldName="ShortName"
-                            Header="Tên hàng" />
+                            Header="Tên hàng"
+                            Style="{StaticResource ContainsFilter}" />
 
                         <dxg:GridColumn FieldName="Quantity" Header="Số lượng">
                             <dxg:GridColumn.EditSettings>
@@ -264,11 +269,7 @@
                         <RowDefinition Height="38" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
+                    <DockPanel Grid.Row="0">
 
                         <StackPanel Grid.Column="0" Orientation="Horizontal">
                             <TextBox Width="130" Text="{Binding InvoiceTotalAmount}" />
@@ -282,6 +283,17 @@
                                     <TextBlock Margin="5,0,0,0" Text="Tính lại tổng tiền" />
                                 </StackPanel>
                             </Button>
+                            <Button Command="{Binding CreatePurchaseImportExcelFileCommand}">
+                                <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
+                                    <iconPacks:PackIconFontAwesome
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Foreground="#107C41"
+                                        Kind="FileExcelRegular" />
+                                    <TextBlock Margin="5,0,0,0" Text="Xuất file import" />
+                                </StackPanel>
+                            </Button>
+
                         </StackPanel>
 
                         <StackPanel
@@ -300,7 +312,7 @@
                             </Button>
 
                         </StackPanel>
-                    </Grid>
+                    </DockPanel>
 
                     <dxg:GridControl Grid.Row="1" ItemsSource="{Binding TempTransDetailDTOs}">
                         <dxg:GridControl.View>
@@ -313,11 +325,13 @@
                         <dxg:GridColumn
                             AllowEditing="False"
                             FieldName="GoodId"
-                            Header="Mã hàng" />
+                            Header="Mã hàng"
+                            Style="{StaticResource ContainsFilter}" />
                         <dxg:GridColumn
                             AllowEditing="False"
                             FieldName="ShortName"
-                            Header="Tên hàng" />
+                            Header="Tên hàng"
+                            Style="{StaticResource ContainsFilter}" />
 
 
                         <dxg:GridColumn FieldName="Quantity" Header="Số lượng">

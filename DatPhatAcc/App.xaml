@@ -21,7 +21,7 @@
             <!--  Styles  -->
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
-                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Custom.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
         </ResourceDictionary>

@@ -92,5 +92,18 @@ namespace DatPhatAcc.Models.DTO
                 OnPropertyChanged(nameof(Price));
             }
         }
+
+        public decimal VatAmount
+        {
+            get => _totalPrice * _vatValue / 100m;
+            //set
+            //{
+            //    _totalPriceVat = _totalPrice + value; // When VatAmount changes, update TotalPriceVat
+            //    _price = _quantity > 0 ? _totalPrice / _quantity : 0; // When VatAmount changes, update Price
+            //    OnPropertyChanged();
+            //    OnPropertyChanged(nameof(TotalPriceVat));
+            //    OnPropertyChanged(nameof(Price));
+            //}
+        }
     }
 }

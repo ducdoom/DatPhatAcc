@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="ExcelTemplates\Mua_hang_qua_kho_VND.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ExcelTemplates\Mua_hang_qua_kho_VND.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="7.0.3" />
+  </ItemGroup>
+
+</Project>
