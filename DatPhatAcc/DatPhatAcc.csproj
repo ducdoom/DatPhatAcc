@@ -37,4 +37,8 @@
     <ProjectReference Include="..\MisaHelper\MisaHelper.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Deploy\" />
+  </ItemGroup>
+
 </Project>
