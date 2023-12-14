@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Deploy\" />
+    <Folder Include="published\" />
   </ItemGroup>
 
 </Project>
