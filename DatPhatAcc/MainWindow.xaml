@@ -10,8 +10,8 @@
     Title="Thành Công - Misa"
     Width="1366"
     Height="768"
-    Background="{StaticResource BackgroundColor}"
     d:DataContext="{d:DesignInstance Type={x:Type viewmodels:MainViewModel}}"
+    Background="{StaticResource BackgroundColor}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
@@ -31,24 +31,6 @@
             <MenuItem Command="{Binding NavigateToSettingCommand}" Header="Hóa đơn" />
         </Menu>
 
-
-        <!--<Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <GroupBox Grid.Row="0" Header="Thành Công">
-                    <Button Content="Button1" />
-                </GroupBox>
-                <GroupBox Grid.Row="1" Header="Misa" />
-            </Grid>
-        </Grid>-->
         <ContentPresenter Grid.Column="1" Content="{Binding NavigationService.CurrentView}" />
     </DockPanel>
 </Window>

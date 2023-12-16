@@ -32,7 +32,6 @@ namespace DatPhatAcc
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<Func<Type, ObservableObject>>(serviceProvider => viewModelType => (ObservableObject)serviceProvider.GetRequiredService(viewModelType));
 
-            
             _serviceProvider = services.BuildServiceProvider();
         }
 
@@ -45,8 +44,6 @@ namespace DatPhatAcc
 
             base.OnStartup(e);
         }
-
-       
     }
 
 }
