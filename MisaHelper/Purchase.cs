@@ -18,7 +18,7 @@ namespace MisaHelper
         }
 
         public PurchaseImportData PurchaseImportData { get; set; } = new PurchaseImportData();
-        public bool CreatePurchaseImportExcelFile(string path)
+        public bool CreatePurchaseImportExcelFile(string templateFilePath, string path)
         {
             //if path exists then delete
             if (System.IO.File.Exists(path))
@@ -27,11 +27,11 @@ namespace MisaHelper
             }
 
             //open file excel template from exceltemplate folder
-            string fileName = "ExcelTemplates\\Mua_hang_qua_kho_VND.xlsx"; // Replace with your file name
-            string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string filePath = Path.Combine(folderPath, fileName);
+            //string fileName = "ExcelTemplates\\Mua_hang_qua_kho_VND.xlsx"; // Replace with your file name
+            //string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            //string filePath = Path.Combine(folderPath, fileName);
 
-            using ExcelPackage excelPackage = new(new System.IO.FileInfo(filePath));
+            using ExcelPackage excelPackage = new(new System.IO.FileInfo(templateFilePath));
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.First();
             //if(worksheet is null)
             //{

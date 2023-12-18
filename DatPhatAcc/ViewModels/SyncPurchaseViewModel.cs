@@ -5,7 +5,6 @@ using DatPhatAcc.AccountingDbContext;
 using DatPhatAcc.Models.DTO;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
-using Force.DeepCloner;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -16,7 +15,7 @@ namespace DatPhatAcc.ViewModels
     {
         private ShareViewModel _shareViewModel;
         private AccountingService accountingService = new();
-        
+
 
         public SyncPurchaseViewModel(ShareViewModel shareViewModel)
         {
@@ -64,7 +63,7 @@ namespace DatPhatAcc.ViewModels
 
 
         [ObservableProperty]
-        private ObservableCollection<TransDetailDTO> tempTransDetailDTOs = new();
+        private ObservableCollection<TempTransDetailDTO> tempTransDetailDTOs = new();
         [ObservableProperty]
         private TransDetailDTO selectedTransDetailDTO = new();
 
@@ -130,7 +129,16 @@ namespace DatPhatAcc.ViewModels
         [RelayCommand]
         private void AddTransDetailToTemp(TransDetailDTO transDetailDTO)
         {
-            TransDetailDTO newTransDetail = transDetailDTO.DeepClone();
+            TempTransDetailDTO newTransDetail = new();
+            //copy value from TransDetailDTO to TempTransDetailDTO
+            newTransDetail.GoodId = transDetailDTO.GoodId;
+            newTransDetail.ShortName = transDetailDTO.ShortName;
+            newTransDetail.Quantity = transDetailDTO.Quantity;
+            newTransDetail.Price = transDetailDTO.Price;
+            newTransDetail.VatValue = transDetailDTO.VatValue;
+            newTransDetail.TotalPrice = transDetailDTO.TotalPrice;
+            newTransDetail.TotalPriceVat = transDetailDTO.TotalPriceVat;
+
             TempTransDetailDTOs.Add(newTransDetail);
         }
 
@@ -144,9 +152,9 @@ namespace DatPhatAcc.ViewModels
         }
 
         [RelayCommand]
-        private void RemoveTransDetailFromTemp(TransDetailDTO transDetailDTO)
+        private void RemoveTransDetailFromTemp(TempTransDetailDTO tempTransDetailDTO)
         {
-            TempTransDetailDTOs.Remove(transDetailDTO);
+            TempTransDetailDTOs.Remove(tempTransDetailDTO);
         }
 
         [RelayCommand]
@@ -175,24 +183,26 @@ namespace DatPhatAcc.ViewModels
         [RelayCommand]
         private void CreatePurchaseImportExcelFile()
         {
-            SaveFileDialog saveFileDialog = new();
-            saveFileDialog.Filter = "Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*";
-            saveFileDialog.FilterIndex = 1;
-            saveFileDialog.RestoreDirectory = true;
+            SaveFileDialog saveFileDialog = new()
+            {
+                Filter = "Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true
+            };
 
             if (saveFileDialog.ShowDialog() == false)
             {
                 return;
             }
 
-            string path = saveFileDialog.FileName;
+            string saveFilePath = saveFileDialog.FileName;
 
             MisaHelper.MisaHelper misaHelper = new();
             misaHelper.Purchase.PurchaseImportData.TransactionDate = new DateTime(2024, 1, 1);
             misaHelper.Purchase.PurchaseImportData.InvoiceNumber = "0";
-            
+
             //misaHelper.Purchase.PurchaseImportData.ImportProducts = new List<MisaHelper.Models.ImportProduct>();
-            foreach (TransDetailDTO product in TempTransDetailDTOs)
+            foreach (TempTransDetailDTO product in TempTransDetailDTOs)
             {
                 misaHelper.Purchase.PurchaseImportData.ImportProducts.Add(new MisaHelper.Models.ImportProduct
                 {
@@ -205,9 +215,16 @@ namespace DatPhatAcc.ViewModels
                 });
             }
 
-            bool success = misaHelper.Purchase.CreatePurchaseImportExcelFile(path);
+            string templateFilePath = "Resources\\MisaExcelTemplates\\Mua_hang_qua_kho_VND.xlsx";
+            if (!System.IO.File.Exists(templateFilePath))
+            {
+                MessageBox.Show("Không tìm thấy file excel template");
+                return;
+            }
+
+            bool success = misaHelper.Purchase.CreatePurchaseImportExcelFile(templateFilePath, saveFilePath);
             if (success)
-                MessageBox.Show("Tạo file excel thành công");
+                MessageBox.Show("Tạo file excel thành công", "Thông báo");
 
         }
 

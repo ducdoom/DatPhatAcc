@@ -8,11 +8,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:DatPhatAcc.ViewModels"
     Title="Thành Công - Misa"
-    Width="1366"
-    Height="768"
+    Width="1200"
+    Height="800"
     d:DataContext="{d:DesignInstance Type={x:Type viewmodels:MainViewModel}}"
     Background="{StaticResource BackgroundColor}"
     WindowStartupLocation="CenterScreen"
+    WindowState="Maximized"
     mc:Ignorable="d">
 
 
