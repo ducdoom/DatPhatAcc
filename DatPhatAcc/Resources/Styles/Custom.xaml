@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:sys="clr-namespace:System;assembly=netstandard">
@@ -76,6 +77,10 @@
 
     <Style TargetType="dxe:TextEdit">
         <!--<Setter Property="Margin" Value="{StaticResource DefaultMargin}" />-->
+        <Setter Property="Height" Value="{StaticResource ControlHeight}" />
+    </Style>
+
+    <Style TargetType="dx:DropDownButton">
         <Setter Property="Height" Value="{StaticResource ControlHeight}" />
     </Style>
 

@@ -180,7 +180,12 @@ namespace DatPhatAcc.ViewModels
             }
         }
 
-        [RelayCommand]
+        private bool IsCreateImportExcelFile()
+        {
+            return TempTransDetailDTOs.Count > 0;
+        }
+
+        [RelayCommand(CanExecute = nameof(IsCreateImportExcelFile))]
         private void CreatePurchaseImportExcelFile()
         {
             SaveFileDialog saveFileDialog = new()
@@ -198,7 +203,7 @@ namespace DatPhatAcc.ViewModels
             string saveFilePath = saveFileDialog.FileName;
 
             MisaHelper.MisaHelper misaHelper = new();
-            misaHelper.Purchase.PurchaseImportData.TransactionDate = new DateTime(2024, 1, 1);
+            //misaHelper.Purchase.PurchaseImportData.TransactionDate = new DateTime(2024, 1, 1);
             misaHelper.Purchase.PurchaseImportData.InvoiceNumber = "0";
 
             //misaHelper.Purchase.PurchaseImportData.ImportProducts = new List<MisaHelper.Models.ImportProduct>();
@@ -224,7 +229,7 @@ namespace DatPhatAcc.ViewModels
 
             bool success = misaHelper.Purchase.CreatePurchaseImportExcelFile(templateFilePath, saveFilePath);
             if (success)
-                MessageBox.Show("Tạo file excel thành công", "Thông báo");
+                MessageBox.Show("Tạo file excel thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
 
         }
 
