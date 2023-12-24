@@ -10,5 +10,7 @@ namespace MisaHelper
         }
 
         public Purchase Purchase { get; set; } = new();
+
+        public ImportExcel ImportExcel { get; set; } = new();
     }
 }

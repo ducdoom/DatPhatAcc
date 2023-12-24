@@ -95,5 +95,23 @@ namespace DatPhatAcc.Services
 
             return transDetails;
         }
+
+        public string GetUnitNameByGoodId(string  goodId)
+        {
+            ACCOUNTINGContext aCCOUNTINGContext = new();
+            Good? good = aCCOUNTINGContext.Goods.FirstOrDefault(x => x.GoodId.Equals(goodId));
+            if(good is null)
+            {
+                return string.Empty;
+            }
+
+            string? unitName = aCCOUNTINGContext.Units.FirstOrDefault(x => x.UnitId.Equals(good.UnitId))?.UnitName;            
+            if(unitName is null)
+            {
+                return string.Empty;
+            }
+
+            return unitName;
+        }
     }
 }

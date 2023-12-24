@@ -7,11 +7,6 @@ namespace DatPhatAcc.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
-        public MainViewModel()
-        {
-
-        }
-
         public MainViewModel(INavigationService navigationService)
         {
             NavigationService = navigationService;
@@ -25,6 +20,12 @@ namespace DatPhatAcc.ViewModels
         private void NavigateToSyncPurchaseView()
         {
             NavigationService.Navigate<SyncPurchaseViewModel>();
+        }
+
+        [RelayCommand]
+        private void NavigateToSyncRetailTransView()
+        {
+            NavigationService.Navigate<SyncRetailTransViewModel>();
         }
 
         [RelayCommand]

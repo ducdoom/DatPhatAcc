@@ -273,7 +273,7 @@
                     <DockPanel Grid.Row="0">
 
                         <StackPanel Grid.Column="0" Orientation="Horizontal">
-                            <TextBox Width="130" Text="{Binding InvoiceTotalAmount}" />
+                            <TextBox Width="130" Text="{Binding InvoiceTotalAmount, UpdateSourceTrigger=PropertyChanged}" />
                             <Button Command="{Binding ReCalculateTotalPriceCommand}">
                                 <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
                                     <iconPacks:PackIconFontAwesome
@@ -298,7 +298,7 @@
                                         </StackPanel>
                                     </Button>
 
-                                    <Button Command="{Binding CreatePurchaseImportExcelFileCommand}">
+                                    <Button Command="{Binding CreateImportGoodsExcelFileCommand}" IsEnabled="{Binding CreateImportGoodsExcelFileCommand.ExecutionTask}">
                                         <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
                                             <iconPacks:PackIconFontAwesome
                                                 HorizontalAlignment="Center"
@@ -308,6 +308,8 @@
                                             <TextBlock Margin="5,0,0,0" Text="Xuất file import vật tư" />
                                         </StackPanel>
                                     </Button>
+
+                                    
                                 </StackPanel>
                             </dx:DropDownButton>
 

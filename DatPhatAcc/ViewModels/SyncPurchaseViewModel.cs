@@ -5,9 +5,12 @@ using DatPhatAcc.AccountingDbContext;
 using DatPhatAcc.Models.DTO;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
+using ListVat = DatPhatAcc.AccountingDbContext.ListVat;
 
 namespace DatPhatAcc.ViewModels
 {
@@ -63,11 +66,15 @@ namespace DatPhatAcc.ViewModels
 
 
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(CreateImportGoodsExcelFileCommand))]
+        [NotifyCanExecuteChangedFor(nameof(CreatePurchaseImportExcelFileCommand))]        
         private ObservableCollection<TempTransDetailDTO> tempTransDetailDTOs = new();
+
         [ObservableProperty]
         private TransDetailDTO selectedTransDetailDTO = new();
 
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ReCalculateTotalPriceCommand))]
         private decimal invoiceTotalAmount = 0m;
 
         [ObservableProperty]
@@ -126,7 +133,7 @@ namespace DatPhatAcc.ViewModels
             }
         }
 
-        [RelayCommand]
+        [RelayCommand]        
         private void AddTransDetailToTemp(TransDetailDTO transDetailDTO)
         {
             TempTransDetailDTO newTransDetail = new();
@@ -140,6 +147,9 @@ namespace DatPhatAcc.ViewModels
             newTransDetail.TotalPriceVat = transDetailDTO.TotalPriceVat;
 
             TempTransDetailDTOs.Add(newTransDetail);
+
+            CreateImportGoodsExcelFileCommand.NotifyCanExecuteChanged();
+            CreatePurchaseImportExcelFileCommand.NotifyCanExecuteChanged();
         }
 
         [RelayCommand]
@@ -162,8 +172,8 @@ namespace DatPhatAcc.ViewModels
         {
             TempTransDetailDTOs.Clear();
         }
-
-        [RelayCommand]
+        
+        [RelayCommand(CanExecute = nameof(CanRecalculateTotalPrice))]
         private void ReCalculateTotalPrice()
         {
             if (TempTransDetailDTOs.Count == 0) return;
@@ -180,12 +190,17 @@ namespace DatPhatAcc.ViewModels
             }
         }
 
-        private bool CamCreateImportExcelFile()
+        private bool CanCreateImportExcelFile()
         {
             return TempTransDetailDTOs.Count > 0;
         }
 
-        [RelayCommand(CanExecute = nameof(CamCreateImportExcelFile))]
+        private bool CanRecalculateTotalPrice()
+        {
+            return InvoiceTotalAmount > 0m && TempTransDetailDTOs.Count > 0;
+        }
+
+        [RelayCommand(CanExecute = nameof(CanCreateImportExcelFile))]
         private void CreatePurchaseImportExcelFile()
         {
             SaveFileDialog saveFileDialog = new()
@@ -232,8 +247,8 @@ namespace DatPhatAcc.ViewModels
                 MessageBox.Show("Tạo file excel thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        [RelayCommand(CanExecute = nameof(CamCreateImportExcelFile))]
-        private void CreateImportGoodsExcelFile()
+        [RelayCommand(CanExecute = nameof(CanCreateImportExcelFile))]
+        private async Task CreateImportGoodsExcelFile()
         {
             SaveFileDialog saveFileDialog = new()
             {
@@ -249,33 +264,39 @@ namespace DatPhatAcc.ViewModels
 
             string saveFilePath = saveFileDialog.FileName;
 
-            MisaHelper.MisaHelper misaHelper = new();
-            misaHelper.Purchase.PurchaseImportData.InvoiceNumber = "0";
+            ACCOUNTINGContext accountingContext = new();
+            IEnumerable<Good> goods = await accountingContext.Goods.ToArrayAsync();
 
-            //misaHelper.Purchase.PurchaseImportData.ImportProducts = new List<MisaHelper.Models.ImportProduct>();
+            List<MisaHelper.Models.MisaVTHH> misaVTHHs = new();
+
             foreach (TempTransDetailDTO product in TempTransDetailDTOs)
             {
-                misaHelper.Purchase.PurchaseImportData.ImportProducts.Add(new MisaHelper.Models.ImportProduct
+                MisaHelper.Models.MisaVTHH misaVTHH = new()
                 {
                     ProductId = product.GoodId,
-                    Quantity = (double)product.Quantity,
-                    Price = (double)product.Price,
-                    TotalPrice = (double)product.TotalPrice,
-                    VatRate = (double)product.VatValue,
-                    VatAmount = (double)product.VatAmount
-                });
+                    ProductName = product.ShortName,
+                    Unit = accountingService.GetUnitNameByGoodId(product.GoodId)
+                };
+
+                misaVTHHs.Add(misaVTHH);
             }
 
-            string templateFilePath = "Resources\\MisaExcelTemplates\\Nhap_hang_qua_kho_VND.xlsx";
+            string templateFilePath = "Resources\\MisaExcelTemplates\\Mau_danh_muc_vat_tu_hang_hoa_VND.xlsx";
             if (!System.IO.File.Exists(templateFilePath))
             {
                 MessageBox.Show("Không tìm thấy file excel template");
                 return;
             }
 
-            bool success = misaHelper.Purchase.CreatePurchaseImportExcelFile(templateFilePath, saveFilePath);
+            MisaHelper.MisaHelper misaHelper = new();
+            if (File.Exists(saveFilePath))
+                File.Delete(saveFilePath);
+
+            bool success = misaHelper.ImportExcel.CreateFileImportMisaVTHH(misaVTHHs, saveFilePath);
             if (success)
+            {
                 MessageBox.Show("Tạo file excel thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
     }
