@@ -1,13 +1,13 @@
 ﻿{
-   "CodeGenerationMode": 4,
-   "ContextClassName": "ACCOUNTINGContext",
+   "CodeGenerationMode": 3,
+   "ContextClassName": "ACCOUNTING_LTTContext",
    "ContextNamespace": null,
    "DefaultDacpacSchema": null,
    "FilterSchemas": false,
    "IncludeConnectionString": true,
    "ModelNamespace": null,
    "OutputContextPath": null,
-   "OutputPath": "AccountingDbContext",
+   "OutputPath": "Accounting_LTTDbContext",
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "DatPhatAcc",
    "Schemas": null,
@@ -396,22 +396,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[inventorymark_20210301]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[inventorymark_20210401]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[inventorymark_20210501]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[inventorymark_20210601]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[INVENTORYMARK_20210701]",
          "ObjectType": 0
       },
@@ -437,10 +421,6 @@
       },
       {
          "Name": "[dbo].[INVENTORYMARK_20220101]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[INVENTORYMARK_20220805]",
          "ObjectType": 0
       },
       {
@@ -776,19 +756,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[VoucherMark_20190601]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Vouchers]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[VouchersObjectRelate]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[VouchersObjectRelateMark_20190601]",
          "ObjectType": 0
       },
       {
@@ -836,7 +808,7 @@
          "ObjectType": 0
       }
    ],
-   "UiHint": "datphatacc.ACCOUNTING.dbo",
+   "UiHint": "svletrongtan.ACCOUNTING_LTT.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

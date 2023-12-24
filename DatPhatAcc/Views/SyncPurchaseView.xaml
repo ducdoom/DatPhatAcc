@@ -285,7 +285,7 @@
                                 </StackPanel>
                             </Button>
 
-                            <dx:DropDownButton>
+                            <dx:DropDownButton Content="Kết xuất">
                                 <StackPanel Orientation="Vertical">
                                     <Button Command="{Binding CreatePurchaseImportExcelFileCommand}">
                                         <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
@@ -305,7 +305,7 @@
                                                 VerticalAlignment="Center"
                                                 Foreground="#107C41"
                                                 Kind="FileExcelRegular" />
-                                            <TextBlock Margin="5,0,0,0" Text="Xuất file import" />
+                                            <TextBlock Margin="5,0,0,0" Text="Xuất file import vật tư" />
                                         </StackPanel>
                                     </Button>
                                 </StackPanel>

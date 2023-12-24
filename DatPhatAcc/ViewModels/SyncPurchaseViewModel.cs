@@ -180,12 +180,12 @@ namespace DatPhatAcc.ViewModels
             }
         }
 
-        private bool IsCreateImportExcelFile()
+        private bool CamCreateImportExcelFile()
         {
             return TempTransDetailDTOs.Count > 0;
         }
 
-        [RelayCommand(CanExecute = nameof(IsCreateImportExcelFile))]
+        [RelayCommand(CanExecute = nameof(CamCreateImportExcelFile))]
         private void CreatePurchaseImportExcelFile()
         {
             SaveFileDialog saveFileDialog = new()
@@ -230,7 +230,52 @@ namespace DatPhatAcc.ViewModels
             bool success = misaHelper.Purchase.CreatePurchaseImportExcelFile(templateFilePath, saveFilePath);
             if (success)
                 MessageBox.Show("Tạo file excel thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
 
+        [RelayCommand(CanExecute = nameof(CamCreateImportExcelFile))]
+        private void CreateImportGoodsExcelFile()
+        {
+            SaveFileDialog saveFileDialog = new()
+            {
+                Filter = "Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true
+            };
+
+            if (saveFileDialog.ShowDialog() == false)
+            {
+                return;
+            }
+
+            string saveFilePath = saveFileDialog.FileName;
+
+            MisaHelper.MisaHelper misaHelper = new();
+            misaHelper.Purchase.PurchaseImportData.InvoiceNumber = "0";
+
+            //misaHelper.Purchase.PurchaseImportData.ImportProducts = new List<MisaHelper.Models.ImportProduct>();
+            foreach (TempTransDetailDTO product in TempTransDetailDTOs)
+            {
+                misaHelper.Purchase.PurchaseImportData.ImportProducts.Add(new MisaHelper.Models.ImportProduct
+                {
+                    ProductId = product.GoodId,
+                    Quantity = (double)product.Quantity,
+                    Price = (double)product.Price,
+                    TotalPrice = (double)product.TotalPrice,
+                    VatRate = (double)product.VatValue,
+                    VatAmount = (double)product.VatAmount
+                });
+            }
+
+            string templateFilePath = "Resources\\MisaExcelTemplates\\Nhap_hang_qua_kho_VND.xlsx";
+            if (!System.IO.File.Exists(templateFilePath))
+            {
+                MessageBox.Show("Không tìm thấy file excel template");
+                return;
+            }
+
+            bool success = misaHelper.Purchase.CreatePurchaseImportExcelFile(templateFilePath, saveFilePath);
+            if (success)
+                MessageBox.Show("Tạo file excel thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
     }
