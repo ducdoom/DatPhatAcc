@@ -16,13 +16,13 @@ namespace DatPhatAcc.ViewModels
 {
     public partial class SyncPurchaseViewModel : ObservableObject
     {
-        private ShareViewModel _shareViewModel;
-        private AccountingService accountingService = new();
+        private readonly ShareViewModel _shareViewModel;
+        private readonly AccountingService accountingService;
 
 
-        public SyncPurchaseViewModel(ShareViewModel shareViewModel)
+        public SyncPurchaseViewModel(AccountingService accountingService)
         {
-            _shareViewModel = shareViewModel;
+            this.accountingService = accountingService;
             Init();
         }
 
@@ -30,12 +30,11 @@ namespace DatPhatAcc.ViewModels
         {
             LoadCustomersAsync().SafeFireAndForget();
             Task loadTransTypesTask = LoadTransTypesAsync();
-            Task loadListVatsTask = LoadListVatsAsync();
 
             await loadTransTypesTask;
             SelectedTransTypes = TransTypes.First(trantype => trantype.TransCode.Equals("01"));
 
-            await loadListVatsTask;
+            LoadListVats();
             SelectedListVat = ListVats.First(listVat => listVat.VatValue.Equals(10));
         }
 
@@ -67,7 +66,7 @@ namespace DatPhatAcc.ViewModels
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(CreateImportGoodsExcelFileCommand))]
-        [NotifyCanExecuteChangedFor(nameof(CreatePurchaseImportExcelFileCommand))]        
+        [NotifyCanExecuteChangedFor(nameof(CreatePurchaseImportExcelFileCommand))]
         private ObservableCollection<TempTransDetailDTO> tempTransDetailDTOs = new();
 
         [ObservableProperty]
@@ -104,9 +103,18 @@ namespace DatPhatAcc.ViewModels
             TransTypes = new ObservableCollection<TransType>(transTypes);
         }
 
-        private async Task LoadListVatsAsync()
+        private void LoadListVats()
         {
-            var listVats = await accountingService.GetListVatsAsync();
+            //var listVats = await accountingService.GetListVatsAsync();
+            List<ListVat> listVats = new()
+            {
+                new ListVat {VatId = "1", VatValue = 0,  VatName = "0" },
+                new ListVat {VatId = "2", VatValue = 5,  VatName = "5" },
+                new ListVat {VatId = "3", VatValue = 8, VatName = "8" },
+                new ListVat {VatId = "4", VatValue = 10, VatName = "10" },
+                new ListVat {VatId = "5", VatValue = 0, VatName = "K" },
+            };
+
             ListVats = new ObservableCollection<ListVat>(listVats);
         }
 
@@ -133,7 +141,7 @@ namespace DatPhatAcc.ViewModels
             }
         }
 
-        [RelayCommand]        
+        [RelayCommand]
         private void AddTransDetailToTemp(TransDetailDTO transDetailDTO)
         {
             TempTransDetailDTO newTransDetail = new();
@@ -172,7 +180,7 @@ namespace DatPhatAcc.ViewModels
         {
             TempTransDetailDTOs.Clear();
         }
-        
+
         [RelayCommand(CanExecute = nameof(CanRecalculateTotalPrice))]
         private void ReCalculateTotalPrice()
         {
@@ -275,7 +283,7 @@ namespace DatPhatAcc.ViewModels
                 {
                     ProductId = product.GoodId,
                     ProductName = product.ShortName,
-                    Unit = accountingService.GetUnitNameByGoodId(product.GoodId)
+                    Unit = AccountingService.GetUnitNameByGoodId(product.GoodId)
                 };
 
                 misaVTHHs.Add(misaVTHH);

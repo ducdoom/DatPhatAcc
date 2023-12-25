@@ -76,10 +76,10 @@ namespace DatPhatAcc.Services
                 .Where(x => transactionOverviews.Select(x => x.TransactionId).Contains(x.TransactionId))
                 .Join(accountingContext.Goods, transDetail => transDetail.GoodId, good => good.GoodId,
                 (transDetail, good) => new TransDetailDTO()
-                {                    
+                {
                     GoodId = transDetail.GoodId,
                     ShortName = good.ShortName,
-                    Quantity = transDetail.Quantity ?? 0,                  
+                    Quantity = transDetail.Quantity ?? 0,
                     TotalPriceVat = (transaction.TransCode.Equals("01") ? transDetail.TotalImpPriceVat : transDetail.TotalExpPriceVat) ?? 0
                 })
                 .GroupBy(x => new { x.GoodId, x.ShortName })
@@ -96,22 +96,32 @@ namespace DatPhatAcc.Services
             return transDetails;
         }
 
-        public string GetUnitNameByGoodId(string  goodId)
+        public static string GetUnitNameByGoodId(string goodId)
         {
             ACCOUNTINGContext aCCOUNTINGContext = new();
             Good? good = aCCOUNTINGContext.Goods.FirstOrDefault(x => x.GoodId.Equals(goodId));
-            if(good is null)
+            if (good is null)
             {
                 return string.Empty;
             }
 
-            string? unitName = aCCOUNTINGContext.Units.FirstOrDefault(x => x.UnitId.Equals(good.UnitId))?.UnitName;            
-            if(unitName is null)
+            string? unitName = aCCOUNTINGContext.Units.FirstOrDefault(x => x.UnitId.Equals(good.UnitId))?.UnitName;
+            if (unitName is null)
             {
                 return string.Empty;
             }
 
             return unitName;
+        }
+
+        public static async Task<IEnumerable<TransDetailDTO>> GetRetailTrans(string tranIds)
+        {
+            List<string> tranIdList = tranIds.Split(',').ToList();     
+
+            using Accounting_LTTDbContext.ACCOUNTING_LTTContext accounting_LTTContext = new();
+            var retailTrans = await accounting_LTTContext.RetailTranDetails.Where(x => tranIds.Contains(x.TransactionId)).ToArrayAsync().ConfigureAwait(false);
+
+            return null;
         }
     }
 }

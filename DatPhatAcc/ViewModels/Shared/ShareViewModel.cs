@@ -9,10 +9,6 @@ namespace DatPhatAcc.ViewModels.Shared
 {
     public partial class ShareViewModel: ObservableObject
     {
-        [ObservableProperty]
-        private DateTime thanhCongStartDate = DateTime.Now;
 
-        [ObservableProperty]
-        private DateTime thanhCongEndDate = DateTime.Now;
     }
 }

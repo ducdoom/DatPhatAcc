@@ -25,6 +25,8 @@ namespace DatPhatAcc
             services.AddSingleton<SettingViewModel>();
             services.AddSingleton<ShareViewModel>();
 
+            services.AddSingleton<AccountingService>();
+
             services.AddSingleton<MainWindow>(x => new MainWindow()
             {
                 DataContext = x.GetRequiredService<MainViewModel>()

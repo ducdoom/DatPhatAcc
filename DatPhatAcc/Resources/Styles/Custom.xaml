@@ -17,6 +17,8 @@
 
 
     <Style TargetType="Button">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="Height" Value="{StaticResource ControlHeight}" />
         <Setter Property="Margin" Value="{StaticResource DefaultMargin}" />
         <Setter Property="Cursor" Value="Hand" />
