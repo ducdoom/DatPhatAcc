@@ -105,5 +105,7 @@ namespace DatPhatAcc.Models.DTO
             //    OnPropertyChanged(nameof(Price));
             //}
         }
+
+        public decimal Discount { get; set; } = 0;
     }
 }

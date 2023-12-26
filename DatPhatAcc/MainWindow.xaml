@@ -26,8 +26,8 @@
             </MenuItem>
 
             <MenuItem Header="Giao dịch">
-                <MenuItem Command="{Binding NavigateToSyncPurchaseViewCommand}" Header="Nhập hàng" />
-                <MenuItem Command="{Binding NavigateToSyncRetailTransViewCommand}" Header="Xuất bill siêu thị" />
+                <MenuItem Command="{Binding NavigateToSyncPurchaseViewCommand}" Header="Đồng bộ giao dịch nhập xuất" />
+                <MenuItem Command="{Binding NavigateToSyncRetailTransViewCommand}" Header="Đồng bộ bill siêu thị LTT" />
             </MenuItem>
 
             <MenuItem Command="{Binding NavigateToSettingCommand}" Header="Hóa đơn" />

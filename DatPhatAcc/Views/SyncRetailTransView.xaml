@@ -3,6 +3,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:DatPhatAcc.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,11 +16,18 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <TextBox Width="600" Text="{Binding TransactionIds}" />
+        <StackPanel Orientation="Horizontal">
+            <RadioButton />
+            <RadioButton />
+            <RadioButton />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <TextBox Width="600" Text="{Binding TransactionIds, UpdateSourceTrigger=PropertyChanged}" />
             <Button Command="{Binding GetRetailTransCommand}">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconFontAwesome
@@ -27,8 +36,81 @@
                         Foreground="{StaticResource Primary}"
                         Kind="SearchSolid" />
                     <TextBlock Margin="4,0,0,0" Text="Tìm kiếm" />
+
                 </StackPanel>
             </Button>
+            <ComboBox
+                Width="80"
+                ItemsSource="{Binding ListVats}"
+                SelectedItem="{Binding SelectedListVat}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Grid.Column="0" Text="{Binding VatName}" />
+                            <TextBlock Grid.Column="1" Text=" %" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
         </StackPanel>
+
+        <Grid Grid.Row="2">
+            <dxg:GridControl Grid.Row="1" ItemsSource="{Binding TransDetailDTOs}">
+                <dxg:GridControl.View>
+                    <dxg:TableView
+                        ShowCheckBoxSelectorColumn="True"
+                        ShowGroupPanel="False"
+                        ShowSearchPanelMode="Never" />
+                </dxg:GridControl.View>
+
+                <dxg:GridControl.TotalSummary>
+                    <dxg:GridSummaryItem
+                        CalculationMode="Mixed"
+                        DisplayFormat="{}{0:N0}"
+                        FieldName="TotalPrice"
+                        SummaryType="Sum" />
+                    <dxg:GridSummaryItem
+                        CalculationMode="Mixed"
+                        DisplayFormat="{}{0:N0}"
+                        FieldName="TotalPriceVat"
+                        SummaryType="Sum" />
+                </dxg:GridControl.TotalSummary>
+
+                <dxg:GridColumn
+                    AllowEditing="False"
+                    FieldName="GoodId"
+                    Header="Mã hàng"
+                    Style="{StaticResource ContainsFilter}" />
+                <dxg:GridColumn
+                    AllowEditing="False"
+                    FieldName="ShortName"
+                    Header="Tên hàng"
+                    Style="{StaticResource ContainsFilter}" />
+
+                <dxg:GridColumn FieldName="Quantity" Header="Số lượng">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N0" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="Price" Header="Đơn giá">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N0" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="TotalPrice" Header="Thành tiền">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N0" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="VatValue" Header="Vat" />
+                <dxg:GridColumn FieldName="TotalPriceVat" Header="Thành tiền VAT">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N0" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+
+
+            </dxg:GridControl>
+        </Grid>
     </Grid>
 </UserControl>

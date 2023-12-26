@@ -16,13 +16,14 @@ namespace DatPhatAcc.ViewModels
 {
     public partial class SyncPurchaseViewModel : ObservableObject
     {
-        private readonly ShareViewModel _shareViewModel;
+        private readonly ShareViewModel shareViewModel;
         private readonly AccountingService accountingService;
 
 
-        public SyncPurchaseViewModel(AccountingService accountingService)
+        public SyncPurchaseViewModel(AccountingService accountingService, ShareViewModel shareViewModel)
         {
             this.accountingService = accountingService;
+            this.shareViewModel = shareViewModel;
             Init();
         }
 
@@ -106,16 +107,7 @@ namespace DatPhatAcc.ViewModels
         private void LoadListVats()
         {
             //var listVats = await accountingService.GetListVatsAsync();
-            List<ListVat> listVats = new()
-            {
-                new ListVat {VatId = "1", VatValue = 0,  VatName = "0" },
-                new ListVat {VatId = "2", VatValue = 5,  VatName = "5" },
-                new ListVat {VatId = "3", VatValue = 8, VatName = "8" },
-                new ListVat {VatId = "4", VatValue = 10, VatName = "10" },
-                new ListVat {VatId = "5", VatValue = 0, VatName = "K" },
-            };
-
-            ListVats = new ObservableCollection<ListVat>(listVats);
+            ListVats = shareViewModel.ListVats;
         }
 
         [RelayCommand]
