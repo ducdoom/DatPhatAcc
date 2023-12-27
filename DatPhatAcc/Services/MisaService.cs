@@ -8,6 +8,11 @@ namespace DatPhatAcc.Services
 {
     public class MisaService
     {
+        public MisaService()
+        {
+            
+        }
+
 
     }
 }

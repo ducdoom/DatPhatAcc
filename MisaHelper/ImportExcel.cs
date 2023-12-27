@@ -40,5 +40,10 @@ namespace MisaHelper
                 return false;            
             }
         }
+
+        public bool CreateFileImportBanHang(IEnumerable<Models.MisaVTHH> misaVTHHs, string saveFile)
+        {
+
+        }
     }
 }

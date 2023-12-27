@@ -1,5 +1,4 @@
-﻿using DatPhatAcc.Accounting_LTTDbContext;
-using DatPhatAcc.AccountingDbContext;
+﻿using DatPhatAcc.AccountingDbContext;
 using DatPhatAcc.Converters;
 using DatPhatAcc.Models.DTO;
 using DevExpress.Mvvm.Native;
@@ -9,7 +8,6 @@ namespace DatPhatAcc.Services
 {
     public class AccountingService
     {
-        //private AccountingDbContext.ACCOUNTINGContext _accountingContext;
         public AccountingService()
         {
 
@@ -122,7 +120,7 @@ namespace DatPhatAcc.Services
             using Accounting_LTTDbContext.ACCOUNTING_LTTContext accounting_LTTContext = new();
             var retailTrans = await accounting_LTTContext.RetailTranDetails
                 .Where(x => tranIds.Contains(x.TransactionId))
-                .Join(accounting_LTTContext.Goods, retailTran => retailTran.GoodId, good=> good.GoodId , (retailTran, good) => new TransDetailDTO
+                .Join(accounting_LTTContext.Goods, retailTran => retailTran.GoodId, good => good.GoodId, (retailTran, good) => new TransDetailDTO
                 {
                     GoodId = retailTran.GoodId,
                     ShortName = good.ShortName,
@@ -162,7 +160,7 @@ namespace DatPhatAcc.Services
             return retailTrans;
         }
 
-        public async Task<IEnumerable<TransDetailDTO>> GetRetailTrans2(string tranIds)
+        public async Task<IEnumerable<TransDetailDTO>> GetRetailTransByTransactionId(string tranIds)
         {
             List<string> tranIdList = tranIds.Split(',').ToList();
 
@@ -212,5 +210,69 @@ namespace DatPhatAcc.Services
 
             return finalResults;
         }
+
+        public async Task<IEnumerable<TransDetailDTO>> GetRetailTransByDate(DateTime fromDate, DateTime toDate)
+        {
+            using Accounting_LTTDbContext.ACCOUNTING_LTTContext accounting_LTTContext = new();
+
+            string fromDateString = fromDate.ToString("yyyyMMdd");
+            string toDateString = toDate.ToString("yyyyMMdd");
+
+            // Get list of retail transactionsId
+            var retailTranIds = accounting_LTTContext.RetailTrans
+                .AsNoTracking()
+                .Where(rt => string.Compare(rt.TransDate, fromDateString) >= 0
+                    && string.Compare(rt.TransDate, toDateString) <= 0
+                    && rt.Status.Equals("1")
+                    && rt.TransCode.Equals("03"))
+
+                .Select(rt => rt.TransactionId)
+                .ToArray();
+
+            // Query for retail transactions with AsNoTracking for better performance
+            var retailTransQuery = accounting_LTTContext.RetailTranDetails
+                .AsNoTracking()
+                .Where(rtd => retailTranIds.Contains(rtd.TransactionId))
+                .Join(accounting_LTTContext.Goods.AsNoTracking(), retailTran => retailTran.GoodId, good => good.GoodId, (retailTran, good) => new
+                {
+                    retailTran.GoodId,
+                    good.ShortName,
+                    retailTran.Quantity,
+                    retailTran.TotalExpPriceVat
+                });
+
+            // Query for discounts with AsNoTracking
+            var discountsQuery = accounting_LTTContext.TransactionDiscountDetails
+                .AsNoTracking()
+                .Where(rtd => retailTranIds.Contains(rtd.TransactionId))
+                .GroupBy(x => x.FullGoodId)
+                .Select(group => new
+                {
+                    GoodId = group.Key,
+                    DiscountAmount = group.Sum(x => x.DiscountAmount)
+                });
+
+            // Execute the queries asynchronously
+            var retailTransResults = await retailTransQuery.ToListAsync().ConfigureAwait(false);
+            var discounts = await discountsQuery.ToListAsync().ConfigureAwait(false);
+
+            // Combine and process the results
+            var finalResults = retailTransResults
+                .GroupBy(x => x.GoodId)
+                .Select(group =>
+                {
+                    var discount = discounts.FirstOrDefault(d => d.GoodId == group.Key)?.DiscountAmount ?? decimal.Zero;
+                    return new TransDetailDTO
+                    {
+                        GoodId = group.Key,
+                        ShortName = group.First().ShortName,
+                        Quantity = group.Sum(x => x.Quantity ?? 0),
+                        TotalPriceVat = group.Sum(x => x.TotalExpPriceVat ?? decimal.Zero) - discount
+                    };
+                });
+
+            return finalResults;
+        }
+
     }
 }

@@ -24,6 +24,23 @@
             <RadioButton />
             <RadioButton />
             <RadioButton />
+
+            <TextBlock Margin="5,0,5,0" Text="Từ ngày:" />
+            <dxe:DateEdit DateTime="{Binding FromDate}" />
+            <TextBlock Margin="5,0,5,0" Text="Đến ngày:" />
+            <dxe:DateEdit DateTime="{Binding ToDate}" />
+
+            <Button Command="{Binding GetRetailTransByDateCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconFontAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource Primary}"
+                        Kind="SearchSolid" />
+                    <TextBlock Margin="4,0,0,0" Text="Tài dữ liệu bán lẻ" />
+
+                </StackPanel>
+            </Button>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">
@@ -64,6 +81,11 @@
                 </dxg:GridControl.View>
 
                 <dxg:GridControl.TotalSummary>
+                    <dxg:GridSummaryItem
+                        CalculationMode="Mixed"
+                        DisplayFormat="{}{0:N0}"
+                        FieldName="Quantity"
+                        SummaryType="Sum" />
                     <dxg:GridSummaryItem
                         CalculationMode="Mixed"
                         DisplayFormat="{}{0:N0}"

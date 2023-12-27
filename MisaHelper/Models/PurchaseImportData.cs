@@ -2,7 +2,7 @@
 {
     public class PurchaseImportData
     {
-        private DateTime MISA_START_DATE = new(2024, 1, 1);
+        private readonly DateTime MISA_START_DATE = new(2024, 1, 1);
         public DateTime TransactionDate => DateTime.Now > MISA_START_DATE ? DateTime.Now : MISA_START_DATE;
         public string TransactionNumber => $"NK{DateTime.Now:yyyyMMddHHmmss}";
         public string InvoiceNumber { get; set; } = "0";

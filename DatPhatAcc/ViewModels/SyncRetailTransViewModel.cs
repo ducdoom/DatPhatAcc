@@ -5,6 +5,7 @@ using DatPhatAcc.Models.DTO;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace DatPhatAcc.ViewModels
 {
@@ -24,6 +25,11 @@ namespace DatPhatAcc.ViewModels
             ListVats = shareViewModel.ListVats;
             SelectedListVat = ListVats.First(listVat => listVat.VatValue.Equals(10));
         }
+
+        [ObservableProperty]
+        private DateTime fromDate = DateTime.Now;
+        [ObservableProperty]
+        private DateTime toDate = DateTime.Now;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(GetRetailTransCommand))]
@@ -47,7 +53,7 @@ namespace DatPhatAcc.ViewModels
         [RelayCommand(CanExecute = nameof(CanGetRetailTrans))]
         private async Task GetRetailTrans()
         {
-            var retailTrans = await accountingService.GetRetailTrans2(TransactionIds);
+            var retailTrans = await accountingService.GetRetailTransByTransactionId(TransactionIds);
             TransDetailDTOs = new ObservableCollection<TransDetailDTO>(retailTrans);
             SetAllVatValue();
         }
@@ -58,6 +64,14 @@ namespace DatPhatAcc.ViewModels
             {
                 item.VatValue = SelectedListVat.VatValue;
             }
+        }
+
+        [RelayCommand]
+        private async Task GetRetailTransByDate()
+        {
+            var retailTrans = await accountingService.GetRetailTransByDate(FromDate, ToDate);
+            TransDetailDTOs = new ObservableCollection<TransDetailDTO>(retailTrans);
+            SetAllVatValue();
         }
     }
 }
