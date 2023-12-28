@@ -13,6 +13,12 @@ namespace DatPhatAcc.Services
             
         }
 
+        public async Task GetInventoryItemBalance()
+        {
+            MisaDbContext.MisaDbContext context= new();
+            
+        }
+
 
     }
 }
