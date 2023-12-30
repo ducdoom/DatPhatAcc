@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DatPhatAcc.Converters
 {
@@ -12,5 +9,17 @@ namespace DatPhatAcc.Converters
         {
             return dateTime.ToString("yyyyMMdd");
         }
+
+        public static DateTime ToStartOfDate(this DateTime dateTime)
+        {
+            return dateTime.Date;
+        }
+
+        public static DateTime ToEndOfDate(this DateTime dateTime)
+        {
+            return dateTime.Date.AddDays(1).AddSeconds(-1);
+        }
     }
+
+    
 }

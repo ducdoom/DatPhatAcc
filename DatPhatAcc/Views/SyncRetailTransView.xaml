@@ -37,8 +37,7 @@
                         VerticalAlignment="Center"
                         Foreground="{StaticResource Primary}"
                         Kind="SearchSolid" />
-                    <TextBlock Margin="4,0,0,0" Text="Tài dữ liệu bán lẻ" />
-
+                    <TextBlock Margin="4,0,0,0" Text="Tải dữ liệu bán lẻ" />
                 </StackPanel>
             </Button>
         </StackPanel>

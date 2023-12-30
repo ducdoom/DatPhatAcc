@@ -29,9 +29,9 @@ namespace DatPhatAcc.ViewModels
         }
 
         [RelayCommand]
-        private void NavigateToSetting()
+        private void NavigateToReportInventoryView()
         {
-            NavigationService.Navigate<SettingViewModel>();
+            NavigationService.Navigate<ReportInventoryViewModel>();
         }
 
         [RelayCommand]

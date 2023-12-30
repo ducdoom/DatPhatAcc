@@ -30,7 +30,9 @@
                 <MenuItem Command="{Binding NavigateToSyncRetailTransViewCommand}" Header="Đồng bộ bill siêu thị LTT" />
             </MenuItem>
 
-            <MenuItem Command="{Binding NavigateToSettingCommand}" Header="Hóa đơn" />
+            <MenuItem Header="Báo cáo">
+                <MenuItem Command="{Binding NavigateToReportInventoryViewCommand}" Header="Tồn kho" />
+            </MenuItem>
         </Menu>
 
         <ContentPresenter Grid.Column="1" Content="{Binding NavigationService.CurrentView}" />

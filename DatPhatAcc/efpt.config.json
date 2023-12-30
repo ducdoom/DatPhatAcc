@@ -1,6 +1,6 @@
 ﻿{
    "CodeGenerationMode": 3,
-   "ContextClassName": "MisaDbContext",
+   "ContextClassName": "AAMisaDbContext",
    "ContextNamespace": null,
    "DefaultDacpacSchema": null,
    "FilterSchemas": false,
@@ -2805,7 +2805,7 @@
    "UseNoNavigations": false,
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
-   "UseNullableReferences": false,
+   "UseNullableReferences": true,
    "UseSchemaFolders": false,
    "UseSchemaNamespaces": false,
    "UseSpatial": false,

@@ -298,7 +298,7 @@
                                         </StackPanel>
                                     </Button>
 
-                                    <Button Command="{Binding CreateImportGoodsExcelFileCommand}" IsEnabled="{Binding CreateImportGoodsExcelFileCommand.ExecutionTask}">
+                                    <Button Command="{Binding CreateImportGoodsExcelFileCommand}">
                                         <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
                                             <iconPacks:PackIconFontAwesome
                                                 HorizontalAlignment="Center"

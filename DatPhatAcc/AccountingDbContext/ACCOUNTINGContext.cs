@@ -18,6 +18,7 @@ public partial class ACCOUNTINGContext : DbContext
     {
     }
 
+    #region DbSets
     public virtual DbSet<AccReportOption> AccReportOptions { get; set; }
 
     public virtual DbSet<AccRptCircular> AccRptCirculars { get; set; }
@@ -427,6 +428,9 @@ public partial class ACCOUNTINGContext : DbContext
     public virtual DbSet<ZzHrmstaffCriteriaInfor> ZzHrmstaffCriteriaInfors { get; set; }
 
     public virtual DbSet<ZzHrmstaffInfor> ZzHrmstaffInfors { get; set; }
+
+    #endregion
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
