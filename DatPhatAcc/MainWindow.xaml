@@ -6,6 +6,7 @@
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:local="clr-namespace:DatPhatAcc"
     xmlns:mainview="clr-namespace:DatPhatAcc.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:DatPhatAcc.ViewModels"
     Title="Thành Công - Misa"
@@ -13,13 +14,14 @@
     Height="800"
     d:DataContext="{d:DesignInstance Type={x:Type viewmodels:MainViewModel}}"
     Background="{StaticResource BackgroundColor}"
+    FontFamily="{materialDesign:MaterialDesignFont}"
     WindowStartupLocation="CenterScreen"
     WindowState="Maximized"
     mc:Ignorable="d">
 
 
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
+        <Menu Background="#CFC5FF" DockPanel.Dock="Top">
             <MenuItem Header="Hệ thống">
                 <MenuItem Command="{Binding RestartAppCommand}" Header="Khởi động lại" />
                 <MenuItem Command="{Binding ExitAppCommand}" Header="Thoát" />

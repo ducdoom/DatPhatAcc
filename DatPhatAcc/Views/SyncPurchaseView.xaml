@@ -7,6 +7,7 @@
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:DatPhatAcc.ViewModels"
     d:DataContext="{d:DesignInstance Type={x:Type viewmodels:SyncPurchaseViewModel}}"
@@ -25,7 +26,7 @@
         <Grid Grid.Row="0">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="38" />
+                    <RowDefinition Height="50" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
@@ -41,14 +42,16 @@
                     </StackPanel.Resources>
 
                     <TextBlock Margin="5,0,5,0" Text="Từ ngày:" />
-                    <dxe:DateEdit DateTime="{Binding FromDate}" />
+                    <dxe:DateEdit Margin="{StaticResource DefaultMargin}" DateTime="{Binding FromDate}" />
                     <TextBlock Margin="5,0,5,0" Text="Đến ngày:" />
-                    <dxe:DateEdit DateTime="{Binding ToDate}" />
-                    <TextBlock Margin="10,0,5,0" Text="Loại giao dịch" />
+                    <dxe:DateEdit Margin="{StaticResource DefaultMargin}" DateTime="{Binding ToDate}" />
                     <ComboBox
-                        Width="210"
+                        Width="300"
+                        Margin="{StaticResource DefaultMargin}"
+                        materialDesign:HintAssist.Hint="Loại giao dịch"
                         ItemsSource="{Binding TransTypes}"
-                        SelectedItem="{Binding SelectedTransTypes}">
+                        SelectedItem="{Binding SelectedTransTypes}"
+                        Style="{StaticResource PrimaryCombobox}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -59,12 +62,16 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <Button Command="{Binding SearchTransactionOverviewCommand}">
+                    <Button
+                        materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                        materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding SearchTransactionOverviewCommand.IsRunning}"
+                        materialDesign:ButtonProgressAssist.Value="-1"
+                        Command="{Binding SearchTransactionOverviewCommand}"
+                        Style="{StaticResource PrimaryButton}">
                         <StackPanel Orientation="Horizontal">
                             <iconPacks:PackIconFontAwesome
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Foreground="{StaticResource Primary}"
                                 Kind="SearchSolid" />
                             <TextBlock Margin="4,0,0,0" Text="Tìm kiếm" />
                         </StackPanel>
@@ -157,7 +164,7 @@
             <GroupBox Grid.Column="0" Header="Chi tiết giao dịch">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="38" />
+                        <RowDefinition Height="60" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0">
@@ -166,11 +173,12 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Orientation="Horizontal">
-                            <TextBlock Margin="{StaticResource DefaultMargin}" Text="Vat" />
                             <ComboBox
-                                Width="80"
+                                Width="50"
+                                materialDesign:HintAssist.Hint="Vat"
                                 ItemsSource="{Binding ListVats}"
-                                SelectedItem="{Binding SelectedListVat}">
+                                SelectedItem="{Binding SelectedListVat}"
+                                Style="{StaticResource PrimaryCombobox}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -180,18 +188,21 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <Button Command="{Binding GetTranDetailCommand}" Content="Xem chi tiết" />
+                            <Button
+                                Margin="{StaticResource DefaultMargin}"
+                                Command="{Binding GetTranDetailCommand}"
+                                Content="Xem chi tiết"
+                                Style="{StaticResource PrimaryButton}" />
                         </StackPanel>
                         <StackPanel
                             Grid.Column="1"
                             FlowDirection="RightToLeft"
                             Orientation="Horizontal">
-                            <Button Command="{Binding AddAllTransDetailToTempCommand}">
+                            <Button Command="{Binding AddAllTransDetailToTempCommand}" Style="{StaticResource PrimaryButton}">
                                 <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
                                     <iconPacks:PackIconFontAwesome
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Foreground="{StaticResource Success}"
                                         Kind="PlusCircleSolid" />
                                     <TextBlock Margin="5,0,0,0" Text="Chọn tất cả" />
                                 </StackPanel>
@@ -249,7 +260,10 @@
                         <dxg:GridColumn>
                             <dxg:GridColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Command="{Binding DataContext.AddTransDetailToTempCommand, RelativeSource={RelativeSource AncestorType={x:Type dxg:GridControl}}}" CommandParameter="{Binding RowData.Row}">
+                                    <Button
+                                        Command="{Binding DataContext.AddTransDetailToTempCommand, RelativeSource={RelativeSource AncestorType={x:Type dxg:GridControl}}}"
+                                        CommandParameter="{Binding RowData.Row}"
+                                        Style="{x:Null}">
                                         <iconPacks:PackIconFontAwesome
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
@@ -267,19 +281,25 @@
             <GroupBox Grid.Column="1" Header="Bảng tạm">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="38" />
+                        <RowDefinition Height="60" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <DockPanel Grid.Row="0">
 
                         <StackPanel Grid.Column="0" Orientation="Horizontal">
-                            <TextBox Width="130" Text="{Binding InvoiceTotalAmount, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button Command="{Binding ReCalculateTotalPriceCommand}">
+                            <TextBox
+                                Width="100"
+                                materialDesign:HintAssist.Hint="Số tiền trước thuế"
+                                Style="{StaticResource PrimaryTextBox}"
+                                Text="{Binding InvoiceTotalAmount, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Margin="{StaticResource DefaultMargin}"
+                                Command="{Binding ReCalculateTotalPriceCommand}"
+                                Style="{StaticResource PrimaryButton}">
                                 <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
                                     <iconPacks:PackIconFontAwesome
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Foreground="{StaticResource Primary}"
                                         Kind="CalculatorSolid" />
                                     <TextBlock Margin="5,0,0,0" Text="Tính lại tổng tiền" />
                                 </StackPanel>
@@ -287,7 +307,7 @@
 
                             <dx:DropDownButton Content="Kết xuất">
                                 <StackPanel Orientation="Vertical">
-                                    <Button Command="{Binding CreatePurchaseImportExcelFileCommand}">
+                                    <Button Command="{Binding CreatePurchaseImportExcelFileCommand}" Style="{StaticResource NormalButton}">
                                         <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
                                             <iconPacks:PackIconFontAwesome
                                                 HorizontalAlignment="Center"
@@ -298,7 +318,10 @@
                                         </StackPanel>
                                     </Button>
 
-                                    <Button Command="{Binding CreateImportGoodsExcelFileCommand}">
+                                    <Button
+                                        HorizontalAlignment="Stretch"
+                                        Command="{Binding CreateImportGoodsExcelFileCommand}"
+                                        Style="{StaticResource NormalButton}">
                                         <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
                                             <iconPacks:PackIconFontAwesome
                                                 HorizontalAlignment="Center"
@@ -309,7 +332,8 @@
                                         </StackPanel>
                                     </Button>
 
-                                    
+
+
                                 </StackPanel>
                             </dx:DropDownButton>
 
@@ -322,12 +346,11 @@
                             Grid.Column="1"
                             FlowDirection="RightToLeft"
                             Orientation="Horizontal">
-                            <Button Command="{Binding RemoveAllTransDetailFromTempCommand}">
+                            <Button Command="{Binding RemoveAllTransDetailFromTempCommand}" Style="{StaticResource PrimaryButton}">
                                 <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
                                     <iconPacks:PackIconFontAwesome
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Foreground="{StaticResource Danger}"
                                         Kind="MinusCircleSolid" />
                                     <TextBlock Margin="5,0,0,0" Text="Xóa tất cả" />
                                 </StackPanel>
@@ -390,7 +413,10 @@
                         <dxg:GridColumn>
                             <dxg:GridColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Command="{Binding DataContext.RemoveTransDetailFromTempCommand, RelativeSource={RelativeSource AncestorType={x:Type dxg:GridControl}}}" CommandParameter="{Binding RowData.Row}">
+                                    <Button
+                                        Command="{Binding DataContext.RemoveTransDetailFromTempCommand, RelativeSource={RelativeSource AncestorType={x:Type dxg:GridControl}}}"
+                                        CommandParameter="{Binding RowData.Row}"
+                                        Style="{x:Null}">
                                         <iconPacks:PackIconFontAwesome
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"

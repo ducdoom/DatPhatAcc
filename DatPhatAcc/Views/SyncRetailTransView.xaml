@@ -7,6 +7,7 @@
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:DatPhatAcc.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:DatPhatAcc.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewmodels:SyncRetailTransViewModel}"
@@ -20,7 +21,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Margin="{StaticResource DefaultMargin}" Orientation="Horizontal">
             <RadioButton />
             <RadioButton />
             <RadioButton />
@@ -30,32 +31,39 @@
             <TextBlock Margin="5,0,5,0" Text="Đến ngày:" />
             <dxe:DateEdit DateTime="{Binding ToDate}" />
 
-            <Button Command="{Binding GetRetailTransByDateCommand}">
+            <Button
+                Margin="{StaticResource DefaultMargin}"
+                Command="{Binding GetRetailTransByDateCommand}"
+                Style="{StaticResource PrimaryButton}">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconFontAwesome
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Foreground="{StaticResource Primary}"
                         Kind="SearchSolid" />
                     <TextBlock Margin="4,0,0,0" Text="Tải dữ liệu bán lẻ" />
                 </StackPanel>
             </Button>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <TextBox Width="600" Text="{Binding TransactionIds, UpdateSourceTrigger=PropertyChanged}" />
-            <Button Command="{Binding GetRetailTransCommand}">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="{StaticResource DefaultMargin}">
+            <TextBox materialDesign:HintAssist.Hint="Nhập mã giao dịch (các cách nhau bởi dấu phẩy)"
+                Width="600"
+                Style="{StaticResource PrimaryTextBox}"
+                Text="{Binding TransactionIds, UpdateSourceTrigger=PropertyChanged}" />
+            <Button
+                Margin="{StaticResource DefaultMargin}"
+                Command="{Binding GetRetailTransCommand}"
+                Style="{StaticResource PrimaryButton}">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconFontAwesome
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Foreground="{StaticResource Primary}"
                         Kind="SearchSolid" />
                     <TextBlock Margin="4,0,0,0" Text="Tìm kiếm" />
 
                 </StackPanel>
             </Button>
-            <ComboBox
+            <ComboBox Style="{StaticResource PrimaryCombobox}" materialDesign:HintAssist.Hint="Vat"
                 Width="80"
                 ItemsSource="{Binding ListVats}"
                 SelectedItem="{Binding SelectedListVat}">
@@ -71,7 +79,7 @@
         </StackPanel>
 
         <Grid Grid.Row="2">
-            <dxg:GridControl Grid.Row="1" ItemsSource="{Binding TransDetailDTOs}">
+            <dxg:GridControl Margin="{StaticResource DefaultMargin}" Grid.Row="1" ItemsSource="{Binding TransDetailDTOs}">
                 <dxg:GridControl.View>
                     <dxg:TableView
                         ShowCheckBoxSelectorColumn="True"

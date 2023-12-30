@@ -7,26 +7,36 @@
     xmlns:sys="clr-namespace:System;assembly=netstandard">
 
 
-    <sys:Double x:Key="ControlHeight">26</sys:Double>
+    <sys:Double x:Key="ControlHeight">36</sys:Double>
     <!--  defaul margin values variable  -->
-    <Thickness x:Key="DefaultMargin">3</Thickness>
+    <Thickness x:Key="DefaultMargin">10,0,10,0</Thickness>
 
     <Style TargetType="Control">
         <Setter Property="FontSize" Value="12" />
     </Style>
 
 
-    <Style TargetType="Button">
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
+    <Style
+        x:Key="PrimaryButton"
+        BasedOn="{StaticResource MaterialDesignRaisedButton}"
+        TargetType="Button">
         <Setter Property="Height" Value="{StaticResource ControlHeight}" />
-        <Setter Property="Margin" Value="{StaticResource DefaultMargin}" />
         <Setter Property="Cursor" Value="Hand" />
     </Style>
 
-    <Style TargetType="ComboBox">
+    <Style
+    x:Key="NormalButton"
+    TargetType="Button">
         <Setter Property="Height" Value="{StaticResource ControlHeight}" />
-        <Setter Property="Margin" Value="{StaticResource DefaultMargin}" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <Style
+        x:Key="PrimaryCombobox"
+        BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}"
+        TargetType="ComboBox">
+        <Setter Property="Height" Value="{StaticResource ControlHeight}" />
+        
     </Style>
 
 
@@ -60,7 +70,6 @@
         <Setter Property="MaskType" Value="DateTimeAdvancingCaret" />
         <Setter Property="MaskUseAsDisplayFormat" Value="True" />
         <Setter Property="Height" Value="{StaticResource ControlHeight}" />
-        <Setter Property="Margin" Value="{StaticResource DefaultMargin}" />
     </Style>
 
     <Style TargetType="GroupBox">
@@ -71,9 +80,11 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style TargetType="TextBox">
+    <Style
+        x:Key="PrimaryTextBox"
+        BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}"
+        TargetType="TextBox">
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Margin" Value="{StaticResource DefaultMargin}" />
         <Setter Property="Height" Value="{StaticResource ControlHeight}" />
     </Style>
 

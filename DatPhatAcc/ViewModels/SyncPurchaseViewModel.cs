@@ -37,9 +37,40 @@ namespace DatPhatAcc.ViewModels
 
             LoadListVats();
             SelectedListVat = ListVats.First(listVat => listVat.VatValue.Equals(10));
+
+            //event collection changed
+            SelectedCustomers.CollectionChanged += SelectedCustomers_CollectionChanged;
+            TempTransDetailDTOs.CollectionChanged += TempTransDetailDTOs_CollectionChanged;
+            SelectedTransactionOverviews.CollectionChanged += SelectedTransactionOverviews_CollectionChanged;
+            TransDetailDTOs.CollectionChanged += TransDetailDTOs_CollectionChanged;
+        }
+        #region Event Collection Changed
+
+        private void TransDetailDTOs_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            AddAllTransDetailToTempCommand.NotifyCanExecuteChanged();
         }
 
+        private void SelectedTransactionOverviews_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            GetTranDetailCommand.NotifyCanExecuteChanged();
+        }
 
+        private void SelectedCustomers_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            SearchTransactionOverviewCommand.NotifyCanExecuteChanged();
+        }
+
+        private void TempTransDetailDTOs_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            ReCalculateTotalPriceCommand.NotifyCanExecuteChanged();
+            CreateImportGoodsExcelFileCommand.NotifyCanExecuteChanged();
+            CreatePurchaseImportExcelFileCommand.NotifyCanExecuteChanged();
+            RemoveAllTransDetailFromTempCommand.NotifyCanExecuteChanged();
+        }
+        #endregion
+
+        #region Properties
         [ObservableProperty]
         private ObservableCollection<CustomerDTO> customers = new();
         [ObservableProperty]
@@ -62,6 +93,7 @@ namespace DatPhatAcc.ViewModels
         private ObservableCollection<TransactionOverview> selectedTransactionOverviews = new();
 
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(AddAllTransDetailToTempCommand))]
         private ObservableCollection<TransDetailDTO> transDetailDTOs = new();
 
 
@@ -91,68 +123,50 @@ namespace DatPhatAcc.ViewModels
                 SetAllVarTranDetails(value);
             }
         }
+        #endregion
 
-        private async Task LoadCustomersAsync()
-        {
-            var customerList = await accountingService.GetCustomers();
-            Customers = new ObservableCollection<CustomerDTO>(customerList);
-        }
-
-        private async Task LoadTransTypesAsync()
-        {
-            var transTypes = await accountingService.GetTransTypesAsync();
-            TransTypes = new ObservableCollection<TransType>(transTypes);
-        }
-
-        private void LoadListVats()
-        {
-            //var listVats = await accountingService.GetListVatsAsync();
-            ListVats = shareViewModel.ListVats;
-        }
-
-        [RelayCommand]
+        #region Commands
+        [RelayCommand(CanExecute = nameof(CanSearchTransactionOverview))]
         private async Task SearchTransactionOverview()
         {
             var transactionOverviews = await accountingService.SearchTransactionOverview(FromDate, ToDate, SelectedCustomers, SelectedTransTypes);
             TransactionOverviews = new ObservableCollection<TransactionOverview>(transactionOverviews);
         }
+        private bool CanSearchTransactionOverview()
+        {
+            return SelectedCustomers.Count > 0;
+        }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanGetTranDetail))]
         private async Task GetTranDetail()
         {
             var transDetailDTOs = await accountingService.GetTransDetailDTOsAsync(SelectedTransactionOverviews, SelectedListVat);
             TransDetailDTOs = new ObservableCollection<TransDetailDTO>(transDetailDTOs);
         }
-
-        private void SetAllVarTranDetails(ListVat listVat)
+        private bool CanGetTranDetail()
         {
-            foreach (var transDetailDTO in TransDetailDTOs)
-            {
-                transDetailDTO.VatValue = listVat.VatValue;
-                transDetailDTO.TotalPriceVat = transDetailDTO.TotalPrice * (1m + listVat.VatValue / 100m);
-            }
+            return SelectedTransactionOverviews.Count > 0;
         }
 
         [RelayCommand]
         private void AddTransDetailToTemp(TransDetailDTO transDetailDTO)
         {
-            TempTransDetailDTO newTransDetail = new();
-            //copy value from TransDetailDTO to TempTransDetailDTO
-            newTransDetail.GoodId = transDetailDTO.GoodId;
-            newTransDetail.ShortName = transDetailDTO.ShortName;
-            newTransDetail.Quantity = transDetailDTO.Quantity;
-            newTransDetail.Price = transDetailDTO.Price;
-            newTransDetail.VatValue = transDetailDTO.VatValue;
-            newTransDetail.TotalPrice = transDetailDTO.TotalPrice;
-            newTransDetail.TotalPriceVat = transDetailDTO.TotalPriceVat;
+            TempTransDetailDTO newTransDetail = new()
+            {
+                //copy value from TransDetailDTO to TempTransDetailDTO
+                GoodId = transDetailDTO.GoodId,
+                ShortName = transDetailDTO.ShortName,
+                Quantity = transDetailDTO.Quantity,
+                Price = transDetailDTO.Price,
+                VatValue = transDetailDTO.VatValue,
+                TotalPrice = transDetailDTO.TotalPrice,
+                TotalPriceVat = transDetailDTO.TotalPriceVat
+            };
 
             TempTransDetailDTOs.Add(newTransDetail);
-
-            CreateImportGoodsExcelFileCommand.NotifyCanExecuteChanged();
-            CreatePurchaseImportExcelFileCommand.NotifyCanExecuteChanged();
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanAddAllTransDetailToTemp))]
         private void AddAllTransDetailToTemp(TransDetailDTO transDetailDTO)
         {
             foreach (var transDetail in TransDetailDTOs)
@@ -161,16 +175,26 @@ namespace DatPhatAcc.ViewModels
             }
         }
 
+        private bool CanAddAllTransDetailToTemp()
+        {
+            return TransDetailDTOs.Count > 0;
+        }
+
         [RelayCommand]
         private void RemoveTransDetailFromTemp(TempTransDetailDTO tempTransDetailDTO)
         {
             TempTransDetailDTOs.Remove(tempTransDetailDTO);
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanRemoveAllTransDetailFromTemp))]
         private void RemoveAllTransDetailFromTemp(TransDetailDTO transDetailDTO)
         {
             TempTransDetailDTOs.Clear();
+        }
+
+        private bool CanRemoveAllTransDetailFromTemp()
+        {
+            return TempTransDetailDTOs.Count > 0;
         }
 
         [RelayCommand(CanExecute = nameof(CanRecalculateTotalPrice))]
@@ -188,11 +212,6 @@ namespace DatPhatAcc.ViewModels
             {
                 transDetail.TotalPrice *= rate;
             }
-        }
-
-        private bool CanCreateImportExcelFile()
-        {
-            return TempTransDetailDTOs.Count > 0;
         }
 
         private bool CanRecalculateTotalPrice()
@@ -247,6 +266,11 @@ namespace DatPhatAcc.ViewModels
                 MessageBox.Show("Tạo file excel thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        private bool CanCreateImportExcelFile()
+        {
+            return TempTransDetailDTOs.Count > 0;
+        }
+
         [RelayCommand(CanExecute = nameof(CanCreateImportExcelFile))]
         private async Task CreateImportGoodsExcelFile()
         {
@@ -298,6 +322,37 @@ namespace DatPhatAcc.ViewModels
                 MessageBox.Show("Tạo file excel thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+
+        #endregion
+
+        private async Task LoadCustomersAsync()
+        {
+            var customerList = await accountingService.GetCustomers();
+            Customers = new ObservableCollection<CustomerDTO>(customerList);
+        }
+
+        private async Task LoadTransTypesAsync()
+        {
+            var transTypes = await accountingService.GetTransTypesAsync();
+            TransTypes = new ObservableCollection<TransType>(transTypes);
+        }
+
+        private void LoadListVats()
+        {
+            //var listVats = await accountingService.GetListVatsAsync();
+            ListVats = shareViewModel.ListVats;
+        }
+
+        private void SetAllVarTranDetails(ListVat listVat)
+        {
+            foreach (var transDetailDTO in TransDetailDTOs)
+            {
+                transDetailDTO.VatValue = listVat.VatValue;
+                transDetailDTO.TotalPriceVat = transDetailDTO.TotalPrice * (1m + listVat.VatValue / 100m);
+            }
+        }
+
+
 
     }
 }
