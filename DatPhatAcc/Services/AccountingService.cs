@@ -283,5 +283,10 @@ namespace DatPhatAcc.Services
             return finalResults;
         }
 
+        public async Task<IEnumerable<Branch>> GetBranchesAsync()
+        {
+            ACCOUNTINGContext context = new();
+            return await context.Branches.ToArrayAsync().ConfigureAwait(false);
+        }
     }
 }
