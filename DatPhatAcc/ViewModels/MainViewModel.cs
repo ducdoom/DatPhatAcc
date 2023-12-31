@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DatPhatAcc.Services;
+using DatPhatAcc.ViewModels.Shared;
 using System.Windows;
 
 namespace DatPhatAcc.ViewModels
@@ -32,6 +33,12 @@ namespace DatPhatAcc.ViewModels
         private void NavigateToReportInventoryView()
         {
             NavigationService.Navigate<ReportInventoryViewModel>();
+        }
+
+        [RelayCommand]
+        private void NavigateToSettingView()
+        {
+            NavigationService.Navigate<SettingViewModel>();
         }
 
         [RelayCommand]

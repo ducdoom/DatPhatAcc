@@ -6,9 +6,12 @@ namespace DatPhatAcc.ViewModels.Shared
 {
     public partial class ShareViewModel : ObservableObject
     {
-        public ShareViewModel()
+      
+        public ShareViewModel(SettingViewModel settingViewModel)
         {
+        
             Init();
+
         }
 
         [ObservableProperty]

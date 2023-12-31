@@ -35,6 +35,7 @@
             <MenuItem Header="Báo cáo">
                 <MenuItem Command="{Binding NavigateToReportInventoryViewCommand}" Header="Tồn kho" />
             </MenuItem>
+            <MenuItem Command="{Binding NavigateToSettingViewCommand}" Header="Cài đặt" />
         </Menu>
 
         <ContentPresenter Grid.Column="1" Content="{Binding NavigationService.CurrentView}" />

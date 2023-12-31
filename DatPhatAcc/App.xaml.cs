@@ -23,6 +23,7 @@ namespace DatPhatAcc
             services.AddSingleton<SyncPurchaseViewModel>();
             services.AddSingleton<SyncRetailTransViewModel>();
             services.AddSingleton<ReportInventoryViewModel>();
+            services.AddSingleton<SettingViewModel>();
             services.AddSingleton<ShareViewModel>();
 
             services.AddSingleton<AccountingService>();
