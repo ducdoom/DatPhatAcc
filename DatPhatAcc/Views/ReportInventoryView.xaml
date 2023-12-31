@@ -25,14 +25,13 @@
             <TextBlock Margin="5,0,5,0" Text="Đến ngày:" />
             <dxe:DateEdit DateTime="{Binding ToDate}" />
 
-            <Button Command="{Binding GetInventoryItemSummaryCommand}">
+            <Button Style="{StaticResource PrimaryButton}" Margin="{StaticResource DefaultMargin}" Command="{Binding GetInventoryItemSummaryCommand}">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconFontAwesome
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Foreground="{StaticResource Primary}"
                         Kind="SearchSolid" />
-                    <TextBlock Margin="4,0,0,0" Text="Tổng hợp tồn kho" />
+                    <TextBlock Margin="5,0,0,0" Text="Tổng hợp tồn kho" />
 
                 </StackPanel>
             </Button>

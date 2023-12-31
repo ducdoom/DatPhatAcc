@@ -4,6 +4,7 @@
     {
         public string GoodId { get; set; } = string.Empty;
         public string ShortName { get; set; } = string.Empty;
+        public decimal ClosingQuantity { get; set; } = 0;
 
         public decimal Quantity { get; set; } = 0;
 

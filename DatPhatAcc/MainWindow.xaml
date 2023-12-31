@@ -21,7 +21,7 @@
 
 
     <DockPanel>
-        <Menu Background="#CFC5FF" DockPanel.Dock="Top">
+        <Menu Background="#C2B6FF" DockPanel.Dock="Top">
             <MenuItem Header="Hệ thống">
                 <MenuItem Command="{Binding RestartAppCommand}" Header="Khởi động lại" />
                 <MenuItem Command="{Binding ExitAppCommand}" Header="Thoát" />

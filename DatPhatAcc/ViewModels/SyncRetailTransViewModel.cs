@@ -26,13 +26,15 @@ namespace DatPhatAcc.ViewModels
             SelectedListVat = ListVats.First(listVat => listVat.VatValue.Equals(10));
         }
 
+        #region Properties
+
         [ObservableProperty]
         private DateTime fromDate = DateTime.Now;
         [ObservableProperty]
         private DateTime toDate = DateTime.Now;
 
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(GetRetailTransCommand))]
+        [NotifyCanExecuteChangedFor(nameof(GetRetailTransByIDCommand))]
         private string transactionIds = string.Empty;
 
         [ObservableProperty]
@@ -43,6 +45,9 @@ namespace DatPhatAcc.ViewModels
         [ObservableProperty]
         private ObservableCollection<TransDetailDTO> transDetailDTOs = new();
 
+        #endregion
+
+
         partial void OnSelectedListVatChanged(ListVat value)
         {
             SetAllVatValue();
@@ -51,7 +56,7 @@ namespace DatPhatAcc.ViewModels
         private bool CanGetRetailTrans() => !string.IsNullOrEmpty(TransactionIds);
 
         [RelayCommand(CanExecute = nameof(CanGetRetailTrans))]
-        private async Task GetRetailTrans()
+        private async Task GetRetailTransByID()
         {
             var retailTrans = await accountingService.GetRetailTransByTransactionId(TransactionIds);
             TransDetailDTOs = new ObservableCollection<TransDetailDTO>(retailTrans);

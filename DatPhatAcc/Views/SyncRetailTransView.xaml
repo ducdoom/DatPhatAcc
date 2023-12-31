@@ -33,6 +33,9 @@
 
             <Button
                 Margin="{StaticResource DefaultMargin}"
+                materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding GetRetailTransByDateCommand.IsRunning}"
+                materialDesign:ButtonProgressAssist.Value="-1"
                 Command="{Binding GetRetailTransByDateCommand}"
                 Style="{StaticResource PrimaryButton}">
                 <StackPanel Orientation="Horizontal">
@@ -40,33 +43,42 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Kind="SearchSolid" />
-                    <TextBlock Margin="4,0,0,0" Text="Tải dữ liệu bán lẻ" />
+                    <TextBlock Margin="5,0,0,0" Text="Tìm kiếm" />
                 </StackPanel>
             </Button>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="{StaticResource DefaultMargin}">
-            <TextBox materialDesign:HintAssist.Hint="Nhập mã giao dịch (các cách nhau bởi dấu phẩy)"
+        <StackPanel
+            Grid.Row="1"
+            Margin="{StaticResource DefaultMargin}"
+            Orientation="Horizontal">
+            <TextBox
                 Width="600"
+                materialDesign:HintAssist.Hint="Nhập mã giao dịch (cách nhau bởi dấu phẩy)"
                 Style="{StaticResource PrimaryTextBox}"
                 Text="{Binding TransactionIds, UpdateSourceTrigger=PropertyChanged}" />
             <Button
                 Margin="{StaticResource DefaultMargin}"
-                Command="{Binding GetRetailTransCommand}"
+                materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding GetRetailTransByIDCommand.IsRunning}"
+                materialDesign:ButtonProgressAssist.Value="-1"
+                Command="{Binding GetRetailTransByIDCommand}"
                 Style="{StaticResource PrimaryButton}">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconFontAwesome
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Kind="SearchSolid" />
-                    <TextBlock Margin="4,0,0,0" Text="Tìm kiếm" />
+                    <TextBlock Margin="5,0,0,0" Text="Tìm kiếm theo mã giao dịch" />
 
                 </StackPanel>
             </Button>
-            <ComboBox Style="{StaticResource PrimaryCombobox}" materialDesign:HintAssist.Hint="Vat"
+            <ComboBox
                 Width="80"
+                materialDesign:HintAssist.Hint="Vat"
                 ItemsSource="{Binding ListVats}"
-                SelectedItem="{Binding SelectedListVat}">
+                SelectedItem="{Binding SelectedListVat}"
+                Style="{StaticResource PrimaryCombobox}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -79,15 +91,24 @@
         </StackPanel>
 
         <Grid Grid.Row="2">
-            <dxg:GridControl Margin="{StaticResource DefaultMargin}" Grid.Row="1" ItemsSource="{Binding TransDetailDTOs}">
+            <dxg:GridControl
+                Grid.Row="1"
+                Margin="{StaticResource DefaultMargin}"
+                ItemsSource="{Binding TransDetailDTOs}">
                 <dxg:GridControl.View>
-                    <dxg:TableView
+                    <dxg:TableView 
                         ShowCheckBoxSelectorColumn="True"
                         ShowGroupPanel="False"
                         ShowSearchPanelMode="Never" />
                 </dxg:GridControl.View>
 
                 <dxg:GridControl.TotalSummary>
+                    <dxg:GridSummaryItem
+                        CalculationMode="Mixed"
+                        DisplayFormat="{}{0:N0}"
+                        FieldName="GoodId"
+                        SummaryType="Count" />
+
                     <dxg:GridSummaryItem
                         CalculationMode="Mixed"
                         DisplayFormat="{}{0:N0}"
@@ -115,6 +136,15 @@
                     FieldName="ShortName"
                     Header="Tên hàng"
                     Style="{StaticResource ContainsFilter}" />
+
+                <dxg:GridColumn
+                    AllowEditing="False"
+                    FieldName="ClosingQuantity"
+                    Header="Tồn">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N2" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
 
                 <dxg:GridColumn FieldName="Quantity" Header="Số lượng">
                     <dxg:GridColumn.EditSettings>

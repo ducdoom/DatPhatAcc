@@ -17,8 +17,8 @@ namespace DatPhatAcc.Models
         public decimal InAmount { get; set; } = 0;
         public decimal OutQuantity { get; set; } = 0;   
         public decimal OutAmount { get; set; } = 0;
-        public decimal EndingQuantity => OpeningQuantity + InQuantity - OutQuantity;
-        public decimal EndingAmount => OpeningAmount + InAmount - OutAmount;
+        public decimal ClosingQuantity => OpeningQuantity + InQuantity - OutQuantity;
+        public decimal ClosingAmount => OpeningAmount + InAmount - OutAmount;
 
     }
 }

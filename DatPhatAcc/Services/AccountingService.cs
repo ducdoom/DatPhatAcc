@@ -3,14 +3,16 @@ using DatPhatAcc.Converters;
 using DatPhatAcc.Models.DTO;
 using DevExpress.Mvvm.Native;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace DatPhatAcc.Services
 {
     public class AccountingService
     {
-        public AccountingService()
+        private MisaService misaService;
+        public AccountingService(MisaService misaService)
         {
-
+            this.misaService = misaService;
         }
 
         public async Task<IEnumerable<CustomerDTO>> GetCustomers()
@@ -160,7 +162,7 @@ namespace DatPhatAcc.Services
             return retailTrans;
         }
 
-        public async Task<IEnumerable<TransDetailDTO>> GetRetailTransByTransactionId(string tranIds)
+        public async Task<List<TransDetailDTO>> GetRetailTransByTransactionId(string tranIds)
         {
             List<string> tranIdList = tranIds.Split(',').ToList();
 
@@ -206,7 +208,14 @@ namespace DatPhatAcc.Services
                         Quantity = group.Sum(x => x.Quantity ?? 0),
                         TotalPriceVat = group.Sum(x => x.TotalExpPriceVat ?? decimal.Zero) - discount
                     };
-                });
+                }).ToList();
+
+            //add closing quantity
+            foreach (var item in finalResults)
+            {
+                item.ClosingQuantity = await misaService.GetInventoryItemClosingQuantityByItemCode(item.GoodId).ConfigureAwait(false);
+                Debug.WriteLine(item.ShortName + ": "+ item.ClosingQuantity);
+            }
 
             return finalResults;
         }

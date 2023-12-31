@@ -1,7 +1,7 @@
 ﻿using DatPhatAcc.Converters;
+using DatPhatAcc.MisaDbContext;
 using DatPhatAcc.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace DatPhatAcc.Services
 {
@@ -35,16 +35,33 @@ namespace DatPhatAcc.Services
 
         private Dictionary<string, string> refTypeDictionary = new();
 
+
+        private List<InventoryItem> inventoryItems = new();
+        private List<InventoryItem> InventoryItems()
+        {
+            MisaDbContext.AAMisaDbContext context = new();
+            var newInventoryItems = context.InventoryItems.AsNoTracking().ToList();
+            if (inventoryItems.Count.Equals(newInventoryItems.Count))
+            {
+                return inventoryItems;
+            }
+            else
+            {
+                inventoryItems = newInventoryItems;
+                return inventoryItems;
+            }
+        }
+
         public async Task<List<InventoryItemSummary>> GetInventoryItemSummaryBalance(DateTime fromDate, DateTime toDate)
         {
             InitRefTypeDictionary();
 
             MisaDbContext.AAMisaDbContext context = new();
-            var inventoryLedgers = await context.InventoryLedgers.ToArrayAsync().ConfigureAwait(false);
+            var inventoryLedgers = await context.InventoryLedgers.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
 
             //DateTime.Now trả về 01/01/2024 16:44:23 (bao gồm cả thời gian)
             //nên nếu giữ nguyên thì giá trị 01/01/2024 15:44:23 vẫn ăn vào
-            fromDate =  fromDate.ToStartOfDate();
+            fromDate = fromDate.ToStartOfDate();
             toDate = toDate.ToEndOfDate();
 
             //lấy dữ liệu số dư đầu kỳ với điều kiện PostedDate < fromDate
@@ -59,7 +76,7 @@ namespace DatPhatAcc.Services
                     OutQuantity = group.Sum(x => x.OutwardQuantity ?? decimal.Zero),
                     OutAmount = group.Sum(x => x.OutwardAmount)
                 })
-                .ToList();            
+                .ToList();
 
             //lấy dữ liệu nhập xuất kho trong khoảng thời gian fromDate - toDate
             List<InventoryItemSummary> inOutWard = inventoryLedgers
@@ -79,12 +96,12 @@ namespace DatPhatAcc.Services
             //tính số dư đầu kỳ vào list inventoryItemSummaries
             List<InventoryItemSummary> inventoryItemSummaries = new();
             foreach (InventoryItemSummary itemOpn in opening)
-            {               
+            {
                 InventoryItemSummary newItem = new()
                 {
                     InventoryItemCode = itemOpn.InventoryItemCode,
-                    OpeningQuantity = itemOpn.EndingQuantity,
-                    OpeningAmount = itemOpn.EndingAmount
+                    OpeningQuantity = itemOpn.ClosingQuantity,
+                    OpeningAmount = itemOpn.ClosingAmount
                 };
                 inventoryItemSummaries.Add(newItem);
             }
@@ -106,14 +123,42 @@ namespace DatPhatAcc.Services
                 }
             }
 
+            //add tên hàng hóa vào list inventoryItemSummaries
+            foreach (InventoryItemSummary item in inventoryItemSummaries)
+            {
+                InventoryItem? inventoryItem = InventoryItems().FirstOrDefault(x => x.InventoryItemCode.Equals(item.InventoryItemCode));
+                if (inventoryItem is not null)
+                {
+                    item.InventoryItemName = inventoryItem.InventoryItemName;
+                }
+            }
+
+
             return inventoryItemSummaries;
         }
 
+        public async Task<decimal> GetInventoryItemClosingQuantityByItemCode(string inventoryItemCode)
+        {
+            DateTime fromDate = new(2024, 1, 1);
+            DateTime toDate = new(2024, 1, 5);
+            IEnumerable<InventoryItemSummary> inventoryItemSummaries = await GetInventoryItemSummaryBalance(fromDate, toDate).ConfigureAwait(false);
+            if (!inventoryItemSummaries.Any())
+            {
+                return decimal.Zero;
+            }
+
+            var item = inventoryItemSummaries.FirstOrDefault(x => x.InventoryItemCode.Equals(inventoryItemCode));
+            if (item is null)
+            {
+                return decimal.Zero;
+            }
+
+            return item.ClosingQuantity;
+        }
 
         public string GetRefTypeName(int refType)
         {
-            string refTypeName = string.Empty;
-            _ = refTypeDictionary.TryGetValue(refType.ToString(), out refTypeName);
+            _ = refTypeDictionary.TryGetValue(refType.ToString(), out string refTypeName);
             if (refTypeName is null)
             {
                 return "Not Found";

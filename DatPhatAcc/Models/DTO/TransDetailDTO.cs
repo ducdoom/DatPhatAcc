@@ -13,8 +13,10 @@ namespace DatPhatAcc.Models.DTO
         public string GoodId { get; set; } = string.Empty;
         public string ShortName { get; set; } = string.Empty;
 
-        private int _quantity = 0;
-        public int Quantity
+        public decimal ClosingQuantity { get; set; } = 0;
+
+        private decimal _quantity = 0;
+        public decimal Quantity
         {
             get => _quantity;
             set
