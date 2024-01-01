@@ -7,6 +7,7 @@
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:DatPhatAcc.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:DatPhatAcc.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewmodels:ReportInventoryViewModel}"
@@ -25,7 +26,13 @@
             <TextBlock Margin="5,0,5,0" Text="Đến ngày:" />
             <dxe:DateEdit DateTime="{Binding ToDate}" />
 
-            <Button Style="{StaticResource PrimaryButton}" Margin="{StaticResource DefaultMargin}" Command="{Binding GetInventoryItemSummaryCommand}">
+            <Button
+                Margin="{StaticResource DefaultMargin}"
+                materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding GetInventoryItemSummaryCommand.IsRunning}"
+                materialDesign:ButtonProgressAssist.Value="-1"
+                Command="{Binding GetInventoryItemSummaryCommand}"
+                Style="{StaticResource PrimaryButton}">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconFontAwesome
                         HorizontalAlignment="Center"
@@ -86,12 +93,12 @@
                     <dxg:GridSummaryItem
                         CalculationMode="Mixed"
                         DisplayFormat="{}{0:N2}"
-                        FieldName="EndingQuantity"
+                        FieldName="ClosingQuantity"
                         SummaryType="Sum" />
                     <dxg:GridSummaryItem
                         CalculationMode="Mixed"
                         DisplayFormat="{}{0:N0}"
-                        FieldName="EndingAmount"
+                        FieldName="ClosingAmount"
                         SummaryType="Sum" />
 
                 </dxg:GridControl.TotalSummary>
@@ -114,49 +121,73 @@
                     Header="ĐVT"
                     Style="{StaticResource ContainsFilter}" />
 
-                <dxg:GridColumn FieldName="OpeningQuantity" Header="SL đầu kỳ">
+                <dxg:GridColumn
+                    AllowEditing="False"
+                    FieldName="OpeningQuantity"
+                    Header="SL đầu kỳ">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat="N2" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
 
-                <dxg:GridColumn FieldName="OpeningAmount" Header="Giá trị đầu kỳ">
+                <dxg:GridColumn
+                    AllowEditing="False"
+                    FieldName="OpeningAmount"
+                    Header="Giá trị đầu kỳ">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
 
-                <dxg:GridColumn FieldName="InQuantity" Header="SL Nhập">
+                <dxg:GridColumn
+                    AllowEditing="False"
+                    FieldName="InQuantity"
+                    Header="SL Nhập">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat="N2" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
 
-                <dxg:GridColumn FieldName="InAmount" Header="Giá trị Nhập">
+                <dxg:GridColumn
+                    AllowEditing="False"
+                    FieldName="InAmount"
+                    Header="Giá trị Nhập">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
 
-                <dxg:GridColumn FieldName="OutQuantity" Header="SL Xuất">
+                <dxg:GridColumn
+                    AllowEditing="False"
+                    FieldName="OutQuantity"
+                    Header="SL Xuất">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat="N2" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
 
-                <dxg:GridColumn FieldName="OutAmount" Header="Giá trị Xuất">
+                <dxg:GridColumn
+                    AllowEditing="False"
+                    FieldName="OutAmount"
+                    Header="Giá trị Xuất">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
 
-                <dxg:GridColumn FieldName="EndingQuantity" Header="SL cuối kỳ">
+                <dxg:GridColumn
+                    AllowEditing="False"
+                    FieldName="ClosingQuantity"
+                    Header="SL cuối kỳ">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat="N2" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
 
-                <dxg:GridColumn FieldName="EndingAmount" Header="Giá trị cuối kỳ">
+                <dxg:GridColumn
+                    AllowEditing="False"
+                    FieldName="ClosingAmount"
+                    Header="Giá trị cuối kỳ">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>

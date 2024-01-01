@@ -4,38 +4,35 @@ using CommunityToolkit.Mvvm.Input;
 using DatPhatAcc.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Windows;
 
 namespace DatPhatAcc.ViewModels.Shared
 {
     public partial class SettingViewModel : ObservableObject
     {
         private readonly AccountingService accountingService;
+        private Models.DbContext.BranchInterestRateDbContext branchInterestRateDbContext;
+
         public SettingViewModel(AccountingService accountingService)
         {
             this.accountingService = accountingService;
-            //Init();
+            branchInterestRateDbContext = new();
+            Init();
         }
 
         private void Init()
         {
-            GetBranchList().SafeFireAndForget();
+            LoadBranchList().SafeFireAndForget();
         }
 
         [ObservableProperty]
         private ObservableCollection<Models.BranchInterestRate> branchInterestRates = new();
 
-        private async Task GetBranchList()
-        {
-            Models.DbContext.BranchInterestRateDbContext dbContext = new();
-            var branchInterestRates = await dbContext.BranchInterestRate.ToArrayAsync().ConfigureAwait(false);
-            BranchInterestRates = new(branchInterestRates);
-        }
-
         [RelayCommand]
         private async Task LoadBranchList()
         {
-            Models.DbContext.BranchInterestRateDbContext dbContext = new();
-            var branchInterestRates = await dbContext.BranchInterestRate.OrderBy(x => x.BranchId).ToArrayAsync().ConfigureAwait(false);
+            var branchInterestRates = await branchInterestRateDbContext.BranchInterestRate.OrderBy(x => x.BranchId).ToArrayAsync().ConfigureAwait(false);
             BranchInterestRates = new(branchInterestRates);
         }
 
@@ -70,6 +67,13 @@ namespace DatPhatAcc.ViewModels.Shared
             return list;
         }
 
+        [RelayCommand]
+        private async Task SaveSettings()
+        {
+            int rows = await branchInterestRateDbContext.SaveChangesAsync().ConfigureAwait(false);
+            Debug.WriteLine($"SaveSettings: {rows}");
+            MessageBox.Show("Lưu thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
 
     }
 }

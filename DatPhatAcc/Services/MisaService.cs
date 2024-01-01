@@ -1,6 +1,7 @@
 ﻿using DatPhatAcc.Converters;
 using DatPhatAcc.MisaDbContext;
 using DatPhatAcc.Models;
+using DevExpress.Utils.Text;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatPhatAcc.Services
@@ -14,27 +15,28 @@ namespace DatPhatAcc.Services
         {
         }
 
-        public void InitRefTypeDictionary()
+        private Dictionary<string, string> refTypeDictionary = new();
+        public async Task<Dictionary<string, string>> GetRefTypeDictionary()
         {
             if (refTypeDictionary.Count > 0)
             {
-                return;
+                return new();
             }
 
             MisaDbContext.AAMisaDbContext context = new();
-            var searchRefTypes = context.SearchRefTypes.ToArray();
+            var searchRefTypes = await context.SearchRefTypes.ToArrayAsync().ConfigureAwait(false);
 
             foreach (var item in searchRefTypes)
             {
-                foreach (string type in item.RefType.Split(','))
+                string[] array = item.RefType.Split(',');
+                foreach (string type in array)
                 {
                     refTypeDictionary[type] = item.RefTypeName;
                 }
             }
+
+            return refTypeDictionary;
         }
-
-        private Dictionary<string, string> refTypeDictionary = new();
-
 
         private List<InventoryItem> inventoryItems = new();
         private List<InventoryItem> InventoryItems()
@@ -54,7 +56,7 @@ namespace DatPhatAcc.Services
 
         public async Task<List<InventoryItemSummary>> GetInventoryItemSummaryBalance(DateTime fromDate, DateTime toDate)
         {
-            InitRefTypeDictionary();
+           Task getRefTypeDictionaryTask = GetRefTypeDictionary();
 
             MisaDbContext.AAMisaDbContext context = new();
             var inventoryLedgers = await context.InventoryLedgers.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
@@ -77,6 +79,8 @@ namespace DatPhatAcc.Services
                     OutAmount = group.Sum(x => x.OutwardAmount)
                 })
                 .ToList();
+
+            await getRefTypeDictionaryTask.ConfigureAwait(false);
 
             //lấy dữ liệu nhập xuất kho trong khoảng thời gian fromDate - toDate
             List<InventoryItemSummary> inOutWard = inventoryLedgers
@@ -139,8 +143,8 @@ namespace DatPhatAcc.Services
 
         public async Task<decimal> GetInventoryItemClosingQuantityByItemCode(string inventoryItemCode)
         {
-            DateTime fromDate = new(2024, 1, 1);
-            DateTime toDate = new(2024, 1, 5);
+            DateTime fromDate = DateTime.Now;
+            DateTime toDate = DateTime.Now;
             IEnumerable<InventoryItemSummary> inventoryItemSummaries = await GetInventoryItemSummaryBalance(fromDate, toDate).ConfigureAwait(false);
             if (!inventoryItemSummaries.Any())
             {

@@ -26,6 +26,7 @@ namespace DatPhatAcc.ViewModels
         [RelayCommand]
         private async Task GetInventoryItemSummary()
         {
+            await Task.Delay(0);
             var list = await misaService.GetInventoryItemSummaryBalance(FromDate, ToDate);
             InventoryItemSummaries = new ObservableCollection<InventoryItemSummary>(list);
 

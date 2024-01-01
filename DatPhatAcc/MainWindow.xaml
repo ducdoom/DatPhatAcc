@@ -11,7 +11,7 @@
     xmlns:viewmodels="clr-namespace:DatPhatAcc.ViewModels"
     Title="Thành Công - Misa"
     Width="1200"
-    Height="800"
+    Height="600"
     d:DataContext="{d:DesignInstance Type={x:Type viewmodels:MainViewModel}}"
     Background="{StaticResource BackgroundColor}"
     FontFamily="{materialDesign:MaterialDesignFont}"
