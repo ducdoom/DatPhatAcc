@@ -17,7 +17,6 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
@@ -43,133 +42,178 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Kind="SearchSolid" />
-                    <TextBlock Margin="5,0,0,0" Text="Tìm kiếm" />
+                    <TextBlock Margin="5,0,0,0" Text="Tìm kiếm theo ngày" />
                 </StackPanel>
             </Button>
         </StackPanel>
 
-        <StackPanel
-            Grid.Row="1"
-            Margin="{StaticResource DefaultMargin}"
-            Orientation="Horizontal">
-            <TextBox
-                Width="600"
-                materialDesign:HintAssist.Hint="Nhập mã giao dịch (cách nhau bởi dấu phẩy)"
-                Style="{StaticResource PrimaryTextBox}"
-                Text="{Binding TransactionIds, UpdateSourceTrigger=PropertyChanged}" />
-            <Button
-                Margin="{StaticResource DefaultMargin}"
-                materialDesign:ButtonProgressAssist.IsIndeterminate="True"
-                materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding GetRetailTransByIDCommand.IsRunning}"
-                materialDesign:ButtonProgressAssist.Value="-1"
-                Command="{Binding GetRetailTransByIDCommand}"
-                Style="{StaticResource PrimaryButton}">
-                <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconFontAwesome
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Kind="SearchSolid" />
-                    <TextBlock Margin="5,0,0,0" Text="Tìm kiếm theo mã giao dịch" />
+        <materialDesign:Card Grid.Row="1" Margin="16,0,16,16">
+            <DockPanel>
+                <!--<Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>-->
 
-                </StackPanel>
-            </Button>
-            <ComboBox
-                Width="80"
-                materialDesign:HintAssist.Hint="Vat"
-                ItemsSource="{Binding ListVats}"
-                SelectedItem="{Binding SelectedListVat}"
-                Style="{StaticResource PrimaryCombobox}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
+                <Grid Grid.Row="0" DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        Grid.Column="0"
+                        materialDesign:HintAssist.Hint="Nhập mã giao dịch (cách nhau bởi dấu phẩy)"
+                        Style="{StaticResource PrimaryTextBox}"
+                        Text="{Binding TransactionIds, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <StackPanel
+                        Grid.Column="1"
+                        Margin="{StaticResource DefaultMargin}"
+                        Orientation="Horizontal">
+                        <Button
+                            Margin="{StaticResource DefaultMargin}"
+                            materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                            materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding GetRetailTransByIDCommand.IsRunning}"
+                            materialDesign:ButtonProgressAssist.Value="-1"
+                            Command="{Binding GetRetailTransByIDCommand}"
+                            Style="{StaticResource PrimaryButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconFontAwesome
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="SearchSolid" />
+                                <TextBlock Margin="5,0,0,0" Text="Tìm kiếm theo mã giao dịch" />
+                            </StackPanel>
+                        </Button>
+                        <ComboBox
+                            Width="80"
+                            materialDesign:HintAssist.Hint="Vat"
+                            ItemsSource="{Binding ListVats}"
+                            SelectedItem="{Binding SelectedListVat}"
+                            Style="{StaticResource PrimaryCombobox}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Grid.Column="0" Text="{Binding VatName}" />
+                                        <TextBlock Grid.Column="1" Text=" %" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                    </StackPanel>
+                </Grid>
+
+                <Grid DockPanel.Dock="Bottom">
+                    <Button
+                        Margin="0,8,0,0"
+                        HorizontalAlignment="Right"
+                        materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                        materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding CreateImportExcelBanHangCommand.IsRunning}"
+                        materialDesign:ButtonProgressAssist.Value="-1"
+                        Command="{Binding CreateImportExcelBanHangCommand}"
+                        Style="{StaticResource PrimaryButton}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Grid.Column="0" Text="{Binding VatName}" />
-                            <TextBlock Grid.Column="1" Text=" %" />
+                            <iconPacks:PackIconFontAwesome
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Kind="FileExportSolid" />
+                            <TextBlock Margin="5,0,0,0" Text="Xuất file import Excel" />
                         </StackPanel>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-        </StackPanel>
+                    </Button>
+                </Grid>
 
-        <Grid Grid.Row="2">
-            <dxg:GridControl
-                Grid.Row="1"
-                Margin="{StaticResource DefaultMargin}"
-                ItemsSource="{Binding TransDetailDTOs}">
-                <dxg:GridControl.View>
-                    <dxg:TableView 
-                        ShowCheckBoxSelectorColumn="True"
-                        ShowGroupPanel="False"
-                        ShowSearchPanelMode="Never" />
-                </dxg:GridControl.View>
+                <Grid Grid.Row="1" Margin="0,8,0,0">
+                    <dxg:GridControl
+                        Grid.Row="1"
+                        Margin="0"
+                        ItemsSource="{Binding TransDetailDTOs}">
+                        <dxg:GridControl.View>
+                            <dxg:TableView
+                                ShowCheckBoxSelectorColumn="True"
+                                ShowGroupPanel="False"
+                                ShowSearchPanelMode="Never" />
+                        </dxg:GridControl.View>
 
-                <dxg:GridControl.TotalSummary>
-                    <dxg:GridSummaryItem
-                        CalculationMode="Mixed"
-                        DisplayFormat="{}{0:N0}"
-                        FieldName="GoodId"
-                        SummaryType="Count" />
+                        <dxg:GridControl.TotalSummary>
+                            <dxg:GridSummaryItem
+                                CalculationMode="Mixed"
+                                DisplayFormat="{}{0:N0}"
+                                FieldName="GoodId"
+                                SummaryType="Count" />
 
-                    <dxg:GridSummaryItem
-                        CalculationMode="Mixed"
-                        DisplayFormat="{}{0:N0}"
-                        FieldName="Quantity"
-                        SummaryType="Sum" />
-                    <dxg:GridSummaryItem
-                        CalculationMode="Mixed"
-                        DisplayFormat="{}{0:N0}"
-                        FieldName="TotalPrice"
-                        SummaryType="Sum" />
-                    <dxg:GridSummaryItem
-                        CalculationMode="Mixed"
-                        DisplayFormat="{}{0:N0}"
-                        FieldName="TotalPriceVat"
-                        SummaryType="Sum" />
-                </dxg:GridControl.TotalSummary>
+                            <dxg:GridSummaryItem
+                                CalculationMode="Mixed"
+                                DisplayFormat="{}{0:N0}"
+                                FieldName="Quantity"
+                                SummaryType="Sum" />
+                            <dxg:GridSummaryItem
+                                CalculationMode="Mixed"
+                                DisplayFormat="{}{0:N0}"
+                                FieldName="TotalPrice"
+                                SummaryType="Sum" />
+                            <dxg:GridSummaryItem
+                                CalculationMode="Mixed"
+                                DisplayFormat="{}{0:N0}"
+                                FieldName="TotalPriceVat"
+                                SummaryType="Sum" />
+                        </dxg:GridControl.TotalSummary>
 
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="GoodId"
-                    Header="Mã hàng"
-                    Style="{StaticResource ContainsFilter}" />
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="ShortName"
-                    Header="Tên hàng"
-                    Style="{StaticResource ContainsFilter}" />
+                        <dxg:GridColumn
+                            AllowEditing="False"
+                            FieldName="GoodId"
+                            Header="Mã hàng"
+                            Style="{StaticResource ContainsFilter}" />
+                        <dxg:GridColumn
+                            AllowEditing="False"
+                            FieldName="ShortName"
+                            Header="Tên hàng"
+                            Style="{StaticResource ContainsFilter}" />
 
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="ClosingQuantity"
-                    Header="Tồn">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
+                        <dxg:GridColumn
+                            AllowEditing="False"
+                            FieldName="ClosingQuantity"
+                            Header="Tồn">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N2" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn
+                            AllowEditing="False"
+                            FieldName="CostPricePerUnit"
+                            Header="Đơn giá vốn">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N2" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
 
-                <dxg:GridColumn FieldName="Quantity" Header="Số lượng">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="Price" Header="Đơn giá">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="TotalPrice" Header="Thành tiền">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="VatValue" Header="Vat" />
-                <dxg:GridColumn FieldName="TotalPriceVat" Header="Thành tiền VAT">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="Quantity" Header="Số lượng">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N0" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="Price" Header="Đơn giá">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N0" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="TotalPrice" Header="Thành tiền">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N0" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="VatValue" Header="Vat" />
+                        <dxg:GridColumn FieldName="TotalPriceVat" Header="Thành tiền VAT">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N0" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
 
 
-            </dxg:GridControl>
-        </Grid>
+                    </dxg:GridControl>
+                </Grid>
+            </DockPanel>
+
+        </materialDesign:Card>
+
     </Grid>
 </UserControl>

@@ -1,11 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DatPhatAcc.AccountingDbContext;
+using DatPhatAcc.Helpers;
 using DatPhatAcc.Models.DTO;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Windows;
 
 namespace DatPhatAcc.ViewModels
 {
@@ -13,10 +15,12 @@ namespace DatPhatAcc.ViewModels
     {
         private readonly AccountingService accountingService;
         private readonly ShareViewModel shareViewModel;
-        public SyncRetailTransViewModel(AccountingService accountingService, ShareViewModel shareViewModel)
+        private readonly MisaUltis misaUltis;
+        public SyncRetailTransViewModel(AccountingService accountingService, ShareViewModel shareViewModel, MisaUltis misaUltis)
         {
             this.accountingService = accountingService;
             this.shareViewModel = shareViewModel;
+            this.misaUltis = misaUltis;
             Init();
         }
 
@@ -43,6 +47,7 @@ namespace DatPhatAcc.ViewModels
         private ListVat selectedListVat = new();
 
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(CreateImportExcelBanHangCommand))]
         private ObservableCollection<TransDetailDTO> transDetailDTOs = new();
 
         #endregion
@@ -78,5 +83,33 @@ namespace DatPhatAcc.ViewModels
             TransDetailDTOs = new ObservableCollection<TransDetailDTO>(retailTrans);
             SetAllVatValue();
         }
+
+        private bool CanCreateImportExcelBanHang() => TransDetailDTOs.Count > 0;
+
+        [RelayCommand(CanExecute = nameof(CanCreateImportExcelBanHang))]
+        private async Task CreateImportExcelBanHang()
+        {
+            SaveFileDialog saveFileDialog = new()
+            {
+                Filter = "Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true
+            };
+
+            if (saveFileDialog.ShowDialog() == false)
+            {
+                return;
+            }
+
+            string fileName = saveFileDialog.FileName;
+
+            bool success = await misaUltis.ImportExcel.CreateFileImportBanHang(TransDetailDTOs, fileName);
+            if (success)
+            {
+                MessageBox.Show("Tạo file thành công", "Thông báo");
+            }
+        }
+
+
     }
 }

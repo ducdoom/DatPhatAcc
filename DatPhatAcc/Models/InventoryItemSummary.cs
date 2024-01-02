@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DatPhatAcc.Models
+﻿namespace DatPhatAcc.Models
 {
     public record InventoryItemSummary
     {
@@ -15,10 +9,11 @@ namespace DatPhatAcc.Models
         public decimal OpeningAmount { get; set; } = 0;
         public decimal InQuantity { get; set; } = 0;
         public decimal InAmount { get; set; } = 0;
-        public decimal OutQuantity { get; set; } = 0;   
+        public decimal OutQuantity { get; set; } = 0;
         public decimal OutAmount { get; set; } = 0;
         public decimal ClosingQuantity => OpeningQuantity + InQuantity - OutQuantity;
         public decimal ClosingAmount => OpeningAmount + InAmount - OutAmount;
+        public decimal CostPricePerUnit => ClosingQuantity == 0 ? 0 : ClosingAmount / ClosingQuantity;
 
     }
 }

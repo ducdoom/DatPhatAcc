@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DatPhatAcc.Helpers;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels;
 using DatPhatAcc.ViewModels.Shared;
 using Microsoft.Extensions.DependencyInjection;
+using OfficeOpenXml;
 using System.Windows;
 using Application = System.Windows.Application;
 
@@ -27,6 +29,8 @@ namespace DatPhatAcc
 
             services.AddSingleton<AccountingService>(); //services
             services.AddSingleton<MisaService>();
+            services.AddSingleton<MisaUltis>();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             services.AddTransient<SettingViewModel>(); //transient
 

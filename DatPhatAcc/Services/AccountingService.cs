@@ -1,5 +1,6 @@
 ﻿using DatPhatAcc.AccountingDbContext;
 using DatPhatAcc.Converters;
+using DatPhatAcc.Models;
 using DatPhatAcc.Models.DTO;
 using DevExpress.Mvvm.Native;
 using Microsoft.EntityFrameworkCore;
@@ -164,8 +165,9 @@ namespace DatPhatAcc.Services
 
         public async Task<List<TransDetailDTO>> GetRetailTransByTransactionId(string tranIds)
         {
-            List<string> tranIdList = tranIds.Split(',').ToList();
+            Task<List<InventoryItemSummary>> getInventoryItemSummaryBalanceTask = misaService.GetInventoryItemSummaryBalance(DateTime.Now, DateTime.Now);
 
+            List<string> tranIdList = tranIds.Split(',').ToList();
             using Accounting_LTTDbContext.ACCOUNTING_LTTContext accounting_LTTContext = new();
 
             // Query for retail transactions with AsNoTracking for better performance
@@ -210,20 +212,18 @@ namespace DatPhatAcc.Services
                     };
                 }).ToList();
 
+            List<InventoryItemSummary> inventoryItemSummaries = await getInventoryItemSummaryBalanceTask.ConfigureAwait(false);
             //add closing quantity
-            foreach (var item in finalResults)
-            {
-                item.ClosingQuantity = await misaService.GetInventoryItemClosingQuantityByItemCode(item.GoodId).ConfigureAwait(false);
-                Debug.WriteLine(item.ShortName + ": "+ item.ClosingQuantity);
-            }
+            await AddClosingQuantity(finalResults, inventoryItemSummaries).ConfigureAwait(false);
 
             return finalResults;
         }
 
-        public async Task<IEnumerable<TransDetailDTO>> GetRetailTransByDate(DateTime fromDate, DateTime toDate)
+        public async Task<List<TransDetailDTO>> GetRetailTransByDate(DateTime fromDate, DateTime toDate)
         {
-            using Accounting_LTTDbContext.ACCOUNTING_LTTContext accounting_LTTContext = new();
+            Task<List<InventoryItemSummary>> getInventoryItemSummaryBalanceTask = misaService.GetInventoryItemSummaryBalance(DateTime.Now, DateTime.Now);
 
+            using Accounting_LTTDbContext.ACCOUNTING_LTTContext accounting_LTTContext = new();
             string fromDateString = fromDate.ToString("yyyyMMdd");
             string toDateString = toDate.ToString("yyyyMMdd");
 
@@ -280,7 +280,21 @@ namespace DatPhatAcc.Services
                     };
                 });
 
-            return finalResults;
+            List<InventoryItemSummary> inventoryItemSummaries = await getInventoryItemSummaryBalanceTask.ConfigureAwait(false);
+            List<TransDetailDTO> transDetailDTOs = finalResults.ToList();
+            //add closing quantity
+            await AddClosingQuantity(transDetailDTOs, inventoryItemSummaries).ConfigureAwait(false);
+
+            return transDetailDTOs;
+        }
+
+        public async Task AddClosingQuantity(List<TransDetailDTO> transDetailDTOs, List<InventoryItemSummary> inventoryItemSummaries)
+        {
+            foreach (var item in transDetailDTOs)
+            {
+                item.ClosingQuantity = inventoryItemSummaries.FirstOrDefault(x => x.InventoryItemCode.Equals(item.GoodId))?.ClosingQuantity ?? 0;
+                Debug.WriteLine(item.ShortName + ": " + item.ClosingQuantity);
+            }
         }
 
         public async Task<IEnumerable<Branch>> GetBranchesAsync()

@@ -84,7 +84,7 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <GroupBox Grid.Column="0" Header="Tìm kiếm NCC">
+                    <materialDesign:Card Grid.Column="0" Margin="16,8,8,8">
                         <dxg:GridControl
                             ItemsSource="{Binding Customers}"
                             SelectedItems="{Binding SelectedCustomers}"
@@ -109,9 +109,9 @@
                                 Header="Tên NCC"
                                 Style="{StaticResource ContainsFilter}" />
                         </dxg:GridControl>
-                    </GroupBox>
+                    </materialDesign:Card>
 
-                    <GroupBox Grid.Column="1" Header="Danh sách giao dịch">
+                    <materialDesign:Card Grid.Column="1" Margin="8,8,16,8">
                         <dxg:GridControl
                             ItemsSource="{Binding TransactionOverviews}"
                             SelectedItems="{Binding SelectedTransactionOverviews}"
@@ -149,7 +149,7 @@
                             </dxg:GridColumn>
 
                         </dxg:GridControl>
-                    </GroupBox>
+                    </materialDesign:Card>
                 </Grid>
 
             </Grid>
@@ -161,7 +161,7 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <GroupBox Grid.Column="0" Header="Chi tiết giao dịch">
+            <materialDesign:Card Grid.Column="0" Margin="16,8,8,16">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="60" />
@@ -276,9 +276,9 @@
 
                     </dxg:GridControl>
                 </Grid>
-            </GroupBox>
+            </materialDesign:Card>
 
-            <GroupBox Grid.Column="1" Header="Bảng tạm">
+            <materialDesign:Card Grid.Column="1" Margin="8,8,16,16">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="60" />
@@ -429,7 +429,7 @@
 
                     </dxg:GridControl>
                 </Grid>
-            </GroupBox>
+            </materialDesign:Card>
         </Grid>
     </Grid>
 </UserControl>

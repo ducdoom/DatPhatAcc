@@ -1,8 +1,8 @@
 ﻿using DatPhatAcc.Converters;
 using DatPhatAcc.MisaDbContext;
 using DatPhatAcc.Models;
-using DevExpress.Utils.Text;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace DatPhatAcc.Services
 {
@@ -56,34 +56,35 @@ namespace DatPhatAcc.Services
 
         public async Task<List<InventoryItemSummary>> GetInventoryItemSummaryBalance(DateTime fromDate, DateTime toDate)
         {
-           Task getRefTypeDictionaryTask = GetRefTypeDictionary();
+            await Task.Delay(0).ConfigureAwait(false);
 
-            MisaDbContext.AAMisaDbContext context = new();
-            var inventoryLedgers = await context.InventoryLedgers.AsNoTracking().ToArrayAsync().ConfigureAwait(false);
+            Task getRefTypeDictionaryTask = GetRefTypeDictionary();
 
             //DateTime.Now trả về 01/01/2024 16:44:23 (bao gồm cả thời gian)
             //nên nếu giữ nguyên thì giá trị 01/01/2024 15:44:23 vẫn ăn vào
             fromDate = fromDate.ToStartOfDate();
             toDate = toDate.ToEndOfDate();
 
+            MisaDbContext.AAMisaDbContext context = new();
+            var inventoryLedger = context.InventoryLedgers.AsNoTracking();
+
             //lấy dữ liệu số dư đầu kỳ với điều kiện PostedDate < fromDate
-            List<InventoryItemSummary> opening = inventoryLedgers
+            var opening = context.InventoryLedgers
+                .AsNoTracking()
                 .Where(x => x.PostedDate < fromDate)
                 .GroupBy(x => x.InventoryItemCode)
                 .Select(group => new InventoryItemSummary
                 {
                     InventoryItemCode = group.Key,
-                    InQuantity = group.Sum(x => x.InwardQuantity ?? decimal.Zero),
-                    InAmount = group.Sum(x => x.InwardAmount),
-                    OutQuantity = group.Sum(x => x.OutwardQuantity ?? decimal.Zero),
-                    OutAmount = group.Sum(x => x.OutwardAmount)
-                })
-                .ToList();
+                    OpeningQuantity = group.Sum(x => x.InwardQuantity ?? decimal.Zero) - group.Sum(x => x.OutwardQuantity ?? decimal.Zero),
+                    OpeningAmount = group.Sum(x => x.InwardAmount) - group.Sum(x => x.OutwardAmount)
+                }).AsEnumerable();
+            //.ToList();
 
             await getRefTypeDictionaryTask.ConfigureAwait(false);
 
             //lấy dữ liệu nhập xuất kho trong khoảng thời gian fromDate - toDate
-            List<InventoryItemSummary> inOutWard = inventoryLedgers
+            var inOutWard = inventoryLedger.ToArray()
                 .Where(x => GetRefTypeName(x.RefType).Equals(INWARD) || GetRefTypeName(x.RefType).Equals(OUTWARD))
                 .Where(x => x.PostedDate >= fromDate && x.PostedDate <= toDate)
                 .GroupBy(x => x.InventoryItemCode)
@@ -94,49 +95,42 @@ namespace DatPhatAcc.Services
                     InAmount = group.Sum(x => x.InwardAmount),
                     OutQuantity = group.Sum(x => x.OutwardQuantity ?? decimal.Zero),
                     OutAmount = group.Sum(x => x.OutwardAmount)
-                })
-                .ToList();
+                });
 
-            //tính số dư đầu kỳ vào list inventoryItemSummaries
             List<InventoryItemSummary> inventoryItemSummaries = new();
-            foreach (InventoryItemSummary itemOpn in opening)
+            try
             {
-                InventoryItemSummary newItem = new()
-                {
-                    InventoryItemCode = itemOpn.InventoryItemCode,
-                    OpeningQuantity = itemOpn.ClosingQuantity,
-                    OpeningAmount = itemOpn.ClosingAmount
-                };
-                inventoryItemSummaries.Add(newItem);
+                inventoryItemSummaries = opening
+                    .Union(inOutWard)
+                    .GroupBy(x => x.InventoryItemCode)
+                    .Select(group => new InventoryItemSummary
+                    {
+                        InventoryItemCode = group.Key,
+                        OpeningQuantity = group.Sum(x => x.OpeningQuantity),
+                        OpeningAmount = group.Sum(x => x.OpeningAmount),
+                        InQuantity = group.Sum(x => x.InQuantity),
+                        InAmount = group.Sum(x => x.InAmount),
+                        OutQuantity = group.Sum(x => x.OutQuantity),
+                        OutAmount = group.Sum(x => x.OutAmount)
+                    })
+                    .Join(context.InventoryItems.AsNoTracking(), x => x.InventoryItemCode, y => y.InventoryItemCode, (x, y) => new InventoryItemSummary
+                    {
+                        InventoryItemCode = x.InventoryItemCode,
+                        InventoryItemName = y.InventoryItemName?? string.Empty,
+                        //UnitName = y.UnitName,
+                        OpeningQuantity = x.OpeningQuantity,
+                        OpeningAmount = x.OpeningAmount,
+                        InQuantity = x.InQuantity,
+                        InAmount = x.InAmount,
+                        OutQuantity = x.OutQuantity,
+                        OutAmount = x.OutAmount
+                    })
+                    .ToList();
             }
-
-            //add thêm nhập xuất vào list inventoryItemSummaries
-            foreach (InventoryItemSummary item in inOutWard)
+            catch (Exception ex)
             {
-                InventoryItemSummary? inItem = inventoryItemSummaries.FirstOrDefault(x => x.InventoryItemCode.Equals(item.InventoryItemCode));
-                if (inItem is not null)
-                {
-                    inItem.InQuantity += item.InQuantity;
-                    inItem.InAmount += item.InAmount;
-                    inItem.OutQuantity += item.OutQuantity;
-                    inItem.OutAmount += item.OutAmount;
-                }
-                else
-                {
-                    inventoryItemSummaries.Add(item);
-                }
+                Debug.WriteLine(ex.Message);
             }
-
-            //add tên hàng hóa vào list inventoryItemSummaries
-            foreach (InventoryItemSummary item in inventoryItemSummaries)
-            {
-                InventoryItem? inventoryItem = InventoryItems().FirstOrDefault(x => x.InventoryItemCode.Equals(item.InventoryItemCode));
-                if (inventoryItem is not null)
-                {
-                    item.InventoryItemName = inventoryItem.InventoryItemName;
-                }
-            }
-
 
             return inventoryItemSummaries;
         }

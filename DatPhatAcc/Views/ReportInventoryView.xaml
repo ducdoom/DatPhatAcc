@@ -14,186 +14,188 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
+    <materialDesign:Card>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <TextBlock Margin="5,0,5,0" Text="Từ ngày:" />
-            <dxe:DateEdit DateTime="{Binding FromDate}" />
-            <TextBlock Margin="5,0,5,0" Text="Đến ngày:" />
-            <dxe:DateEdit DateTime="{Binding ToDate}" />
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <TextBlock Margin="5,0,5,0" Text="Từ ngày:" />
+                <dxe:DateEdit DateTime="{Binding FromDate}" />
+                <TextBlock Margin="5,0,5,0" Text="Đến ngày:" />
+                <dxe:DateEdit DateTime="{Binding ToDate}" />
 
-            <Button
-                Margin="{StaticResource DefaultMargin}"
-                materialDesign:ButtonProgressAssist.IsIndeterminate="True"
-                materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding GetInventoryItemSummaryCommand.IsRunning}"
-                materialDesign:ButtonProgressAssist.Value="-1"
-                Command="{Binding GetInventoryItemSummaryCommand}"
-                Style="{StaticResource PrimaryButton}">
-                <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconFontAwesome
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Kind="SearchSolid" />
-                    <TextBlock Margin="5,0,0,0" Text="Tổng hợp tồn kho" />
+                <Button
+                    Margin="{StaticResource DefaultMargin}"
+                    materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding GetInventoryItemSummaryCommand.IsRunning}"
+                    materialDesign:ButtonProgressAssist.Value="-1"
+                    Command="{Binding GetInventoryItemSummaryCommand}"
+                    Style="{StaticResource PrimaryButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconFontAwesome
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Kind="SearchSolid" />
+                        <TextBlock Margin="5,0,0,0" Text="Tổng hợp tồn kho" />
 
-                </StackPanel>
-            </Button>
-        </StackPanel>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
 
-        <Grid Grid.Row="1">
-            <dxg:GridControl ItemsSource="{Binding InventoryItemSummaries}">
-                <dxg:GridControl.View>
-                    <dxg:TableView ShowGroupPanel="False" ShowSearchPanelMode="Never" />
-                </dxg:GridControl.View>
+            <Grid Grid.Row="1">
+                <dxg:GridControl ItemsSource="{Binding InventoryItemSummaries}">
+                    <dxg:GridControl.View>
+                        <dxg:TableView ShowGroupPanel="False" ShowSearchPanelMode="Never" />
+                    </dxg:GridControl.View>
 
-                <dxg:GridControl.TotalSummary>
-                    <dxg:GridSummaryItem
-                        CalculationMode="Mixed"
-                        DisplayFormat="{}{0:N0}"
+                    <dxg:GridControl.TotalSummary>
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N0}"
+                            FieldName="InventoryItemCode"
+                            SummaryType="Count" />
+
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N2}"
+                            FieldName="OpeningQuantity"
+                            SummaryType="Sum" />
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N0}"
+                            FieldName="OpeningAmount"
+                            SummaryType="Sum" />
+
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N2}"
+                            FieldName="InQuantity"
+                            SummaryType="Sum" />
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N0}"
+                            FieldName="InAmount"
+                            SummaryType="Sum" />
+
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N2}"
+                            FieldName="OutQuantity"
+                            SummaryType="Sum" />
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N0}"
+                            FieldName="OutAmount"
+                            SummaryType="Sum" />
+
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N2}"
+                            FieldName="ClosingQuantity"
+                            SummaryType="Sum" />
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N0}"
+                            FieldName="ClosingAmount"
+                            SummaryType="Sum" />
+
+                    </dxg:GridControl.TotalSummary>
+
+                    <dxg:GridColumn
+                        AllowEditing="False"
                         FieldName="InventoryItemCode"
-                        SummaryType="Count" />
+                        Header="Mã hàng"
+                        Style="{StaticResource ContainsFilter}" />
 
-                    <dxg:GridSummaryItem
-                        CalculationMode="Mixed"
-                        DisplayFormat="{}{0:N2}"
+                    <dxg:GridColumn
+                        AllowEditing="False"
+                        FieldName="InventoryItemName"
+                        Header="Tên hàng"
+                        Style="{StaticResource ContainsFilter}" />
+
+                    <dxg:GridColumn
+                        AllowEditing="False"
+                        FieldName="UnitName"
+                        Header="ĐVT"
+                        Style="{StaticResource ContainsFilter}" />
+
+                    <dxg:GridColumn
+                        AllowEditing="False"
                         FieldName="OpeningQuantity"
-                        SummaryType="Sum" />
-                    <dxg:GridSummaryItem
-                        CalculationMode="Mixed"
-                        DisplayFormat="{}{0:N0}"
+                        Header="SL đầu kỳ">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+
+                    <dxg:GridColumn
+                        AllowEditing="False"
                         FieldName="OpeningAmount"
-                        SummaryType="Sum" />
+                        Header="Giá trị đầu kỳ">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
 
-                    <dxg:GridSummaryItem
-                        CalculationMode="Mixed"
-                        DisplayFormat="{}{0:N2}"
+                    <dxg:GridColumn
+                        AllowEditing="False"
                         FieldName="InQuantity"
-                        SummaryType="Sum" />
-                    <dxg:GridSummaryItem
-                        CalculationMode="Mixed"
-                        DisplayFormat="{}{0:N0}"
+                        Header="SL Nhập">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+
+                    <dxg:GridColumn
+                        AllowEditing="False"
                         FieldName="InAmount"
-                        SummaryType="Sum" />
+                        Header="Giá trị Nhập">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
 
-                    <dxg:GridSummaryItem
-                        CalculationMode="Mixed"
-                        DisplayFormat="{}{0:N2}"
+                    <dxg:GridColumn
+                        AllowEditing="False"
                         FieldName="OutQuantity"
-                        SummaryType="Sum" />
-                    <dxg:GridSummaryItem
-                        CalculationMode="Mixed"
-                        DisplayFormat="{}{0:N0}"
+                        Header="SL Xuất">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+
+                    <dxg:GridColumn
+                        AllowEditing="False"
                         FieldName="OutAmount"
-                        SummaryType="Sum" />
+                        Header="Giá trị Xuất">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
 
-                    <dxg:GridSummaryItem
-                        CalculationMode="Mixed"
-                        DisplayFormat="{}{0:N2}"
+                    <dxg:GridColumn
+                        AllowEditing="False"
                         FieldName="ClosingQuantity"
-                        SummaryType="Sum" />
-                    <dxg:GridSummaryItem
-                        CalculationMode="Mixed"
-                        DisplayFormat="{}{0:N0}"
+                        Header="SL cuối kỳ">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+
+                    <dxg:GridColumn
+                        AllowEditing="False"
                         FieldName="ClosingAmount"
-                        SummaryType="Sum" />
+                        Header="Giá trị cuối kỳ">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
 
-                </dxg:GridControl.TotalSummary>
-
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="InventoryItemCode"
-                    Header="Mã hàng"
-                    Style="{StaticResource ContainsFilter}" />
-
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="InventoryItemName"
-                    Header="Tên hàng"
-                    Style="{StaticResource ContainsFilter}" />
-
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="UnitName"
-                    Header="ĐVT"
-                    Style="{StaticResource ContainsFilter}" />
-
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="OpeningQuantity"
-                    Header="SL đầu kỳ">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="OpeningAmount"
-                    Header="Giá trị đầu kỳ">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="InQuantity"
-                    Header="SL Nhập">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="InAmount"
-                    Header="Giá trị Nhập">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="OutQuantity"
-                    Header="SL Xuất">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="OutAmount"
-                    Header="Giá trị Xuất">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="ClosingQuantity"
-                    Header="SL cuối kỳ">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-
-                <dxg:GridColumn
-                    AllowEditing="False"
-                    FieldName="ClosingAmount"
-                    Header="Giá trị cuối kỳ">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-
-            </dxg:GridControl>
+                </dxg:GridControl>
+            </Grid>
         </Grid>
-    </Grid>
+    </materialDesign:Card>
 </UserControl>

@@ -4,6 +4,7 @@
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sys="clr-namespace:System;assembly=netstandard">
 
 
@@ -22,7 +23,7 @@
         TargetType="Button">
         <Setter Property="Height" Value="{StaticResource ControlHeight}" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
 
     <Style x:Key="NormalButton" TargetType="Button">
@@ -101,6 +102,11 @@
 
     <Style TargetType="dx:DropDownButton">
         <Setter Property="Height" Value="{StaticResource ControlHeight}" />
+    </Style>
+
+    <Style TargetType="materialDesign:Card">
+        <Setter Property="Margin" Value="16" />
+        <Setter Property="Padding" Value="8" />
     </Style>
 
 </ResourceDictionary>
