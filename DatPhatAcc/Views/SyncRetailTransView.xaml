@@ -103,10 +103,39 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid DockPanel.Dock="Bottom">
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                    <Button
+                        Margin="0,8,10,0"
+                        Command="{Binding RemoveClosingQuantityZeroCommand}"
+                        Content="Xóa tồn = 0"
+                        Style="{StaticResource PrimaryButton}" />
+
+                    <Button
+                        Margin="0,8,10,0"
+                        Command="{Binding AdjustQuantityCommand}"
+                        Content="Điều chỉnh SL xuất = tồn"
+                        Style="{StaticResource PrimaryButton}" />
+
+                    <Button
+                        Margin="0,8,10,0"
+                        Command="{Binding ApplyInterestRateCommand}"
+                        Content="Áp dụng tỉ lệ lãi bán lẻ"
+                        Style="{StaticResource PrimaryButton}" />
+
+                    <TextBox
+                        Margin="20,8,0,0"
+                        materialDesign:HintAssist.Hint="Nhập tổng tiền trước thuế mong muốn"
+                        Style="{StaticResource PrimaryTextBox}"
+                        Text="{Binding DesireAmount, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <Button
+                        Margin="0,8,10,0"
+                        Command="{Binding IncreaseQuantityCommand}"
+                        Content="Tăng thêm số lượng hàng hóa"
+                        Style="{StaticResource PrimaryButton}" />
+
                     <Button
                         Margin="0,8,0,0"
-                        HorizontalAlignment="Right"
                         materialDesign:ButtonProgressAssist.IsIndeterminate="True"
                         materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding CreateImportExcelBanHangCommand.IsRunning}"
                         materialDesign:ButtonProgressAssist.Value="-1"
@@ -120,7 +149,7 @@
                             <TextBlock Margin="5,0,0,0" Text="Xuất file import Excel" />
                         </StackPanel>
                     </Button>
-                </Grid>
+                </StackPanel>
 
                 <Grid Grid.Row="1" Margin="0,8,0,0">
                     <dxg:GridControl
@@ -131,7 +160,19 @@
                             <dxg:TableView
                                 ShowCheckBoxSelectorColumn="True"
                                 ShowGroupPanel="False"
-                                ShowSearchPanelMode="Never" />
+                                ShowSearchPanelMode="Never">
+                                <dxg:TableView.FormatConditions>
+                                    <dxg:FormatCondition
+                                        Expression="[Quantity] &gt; [ClosingQuantity]"
+                                        FieldName="Quantity"
+                                        PredefinedFormatName="LightRedFillWithDarkRedText" />
+
+                                    <dxg:FormatCondition
+                                        Expression="[Price] &lt; [CostPriceUnit]"
+                                        FieldName="Price"
+                                        PredefinedFormatName="LightRedFillWithDarkRedText" />
+                                </dxg:TableView.FormatConditions>
+                            </dxg:TableView>
                         </dxg:GridControl.View>
 
                         <dxg:GridControl.TotalSummary>
@@ -159,14 +200,34 @@
                         </dxg:GridControl.TotalSummary>
 
                         <dxg:GridColumn
-                            AllowEditing="False"
                             FieldName="GoodId"
                             Header="Mã hàng"
                             Style="{StaticResource ContainsFilter}" />
                         <dxg:GridColumn
-                            AllowEditing="False"
                             FieldName="ShortName"
                             Header="Tên hàng"
+                            Style="{StaticResource ContainsFilter}" />
+
+                        <dxg:GridColumn Width="50">
+                            <dxg:GridColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType={x:Type dxg:GridControl}}}"
+                                        CommandParameter="{Binding RowData.Row}"
+                                        Style="{x:Null}">
+                                        <iconPacks:PackIconFontAwesome
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Foreground="{StaticResource Danger}"
+                                            Kind="MinusCircleSolid" />
+                                    </Button>
+                                </DataTemplate>
+                            </dxg:GridColumn.CellTemplate>
+                        </dxg:GridColumn>
+
+                        <dxg:GridColumn
+                            FieldName="StockCode"
+                            Header="Kho"
                             Style="{StaticResource ContainsFilter}" />
 
                         <dxg:GridColumn
@@ -179,10 +240,10 @@
                         </dxg:GridColumn>
                         <dxg:GridColumn
                             AllowEditing="False"
-                            FieldName="CostPricePerUnit"
+                            FieldName="CostPriceUnit"
                             Header="Đơn giá vốn">
                             <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings DisplayFormat="N2" />
+                                <dxe:TextEditSettings DisplayFormat="N0" />
                             </dxg:GridColumn.EditSettings>
                         </dxg:GridColumn>
 

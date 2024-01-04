@@ -9,7 +9,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:DatPhatAcc.ViewModels"
-    Title="Thành Công - Misa"
+    Title="DatPhatAcc"
     Width="1200"
     Height="600"
     d:DataContext="{d:DesignInstance Type={x:Type viewmodels:MainViewModel}}"
@@ -23,17 +23,16 @@
     <DockPanel>
         <Menu Background="#C2B6FF" DockPanel.Dock="Top">
             <MenuItem Header="Hệ thống">
-                <MenuItem Command="{Binding RestartAppCommand}" Header="Khởi động lại" />
                 <MenuItem Command="{Binding ExitAppCommand}" Header="Thoát" />
             </MenuItem>
 
             <MenuItem Header="Giao dịch">
                 <MenuItem Command="{Binding NavigateToSyncPurchaseViewCommand}" Header="Đồng bộ giao dịch nhập hàng" />
-                <MenuItem Command="{Binding NavigateToSyncRetailTransViewCommand}" Header="Đồng bộ giao dịch xuất kho" />
+                <MenuItem Command="{Binding NavigateToSyncRetailTransViewCommand}" Header="Đồng bộ giao dịch bán lẻ 86LTT" />
             </MenuItem>
 
             <MenuItem Header="Báo cáo">
-                <MenuItem Command="{Binding NavigateToReportInventoryViewCommand}" Header="Tồn kho" />
+                <MenuItem Command="{Binding NavigateToReportInventoryViewCommand}" Header="Tổng hợp tồn kho" />
             </MenuItem>
             <MenuItem Command="{Binding NavigateToSettingViewCommand}" Header="Cài đặt" />
         </Menu>

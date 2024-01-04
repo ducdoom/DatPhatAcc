@@ -27,7 +27,12 @@ namespace DatPhatAcc.ViewModels
         private async Task GetInventoryItemSummary()
         {
             InventoryItemSummaries.Clear();
-            var list = await misaService.GetInventoryItemSummaryBalance(FromDate, ToDate);
+            List<InventoryItemSummary> list = new();
+            await Task.Run(async () =>
+            {
+                list = await misaService.GetInventoryItemSummaryBalance(FromDate, ToDate);
+            });
+
             InventoryItemSummaries = new ObservableCollection<InventoryItemSummary>(list);
 
         }

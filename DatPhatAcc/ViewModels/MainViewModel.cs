@@ -47,12 +47,6 @@ namespace DatPhatAcc.ViewModels
             Application.Current.Shutdown();
         }
 
-        [RelayCommand]
-        private void RestartApp()
-        {
-            System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
-            Application.Current.Shutdown();
-        }
     }
 
 }

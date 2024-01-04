@@ -41,7 +41,7 @@ namespace DatPhatAcc.Helpers
                     worksheet.Cells["AM" + startRow].Value = transDetailDTO.VatValue;// thuế suất
                     worksheet.Cells["AO" + startRow].Value = transDetailDTO.VatAmount;// tiền thuế
                     worksheet.Cells["AP" + startRow].Value = "33311";// tài khoản thuế đầu ra
-                    worksheet.Cells["AR" + startRow].Value = "TONGKHO10";// Kho
+                    worksheet.Cells["AR" + startRow].Value = transDetailDTO.StockCode;// Kho
                     worksheet.Cells["AS" + startRow].Value = "632";// tài khoản giá vốn
                     worksheet.Cells["AT" + startRow].Value = "1561";// tài khoản kho
 

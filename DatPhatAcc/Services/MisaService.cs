@@ -20,7 +20,7 @@ namespace DatPhatAcc.Services
         {
             if (refTypeDictionary.Count > 0)
             {
-                return new();
+                return refTypeDictionary;
             }
 
             MisaDbContext.AAMisaDbContext context = new();
@@ -56,8 +56,6 @@ namespace DatPhatAcc.Services
 
         public async Task<List<InventoryItemSummary>> GetInventoryItemSummaryBalance(DateTime fromDate, DateTime toDate)
         {
-            await Task.Delay(0).ConfigureAwait(false);
-
             Task getRefTypeDictionaryTask = GetRefTypeDictionary();
 
             //DateTime.Now trả về 01/01/2024 16:44:23 (bao gồm cả thời gian)
@@ -72,10 +70,11 @@ namespace DatPhatAcc.Services
             var opening = context.InventoryLedgers
                 .AsNoTracking()
                 .Where(x => x.PostedDate < fromDate)
-                .GroupBy(x => x.InventoryItemCode)
+                .GroupBy(x => new { x.InventoryItemCode, x.StockCode })
                 .Select(group => new InventoryItemSummary
                 {
-                    InventoryItemCode = group.Key,
+                    InventoryItemCode = group.Key.InventoryItemCode,
+                    StockCode = group.Key.StockCode ?? string.Empty,
                     OpeningQuantity = group.Sum(x => x.InwardQuantity ?? decimal.Zero) - group.Sum(x => x.OutwardQuantity ?? decimal.Zero),
                     OpeningAmount = group.Sum(x => x.InwardAmount) - group.Sum(x => x.OutwardAmount)
                 }).AsEnumerable();
@@ -87,10 +86,11 @@ namespace DatPhatAcc.Services
             var inOutWard = inventoryLedger.ToArray()
                 .Where(x => GetRefTypeName(x.RefType).Equals(INWARD) || GetRefTypeName(x.RefType).Equals(OUTWARD))
                 .Where(x => x.PostedDate >= fromDate && x.PostedDate <= toDate)
-                .GroupBy(x => x.InventoryItemCode)
+                .GroupBy(x => new { x.InventoryItemCode , x.StockCode})
                 .Select(group => new InventoryItemSummary
                 {
-                    InventoryItemCode = group.Key,
+                    InventoryItemCode = group.Key.InventoryItemCode,
+                    StockCode = group.Key.StockCode ?? string.Empty,
                     InQuantity = group.Sum(x => x.InwardQuantity ?? decimal.Zero),
                     InAmount = group.Sum(x => x.InwardAmount),
                     OutQuantity = group.Sum(x => x.OutwardQuantity ?? decimal.Zero),
@@ -102,10 +102,11 @@ namespace DatPhatAcc.Services
             {
                 inventoryItemSummaries = opening
                     .Union(inOutWard)
-                    .GroupBy(x => x.InventoryItemCode)
+                    .GroupBy(x => new { x.InventoryItemCode, x.StockCode })
                     .Select(group => new InventoryItemSummary
                     {
-                        InventoryItemCode = group.Key,
+                        InventoryItemCode = group.Key.InventoryItemCode,
+                        StockCode = group.Key.StockCode ?? string.Empty,
                         OpeningQuantity = group.Sum(x => x.OpeningQuantity),
                         OpeningAmount = group.Sum(x => x.OpeningAmount),
                         InQuantity = group.Sum(x => x.InQuantity),
@@ -116,14 +117,28 @@ namespace DatPhatAcc.Services
                     .Join(context.InventoryItems.AsNoTracking(), x => x.InventoryItemCode, y => y.InventoryItemCode, (x, y) => new InventoryItemSummary
                     {
                         InventoryItemCode = x.InventoryItemCode,
-                        InventoryItemName = y.InventoryItemName?? string.Empty,
-                        //UnitName = y.UnitName,
+                        InventoryItemName = y.InventoryItemName ?? string.Empty,
+                        StockCode = x.StockCode,
+                        UnitId = (Guid)y.UnitId,
                         OpeningQuantity = x.OpeningQuantity,
                         OpeningAmount = x.OpeningAmount,
                         InQuantity = x.InQuantity,
                         InAmount = x.InAmount,
                         OutQuantity = x.OutQuantity,
                         OutAmount = x.OutAmount
+                    })
+                    .Join(context.Units.AsNoTracking(), x => x.UnitId, unit => unit.UnitId, (inventoryItem, unit) => new InventoryItemSummary
+                    {
+                        InventoryItemCode = inventoryItem.InventoryItemCode,
+                        InventoryItemName = inventoryItem.InventoryItemName,
+                        StockCode = inventoryItem.StockCode,
+                        UnitName = unit.UnitName,
+                        OpeningQuantity = inventoryItem.OpeningQuantity,
+                        OpeningAmount = inventoryItem.OpeningAmount,
+                        InQuantity = inventoryItem.InQuantity,
+                        InAmount = inventoryItem.InAmount,
+                        OutQuantity = inventoryItem.OutQuantity,
+                        OutAmount = inventoryItem.OutAmount
                     })
                     .ToList();
             }

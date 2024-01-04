@@ -15,12 +15,21 @@ namespace DatPhatAcc.ViewModels
     {
         private readonly AccountingService accountingService;
         private readonly ShareViewModel shareViewModel;
+        private readonly SettingViewModel settingViewModel;
         private readonly MisaUltis misaUltis;
-        public SyncRetailTransViewModel(AccountingService accountingService, ShareViewModel shareViewModel, MisaUltis misaUltis)
+
+        public SyncRetailTransViewModel(
+            AccountingService accountingService,
+            ShareViewModel shareViewModel,
+            MisaUltis misaUltis,
+            SettingViewModel settingViewModel
+            )
         {
             this.accountingService = accountingService;
             this.shareViewModel = shareViewModel;
             this.misaUltis = misaUltis;
+            this.settingViewModel = settingViewModel;
+
             Init();
         }
 
@@ -48,7 +57,14 @@ namespace DatPhatAcc.ViewModels
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(CreateImportExcelBanHangCommand))]
+        [NotifyCanExecuteChangedFor(nameof(ApplyInterestRateCommand))]
+        [NotifyCanExecuteChangedFor(nameof(RemoveClosingQuantityZeroCommand))]
+        [NotifyCanExecuteChangedFor(nameof(AdjustQuantityCommand))]
+        
         private ObservableCollection<TransDetailDTO> transDetailDTOs = new();
+
+        [ObservableProperty]
+        private decimal desireAmount = 0;
 
         #endregion
 
@@ -108,6 +124,85 @@ namespace DatPhatAcc.ViewModels
             {
                 MessageBox.Show("Tạo file thành công", "Thông báo");
             }
+        }
+
+
+        private bool CanEditGridData() => TransDetailDTOs.Count > 0;
+
+        [RelayCommand(CanExecute = nameof(CanEditGridData))]
+        private void ApplyInterestRate()
+        {
+            var branchInterestRate = settingViewModel.BranchInterestRates;
+
+            foreach (TransDetailDTO item in TransDetailDTOs)
+            {
+                if (item.Price < item.CostPriceUnit)
+                {
+                    item.Price = item.CostPriceUnit;
+                }
+
+                string branchId = ThanhCongAccountingHelper.GetBranchFromGoodId(item.GoodId);
+                decimal interestValue = 10;
+                Models.BranchInterestRate? interestRate = branchInterestRate.FirstOrDefault(x => x.BranchId.Equals(branchId));
+                if (interestRate != null)
+                {
+                    interestValue = interestRate.RetailInterestRate;
+                }
+
+                item.Price = item.CostPriceUnit * (1 + interestValue / 100);
+            }
+        }
+
+        [RelayCommand(CanExecute = nameof(CanEditGridData))]
+        private void RemoveClosingQuantityZero()
+        {
+            TransDetailDTOs = new(TransDetailDTOs.Where(item => item.ClosingQuantity != 0));
+        }
+
+        [RelayCommand(CanExecute = nameof(CanEditGridData))]
+        private void AdjustQuantity()
+        {
+            foreach (TransDetailDTO item in TransDetailDTOs)
+            {
+                var newQuantity = Math.Min(item.ClosingQuantity, item.Quantity);
+                if (item.Quantity != newQuantity)
+                {
+                    item.Quantity = newQuantity;
+                }
+            }
+        }
+
+        [RelayCommand]
+        private void IncreaseQuantity()
+        {
+            decimal currentTotalAmount = TransDetailDTOs.Sum(x => x.TotalPrice);
+            if (DesireAmount < currentTotalAmount)
+            {
+                return;
+            }
+
+            while (currentTotalAmount <= DesireAmount)
+            {
+                foreach (TransDetailDTO item in TransDetailDTOs)
+                {                    
+                    if (item.Quantity < item.ClosingQuantity)
+                    {
+                        item.Quantity++;
+                    }
+
+                    currentTotalAmount = TransDetailDTOs.Sum(x => x.TotalPrice);
+                    if(currentTotalAmount >= DesireAmount)
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+
+        [RelayCommand]
+        private void RemoveItem(TransDetailDTO transDetailDTO)
+        {
+            TransDetailDTOs.Remove(transDetailDTO);
         }
 
 

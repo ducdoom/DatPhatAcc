@@ -4,7 +4,6 @@ using DatPhatAcc.Models;
 using DatPhatAcc.Models.DTO;
 using DevExpress.Mvvm.Native;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace DatPhatAcc.Services
 {
@@ -178,8 +177,8 @@ namespace DatPhatAcc.Services
                 {
                     retailTran.GoodId,
                     good.ShortName,
-                    retailTran.Quantity,
-                    retailTran.TotalExpPriceVat
+                    retailTran.OrginalQty,
+                    retailTran.TotalPriceVatorg
                 });
 
             // Query for discounts with AsNoTracking
@@ -207,14 +206,14 @@ namespace DatPhatAcc.Services
                     {
                         GoodId = group.Key,
                         ShortName = group.First().ShortName,
-                        Quantity = group.Sum(x => x.Quantity ?? 0),
-                        TotalPriceVat = group.Sum(x => x.TotalExpPriceVat ?? decimal.Zero) - discount
+                        Quantity = group.Sum(x => x.OrginalQty ?? 0),
+                        TotalPriceVat = group.Sum(x => x.TotalPriceVatorg ?? decimal.Zero) - discount
                     };
                 }).ToList();
 
             List<InventoryItemSummary> inventoryItemSummaries = await getInventoryItemSummaryBalanceTask.ConfigureAwait(false);
             //add closing quantity
-            await AddClosingQuantity(finalResults, inventoryItemSummaries).ConfigureAwait(false);
+            await AddClosingQuantityAndCostPriceUnit(finalResults, inventoryItemSummaries).ConfigureAwait(false);
 
             return finalResults;
         }
@@ -246,8 +245,8 @@ namespace DatPhatAcc.Services
                 {
                     retailTran.GoodId,
                     good.ShortName,
-                    retailTran.Quantity,
-                    retailTran.TotalExpPriceVat
+                    retailTran.OrginalQty,
+                    retailTran.TotalPriceVatorg
                 });
 
             // Query for discounts with AsNoTracking
@@ -275,25 +274,29 @@ namespace DatPhatAcc.Services
                     {
                         GoodId = group.Key,
                         ShortName = group.First().ShortName,
-                        Quantity = group.Sum(x => x.Quantity ?? 0),
-                        TotalPriceVat = group.Sum(x => x.TotalExpPriceVat ?? decimal.Zero) - discount
+                        Quantity = group.Sum(x => x.OrginalQty ?? 0),
+                        TotalPriceVat = group.Sum(x => x.TotalPriceVatorg ?? decimal.Zero) - discount
                     };
                 });
 
             List<InventoryItemSummary> inventoryItemSummaries = await getInventoryItemSummaryBalanceTask.ConfigureAwait(false);
             List<TransDetailDTO> transDetailDTOs = finalResults.ToList();
             //add closing quantity
-            await AddClosingQuantity(transDetailDTOs, inventoryItemSummaries).ConfigureAwait(false);
+            await AddClosingQuantityAndCostPriceUnit(transDetailDTOs, inventoryItemSummaries).ConfigureAwait(false);
 
             return transDetailDTOs;
         }
 
-        public async Task AddClosingQuantity(List<TransDetailDTO> transDetailDTOs, List<InventoryItemSummary> inventoryItemSummaries)
+        public async Task AddClosingQuantityAndCostPriceUnit(List<TransDetailDTO> transDetailDTOs, List<InventoryItemSummary> inventoryItemSummaries)
         {
+            await Task.Delay(0).ConfigureAwait(false);
+            var sortedSummary = inventoryItemSummaries.OrderByDescending(stock => stock.StockCode.StartsWith("KHANG"));
+
             foreach (var item in transDetailDTOs)
             {
-                item.ClosingQuantity = inventoryItemSummaries.FirstOrDefault(x => x.InventoryItemCode.Equals(item.GoodId))?.ClosingQuantity ?? 0;
-                Debug.WriteLine(item.ShortName + ": " + item.ClosingQuantity);
+                item.ClosingQuantity = sortedSummary.FirstOrDefault(x => x.InventoryItemCode.Equals(item.GoodId))?.ClosingQuantity ?? 0;
+                item.CostPriceUnit = sortedSummary.FirstOrDefault(x => x.InventoryItemCode.Equals(item.GoodId))?.CostPriceUnit ?? 0;
+                item.StockCode = sortedSummary.FirstOrDefault(x => x.InventoryItemCode.Equals(item.GoodId))?.StockCode ?? string.Empty;
             }
         }
 
