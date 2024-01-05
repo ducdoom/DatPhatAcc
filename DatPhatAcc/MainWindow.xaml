@@ -31,10 +31,13 @@
                 <MenuItem Command="{Binding NavigateToSyncRetailTransViewCommand}" Header="Đồng bộ giao dịch bán lẻ 86LTT" />
             </MenuItem>
 
+            <MenuItem Command="{Binding NavigateToOutwardViewCommand}" Header="Bán hàng" />
+
             <MenuItem Header="Báo cáo">
                 <MenuItem Command="{Binding NavigateToReportInventoryViewCommand}" Header="Tổng hợp tồn kho" />
             </MenuItem>
             <MenuItem Command="{Binding NavigateToSettingViewCommand}" Header="Cài đặt" />
+
         </Menu>
 
         <ContentPresenter Grid.Column="1" Content="{Binding NavigationService.CurrentView}" />

@@ -86,7 +86,7 @@ namespace DatPhatAcc.Services
             var inOutWard = inventoryLedger.ToArray()
                 .Where(x => GetRefTypeName(x.RefType).Equals(INWARD) || GetRefTypeName(x.RefType).Equals(OUTWARD))
                 .Where(x => x.PostedDate >= fromDate && x.PostedDate <= toDate)
-                .GroupBy(x => new { x.InventoryItemCode , x.StockCode})
+                .GroupBy(x => new { x.InventoryItemCode, x.StockCode })
                 .Select(group => new InventoryItemSummary
                 {
                     InventoryItemCode = group.Key.InventoryItemCode,
@@ -180,6 +180,48 @@ namespace DatPhatAcc.Services
             return refTypeName;
         }
 
+        public async Task<IEnumerable<MisaDbContext.SaleLedger>> GetSaleLedgersSummary(DateTime fromDate, DateTime toDate)
+        {
+            DateTime fromDateStart = fromDate.ToStartOfDate();
+            DateTime toDateEnd = toDate.ToEndOfDate();
 
+            MisaDbContext.AAMisaDbContext context = new();
+            var saleLedgers = context.SaleLedgers.AsNoTracking()
+                 .OrderByDescending(x => x.InvNo)
+                 .Where(x => x.PostedDate >= fromDateStart && x.PostedDate <= toDateEnd)
+                 .GroupBy(group => group.InvNo)
+                 .Select(x => new SaleLedger
+                 {
+                     InvNo = x.Key,
+                     RefId = x.First().RefId,
+                     PostedDate = x.First().PostedDate,
+                     AccountObjectName = x.First().AccountObjectName,
+                     SaleAmount = x.Sum(x => x.SaleAmount)
+                 });
+
+            return await saleLedgers.ToArrayAsync().ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<Models.SaleLedgerDetail>> GetSaleLedgersDetail(Guid refId)
+        {
+            MisaDbContext.AAMisaDbContext context = new();
+            IEnumerable<SaleLedgerDetail> saleLedgerDetails = context.SaleLedgers.AsNoTracking()
+                .Where(x => x.RefId.Equals(refId))
+                .Join(context.Units, sl => sl.UnitId, unit => unit.UnitId, (sld, unit) => new Models.SaleLedgerDetail
+                {
+                    InvNo = sld.InvNo,
+                    InventoryItemCode = sld.InventoryItemCode,
+                    InventoryItemName = sld.InventoryItemName,
+                    UnitId = sld.UnitId,
+                    UnitName = unit.UnitName,
+                    UnitPrice = sld.UnitPrice,
+                    SaleQuantity = sld.SaleQuantity,
+                    SaleAmount = sld.SaleAmount,
+                    Vatrate = sld.Vatrate,
+                    Vatamount = sld.Vatamount                    
+                });
+
+            return saleLedgerDetails;
+        }
     }
 }

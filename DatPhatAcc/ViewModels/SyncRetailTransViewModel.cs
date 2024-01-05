@@ -205,6 +205,12 @@ namespace DatPhatAcc.ViewModels
             TransDetailDTOs.Remove(transDetailDTO);
         }
 
+        [RelayCommand]
+        private void ExportIhoadonExcelFile()
+        {
+
+        }
+
 
     }
 }

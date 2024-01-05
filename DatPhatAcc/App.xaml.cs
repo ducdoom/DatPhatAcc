@@ -26,10 +26,13 @@ namespace DatPhatAcc
             services.AddSingleton<SyncRetailTransViewModel>();
             services.AddSingleton<ReportInventoryViewModel>();
             services.AddSingleton<ShareViewModel>();
+            services.AddSingleton<OutwardViewModel>();
 
             services.AddSingleton<AccountingService>(); //services
             services.AddSingleton<MisaService>();
             services.AddSingleton<MisaUltis>();
+            services.AddSingleton<Ihoadon>();
+
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             services.AddTransient<SettingViewModel>(); //transient

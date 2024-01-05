@@ -18,6 +18,12 @@ namespace DatPhatAcc.ViewModels
 
 
         [RelayCommand]
+        private void ExitApp()
+        {
+            Application.Current.Shutdown();
+        }
+
+        [RelayCommand]
         private void NavigateToSyncPurchaseView()
         {
             NavigationService.Navigate<SyncPurchaseViewModel>();
@@ -42,10 +48,11 @@ namespace DatPhatAcc.ViewModels
         }
 
         [RelayCommand]
-        private void ExitApp()
+        private void NavigateToOutwardView()
         {
-            Application.Current.Shutdown();
+            NavigationService.Navigate<OutwardViewModel>();
         }
+
 
     }
 
