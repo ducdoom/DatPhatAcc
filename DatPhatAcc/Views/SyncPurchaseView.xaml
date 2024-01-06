@@ -230,12 +230,12 @@
                         </dxg:GridControl.TotalSummary>
 
                         <dxg:GridColumn
-                            AllowEditing="False"
+                            
                             FieldName="GoodId"
                             Header="Mã hàng"
                             Style="{StaticResource ContainsFilter}" />
                         <dxg:GridColumn
-                            AllowEditing="False"
+                            
                             FieldName="ShortName"
                             Header="Tên hàng"
                             Style="{StaticResource ContainsFilter}" />
@@ -382,12 +382,12 @@
                         </dxg:GridControl.TotalSummary>
 
                         <dxg:GridColumn
-                            AllowEditing="False"
+                            
                             FieldName="GoodId"
                             Header="Mã hàng"
                             Style="{StaticResource ContainsFilter}" />
                         <dxg:GridColumn
-                            AllowEditing="False"
+                            
                             FieldName="ShortName"
                             Header="Tên hàng"
                             Style="{StaticResource ContainsFilter}" />

@@ -321,6 +321,11 @@ namespace DatPhatAcc.ViewModels
             {
                 MessageBox.Show("Tạo file excel thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+            else
+            {
+                MessageBox.Show("Tạo file excel thất bại", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
 
         #endregion

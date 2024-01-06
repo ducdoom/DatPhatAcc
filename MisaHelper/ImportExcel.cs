@@ -15,7 +15,7 @@ namespace MisaHelper
             try
             {
                 FileInfo file = new("ExcelTemplates\\Mau_danh_muc_vat_tu_hang_hoa_VND.xlsx");
-                using ExcelPackage excelPackage = new(file);
+                ExcelPackage excelPackage = new(file);
 
                 ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[0];
 
@@ -36,7 +36,7 @@ namespace MisaHelper
                 return true;
             }
             catch
-            {
+            {                
                 return false;
             }
         }
