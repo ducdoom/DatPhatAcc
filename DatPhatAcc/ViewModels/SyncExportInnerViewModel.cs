@@ -43,6 +43,9 @@ namespace DatPhatAcc.ViewModels
         [ObservableProperty]
         private Models.TranDetail2 selectedTranDetail2 = new();
 
+        [ObservableProperty]
+        private ObservableCollection<Models.InventoryItemSummary> inventoryItemSummary = new();
+
         #endregion
 
         #region Commands
@@ -61,11 +64,7 @@ namespace DatPhatAcc.ViewModels
             //var tranDetail2 = await accountingService.GetTransDetaiExportInnerAsync(SelectedCustomer, FromDate, ToDate);
             var inventoryItemSummary = await misaService.GetInventoryItemSummaryBalance(DateTime.Now, DateTime.Now);
 
-            TranDetail2 tranDetail2 = new TranDetail2();
-            tranDetail2.InventoryItems = new(inventoryItemSummary);
-
-            TranDetail2 tranDetail3 = new TranDetail2();
-            tranDetail3.InventoryItems = new(inventoryItemSummary);
+            InventoryItemSummary = new ObservableCollection<Models.InventoryItemSummary>(inventoryItemSummary);
         }
 
         #endregion
