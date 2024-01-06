@@ -1,4 +1,5 @@
-﻿using DatPhatAcc.Models.DTO;
+﻿using DatPhatAcc.Models;
+using DatPhatAcc.Models.DTO;
 using OfficeOpenXml;
 using System.IO;
 using System.Windows;
@@ -12,6 +13,36 @@ namespace DatPhatAcc.Helpers
 
         }
 
+        public async Task<bool> CreateFileImportNewInventoryItem(IEnumerable<Models.NewInventoryItem> newInventoryItems, string saveFile)
+        {
+            try
+            {
+                FileInfo file = new("Resources\\MisaExcelTemplates\\Mau_danh_muc_vat_tu_hang_hoa_VND.xlsx");
+                ExcelPackage excelPackage = new(file);
+
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[0];
+
+                int startRow = 2;
+                foreach (NewInventoryItem item in newInventoryItems)
+                {
+                    worksheet.Cells["A" + startRow].Value = item.ProductId;
+                    worksheet.Cells["B" + startRow].Value = item.ProductName;
+                    worksheet.Cells["D" + startRow].Value = item.UnitName;
+                    worksheet.Cells["H" + startRow].Value = item.TK_KHO;
+                    worksheet.Cells["I" + startRow].Value = item.TK_DOANHTHU;
+                    worksheet.Cells["J" + startRow].Value = item.TK_CHI_PHI;
+
+                    startRow++;
+                }
+
+                await excelPackage.SaveAsAsync(saveFile).ConfigureAwait(false);
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         public async Task<bool> CreateFileImportBanHang(IEnumerable<Models.DTO.TransDetailDTO> transDetailDTOs, string saveFile)
         {
@@ -51,7 +82,7 @@ namespace DatPhatAcc.Helpers
                 await excelPackage.SaveAsAsync(saveFile).ConfigureAwait(false);
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Lỗi");
                 return false;

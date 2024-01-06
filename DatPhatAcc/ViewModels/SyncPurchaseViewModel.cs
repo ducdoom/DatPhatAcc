@@ -2,13 +2,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DatPhatAcc.AccountingDbContext;
+using DatPhatAcc.Models;
 using DatPhatAcc.Models.DTO;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Windows;
 using ListVat = DatPhatAcc.AccountingDbContext.ListVat;
 
@@ -289,37 +288,28 @@ namespace DatPhatAcc.ViewModels
             string saveFilePath = saveFileDialog.FileName;
 
             ACCOUNTINGContext accountingContext = new();
-            IEnumerable<Good> goods = await accountingContext.Goods.ToArrayAsync();
 
-            List<MisaHelper.Models.MisaVTHH> misaVTHHs = new();
-
-            foreach (TempTransDetailDTO product in TempTransDetailDTOs)
-            {
-                MisaHelper.Models.MisaVTHH misaVTHH = new()
+            var newInventoryItems = TempTransDetailDTOs
+                .Join(accountingContext.Goods, temp => temp.GoodId, good => good.GoodId, (temp, good) => new NewInventoryItem
                 {
-                    ProductId = product.GoodId,
-                    ProductName = product.ShortName,
-                    Unit = AccountingService.GetUnitNameByGoodId(product.GoodId)
-                };
+                    ProductId = temp.GoodId,
+                    ProductName = good.ShortName,
+                    UnitId = good.UnitId
+                })
+                .Join(accountingContext.Units, newII=> newII.UnitId, unit => unit.UnitId, (item, unit)=>new NewInventoryItem 
+                {
+                    ProductId = item.ProductId,
+                    ProductName = item.ProductName,
+                    UnitId = item.UnitId,
+                    UnitName = unit.UnitName
+                });
 
-                misaVTHHs.Add(misaVTHH);
-            }
-
-            string templateFilePath = "Resources\\MisaExcelTemplates\\Mau_danh_muc_vat_tu_hang_hoa_VND.xlsx";
-            if (!System.IO.File.Exists(templateFilePath))
-            {
-                MessageBox.Show("Không tìm thấy file excel template");
-                return;
-            }
-
-            MisaHelper.MisaHelper misaHelper = new();
-            if (File.Exists(saveFilePath))
-                File.Delete(saveFilePath);
+            Helpers.MisaUltis misaUltis = new();
 
             bool success = false;
             try
             {
-                success = misaHelper.ImportExcel.CreateFileImportMisaVTHH(misaVTHHs, saveFilePath);
+                success = await misaUltis.ImportExcel.CreateFileImportNewInventoryItem(newInventoryItems, saveFilePath);
             }
             catch (Exception ex)
             {

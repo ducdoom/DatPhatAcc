@@ -24,7 +24,7 @@ namespace MisaHelper
                 {
                     worksheet.Cells["A" + startRow].Value = misaVTHH.ProductId;
                     worksheet.Cells["B" + startRow].Value = misaVTHH.ProductName;
-                    worksheet.Cells["D" + startRow].Value = misaVTHH.Unit;
+                    worksheet.Cells["D" + startRow].Value = misaVTHH.UnitId;
                     worksheet.Cells["H" + startRow].Value = misaVTHH.TK_KHO;
                     worksheet.Cells["I" + startRow].Value = misaVTHH.TK_DOANHTHU;
                     worksheet.Cells["J" + startRow].Value = misaVTHH.TK_CHI_PHI;

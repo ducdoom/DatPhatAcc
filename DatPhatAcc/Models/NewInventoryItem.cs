@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MisaHelper.Models
+﻿namespace DatPhatAcc.Models
 {
-    public class MisaVTHH
+    public class NewInventoryItem
     {
         public string ProductId { get; set; } = string.Empty;
         public string ProductName { get; set; } = string.Empty;
-
         public string UnitId { get; set; } = string.Empty;
         public string UnitName { get; set; } = string.Empty;
-
         public string TK_KHO { get; set; } = "1561";
         public string TK_DOANHTHU { get; set; } = "5111";
         public string TK_CHIETKHAU { get; set; } = "5211";
