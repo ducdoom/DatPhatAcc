@@ -35,9 +35,9 @@ namespace MisaHelper
                 excelPackage.SaveAs(saveFile);
                 return true;
             }
-            catch
+            catch(System.Exception ex)
             {                
-                return false;
+                throw ex;
             }
         }
 

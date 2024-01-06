@@ -316,7 +316,16 @@ namespace DatPhatAcc.ViewModels
             if (File.Exists(saveFilePath))
                 File.Delete(saveFilePath);
 
-            bool success = misaHelper.ImportExcel.CreateFileImportMisaVTHH(misaVTHHs, saveFilePath);
+            bool success = false;
+            try
+            {
+                success = misaHelper.ImportExcel.CreateFileImportMisaVTHH(misaVTHHs, saveFilePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
             if (success)
             {
                 MessageBox.Show("Tạo file excel thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
