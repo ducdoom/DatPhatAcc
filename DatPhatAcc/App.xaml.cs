@@ -24,6 +24,7 @@ namespace DatPhatAcc
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<SyncPurchaseViewModel>();
             services.AddSingleton<SyncRetailTransViewModel>();
+            services.AddSingleton<SyncExportInnerViewModel>();
             services.AddSingleton<ReportInventoryViewModel>();
             services.AddSingleton<ShareViewModel>();
             services.AddSingleton<OutwardViewModel>();

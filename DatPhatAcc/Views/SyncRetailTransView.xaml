@@ -21,10 +21,6 @@
         </Grid.RowDefinitions>
 
         <StackPanel Margin="{StaticResource DefaultMargin}" Orientation="Horizontal">
-            <RadioButton />
-            <RadioButton />
-            <RadioButton />
-
             <TextBlock Margin="5,0,5,0" Text="Từ ngày:" />
             <dxe:DateEdit DateTime="{Binding FromDate}" />
             <TextBlock Margin="5,0,5,0" Text="Đến ngày:" />
@@ -153,9 +149,10 @@
 
                 <Grid Grid.Row="1" Margin="0,8,0,0">
                     <dxg:GridControl
-                        Grid.Row="1"
+                        Grid.Row="1" SelectionMode="MultipleRow"
                         Margin="0"
-                        ItemsSource="{Binding TransDetailDTOs}">
+                        ItemsSource="{Binding TransDetailDTOs}"
+                        SelectedItems="{Binding SelectedTransDetailDTOs}">
                         <dxg:GridControl.View>
                             <dxg:TableView
                                 ShowCheckBoxSelectorColumn="True"

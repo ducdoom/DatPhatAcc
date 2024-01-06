@@ -37,6 +37,14 @@ namespace DatPhatAcc.ViewModels
         {
             ListVats = shareViewModel.ListVats;
             SelectedListVat = ListVats.First(listVat => listVat.VatValue.Equals(10));
+
+            SelectedTransDetailDTOs.CollectionChanged += SelectedTransDetailDTOs_CollectionChanged;
+        }
+
+        private void SelectedTransDetailDTOs_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            CreateImportExcelBanHangCommand.NotifyCanExecuteChanged();
+            IncreaseQuantityCommand.NotifyCanExecuteChanged();
         }
 
         #region Properties
@@ -55,13 +63,17 @@ namespace DatPhatAcc.ViewModels
         [ObservableProperty]
         private ListVat selectedListVat = new();
 
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(CreateImportExcelBanHangCommand))]
+        [ObservableProperty]        
         [NotifyCanExecuteChangedFor(nameof(ApplyInterestRateCommand))]
         [NotifyCanExecuteChangedFor(nameof(RemoveClosingQuantityZeroCommand))]
-        [NotifyCanExecuteChangedFor(nameof(AdjustQuantityCommand))]
-        
+        [NotifyCanExecuteChangedFor(nameof(AdjustQuantityCommand))]        
         private ObservableCollection<TransDetailDTO> transDetailDTOs = new();
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(CreateImportExcelBanHangCommand))]
+        [NotifyCanExecuteChangedFor(nameof(IncreaseQuantityCommand))]
+        private ObservableCollection<TransDetailDTO> selectedTransDetailDTOs = new();
+
 
         [ObservableProperty]
         private decimal desireAmount = 0;
@@ -100,7 +112,7 @@ namespace DatPhatAcc.ViewModels
             SetAllVatValue();
         }
 
-        private bool CanCreateImportExcelBanHang() => TransDetailDTOs.Count > 0;
+        private bool CanCreateImportExcelBanHang() => SelectedTransDetailDTOs.Count > 0;
 
         [RelayCommand(CanExecute = nameof(CanCreateImportExcelBanHang))]
         private async Task CreateImportExcelBanHang()
@@ -119,10 +131,10 @@ namespace DatPhatAcc.ViewModels
 
             string fileName = saveFileDialog.FileName;
 
-            bool success = await misaUltis.ImportExcel.CreateFileImportBanHang(TransDetailDTOs, fileName);
+            bool success = await misaUltis.ImportExcel.CreateFileImportBanHang(SelectedTransDetailDTOs, fileName);
             if (success)
             {
-                MessageBox.Show("Tạo file thành công", "Thông báo");
+                MessageBox.Show("Tạo file import bán hàng thành công", "Thông báo");
             }
         }
 
@@ -172,10 +184,10 @@ namespace DatPhatAcc.ViewModels
             }
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute =nameof(CanCreateImportExcelBanHang))]
         private void IncreaseQuantity()
         {
-            decimal currentTotalAmount = TransDetailDTOs.Sum(x => x.TotalPrice);
+            decimal currentTotalAmount = SelectedTransDetailDTOs.Sum(x => x.TotalPrice);
             if (DesireAmount < currentTotalAmount)
             {
                 return;
@@ -183,14 +195,14 @@ namespace DatPhatAcc.ViewModels
 
             while (currentTotalAmount <= DesireAmount)
             {
-                foreach (TransDetailDTO item in TransDetailDTOs)
+                foreach (TransDetailDTO item in SelectedTransDetailDTOs)
                 {                    
                     if (item.Quantity < item.ClosingQuantity)
                     {
                         item.Quantity++;
                     }
 
-                    currentTotalAmount = TransDetailDTOs.Sum(x => x.TotalPrice);
+                    currentTotalAmount = SelectedTransDetailDTOs.Sum(x => x.TotalPrice);
                     if(currentTotalAmount >= DesireAmount)
                     {
                         return;
@@ -205,11 +217,6 @@ namespace DatPhatAcc.ViewModels
             TransDetailDTOs.Remove(transDetailDTO);
         }
 
-        [RelayCommand]
-        private void ExportIhoadonExcelFile()
-        {
-
-        }
 
 
     }

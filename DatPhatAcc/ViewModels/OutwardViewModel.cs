@@ -29,6 +29,8 @@ namespace DatPhatAcc.ViewModels
         [ObservableProperty]
         private ObservableCollection<MisaDbContext.SaleLedger> saleLedgersSummary = new();
 
+       
+
         #endregion
 
         #region Commands

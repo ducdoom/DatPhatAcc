@@ -1,0 +1,197 @@
+﻿<UserControl
+    x:Class="DatPhatAcc.Views.SyncExportInnerView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:DatPhatAcc.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:DatPhatAcc.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:SyncExportInnerViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <materialDesign:Card>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <TextBlock Margin="5,0,5,0" Text="Từ ngày:" />
+                <DatePicker SelectedDate="{Binding FromDate}" />
+                <TextBlock Margin="5,0,5,0" Text="Đến ngày:" />
+                <DatePicker SelectedDate="{Binding ToDate}" />
+
+                <ComboBox
+                    Width="400"
+                    Margin="5,0,0,0"
+                    materialDesign:HintAssist.Hint="Siêu thị thành viên"
+                    ItemsSource="{Binding Customers}"
+                    SelectedItem="{Binding SelectedCustomer}"
+                    Style="{StaticResource PrimaryCombobox}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding CustomerId}" />
+                                <TextBlock Text=" - " />
+                                <TextBlock Text="{Binding CustomerName}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+
+
+                <Button
+                    Margin="10,0,0,0"
+                    materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding GetTransDetaiExportInnerCommand.IsRunning}"
+                    materialDesign:ButtonProgressAssist.Value="-1"
+                    Command="{Binding GetTransDetaiExportInnerCommand}"
+                    Style="{StaticResource PrimaryButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconFontAwesome
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Kind="SearchSolid" />
+                        <TextBlock Margin="5,0,0,0" Text="Tìm kiếm" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <Grid Grid.Row="1">
+                <dxg:GridControl
+                    Grid.Row="1"
+                    Margin="0"
+                    ItemsSource="{Binding TranDetail2s}"
+                    SelectedItem="{Binding SelectedTranDetail2}"
+                    SelectionMode="MultipleRow">
+                    <dxg:GridControl.View>
+                        <dxg:TableView
+                            ShowCheckBoxSelectorColumn="True"
+                            ShowGroupPanel="False"
+                            ShowSearchPanelMode="Never">
+                            <dxg:TableView.FormatConditions>
+                                <dxg:FormatCondition
+                                    Expression="[Quantity] &gt; [ClosingQuantity]"
+                                    FieldName="Quantity"
+                                    PredefinedFormatName="LightRedFillWithDarkRedText" />
+
+                                <dxg:FormatCondition
+                                    Expression="[Price] &lt; [CostPriceUnit]"
+                                    FieldName="Price"
+                                    PredefinedFormatName="LightRedFillWithDarkRedText" />
+                            </dxg:TableView.FormatConditions>
+                        </dxg:TableView>
+                    </dxg:GridControl.View>
+
+                    <dxg:GridControl.TotalSummary>
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N0}"
+                            FieldName="GoodId"
+                            SummaryType="Count" />
+
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N0}"
+                            FieldName="Quantity"
+                            SummaryType="Sum" />
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N0}"
+                            FieldName="TotalPrice"
+                            SummaryType="Sum" />
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N0}"
+                            FieldName="TotalPriceVat"
+                            SummaryType="Sum" />
+                    </dxg:GridControl.TotalSummary>
+
+                    <dxg:GridColumn
+                        FieldName="GoodId"
+                        Header="Mã hàng"
+                        Style="{StaticResource ContainsFilter}" />
+
+                    <dxg:GridColumn
+                        FieldName="GoodId"
+                        Header="Mã hàng"
+                        Style="{StaticResource ContainsFilter}" />
+                    <dxg:GridColumn
+                        FieldName="ShortName"
+                        Header="Tên hàng"
+                        Style="{StaticResource ContainsFilter}" />
+
+                    <dxg:GridColumn Width="50">
+                        <dxg:GridColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType={x:Type dxg:GridControl}}}"
+                                    CommandParameter="{Binding RowData.Row}"
+                                    Style="{x:Null}">
+                                    <iconPacks:PackIconFontAwesome
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Foreground="{StaticResource Danger}"
+                                        Kind="MinusCircleSolid" />
+                                </Button>
+                            </DataTemplate>
+                        </dxg:GridColumn.CellTemplate>
+                    </dxg:GridColumn>
+
+                    <dxg:GridColumn
+                        FieldName="StockCode"
+                        Header="Kho"
+                        Style="{StaticResource ContainsFilter}" />
+
+                    <dxg:GridColumn
+                        AllowEditing="False"
+                        FieldName="ClosingQuantity"
+                        Header="Tồn">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn
+                        AllowEditing="False"
+                        FieldName="CostPriceUnit"
+                        Header="Đơn giá vốn">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+
+                    <dxg:GridColumn FieldName="Quantity" Header="Số lượng">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="Price" Header="Đơn giá">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="TotalPrice" Header="Thành tiền">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="VatValue" Header="Vat" />
+                    <dxg:GridColumn FieldName="TotalPriceVat" Header="Thành tiền VAT">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+
+
+                </dxg:GridControl>
+            </Grid>
+        </Grid>
+    </materialDesign:Card>
+</UserControl>

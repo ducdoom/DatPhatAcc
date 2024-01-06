@@ -53,6 +53,12 @@ namespace DatPhatAcc.ViewModels
             NavigationService.Navigate<OutwardViewModel>();
         }
 
+        [RelayCommand]
+        private void NavigateToSyncExportInnerView()
+        {
+            NavigationService.Navigate<SyncExportInnerViewModel>();
+        }
+
 
     }
 

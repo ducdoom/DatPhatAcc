@@ -111,7 +111,7 @@
                         FieldName="StockCode"
                         Header="Kho hàng"
                         Style="{StaticResource ContainsFilter}" />
-                    
+
                     <dxg:GridColumn
                         AllowEditing="False"
                         FieldName="InventoryItemCode"
@@ -123,6 +123,17 @@
                         FieldName="InventoryItemName"
                         Header="Tên hàng"
                         Style="{StaticResource ContainsFilter}" />
+
+                    <dxg:GridColumn
+                        AllowEditing="False"
+                        FieldName="CostPriceUnit"
+                        Header="Đơn giá vốn"
+                        Style="{StaticResource ContainsFilter}">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+
+                    </dxg:GridColumn>
 
                     <dxg:GridColumn
                         AllowEditing="False"

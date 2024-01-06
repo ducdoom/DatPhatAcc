@@ -305,5 +305,53 @@ namespace DatPhatAcc.Services
             ACCOUNTINGContext context = new();
             return await context.Branches.ToArrayAsync().ConfigureAwait(false);
         }
+
+        public async Task<IEnumerable<AccountingDbContext.Customer>> GetCustomersAsync()
+        {
+            ACCOUNTINGContext context = new();
+            IEnumerable<AccountingDbContext.Customer> customers = await context.Customers
+                .AsNoTracking()
+                .Where(x => x.TypeId.Equals("08"))
+                .OrderByDescending(x => x.CustomerId.StartsWith("ST"))
+                .ThenBy(x => x.CustomerId)
+                .ToArrayAsync().ConfigureAwait(false);
+            return customers;
+        }
+
+        public async Task<IEnumerable<TransDetail>> GetTransDetaiExportInnerAsync(Customer customer, DateTime fromDate, DateTime toDate)
+        {
+            Task<List<InventoryItemSummary>> inventoryItemSummariesTask = misaService.GetInventoryItemSummaryBalance(DateTime.Now, DateTime.Now);
+
+            ACCOUNTINGContext context = new();
+            string fromDateString = fromDate.ToTranDate();
+            string toDateString = toDate.ToTranDate();
+
+            IEnumerable<string> transactionIds = await context.Transactions
+                .AsNoTracking()
+                .Where(x => x.ImportId.Equals(customer.CustomerId)
+                    && x.TransCode.Equals("23")
+                    && string.Compare(x.TransDate, fromDateString) >= 0
+                    && string.Compare(x.TransDate, toDateString) <= 0)
+                .Select(x => x.TransactionId)
+                .ToArrayAsync().ConfigureAwait(false);
+
+            IEnumerable<TransDetail> transDetails = await context.TransDetails
+                .AsNoTracking()
+                .Where(x => transactionIds.Contains(x.TransactionId))
+                .ToArrayAsync().ConfigureAwait(false);
+
+            IEnumerable<TransDetailDTO> transDetailDTOs = transDetails
+                .Select(x => new TransDetailDTO() 
+                {
+                    GoodId = x.GoodId,
+                    Quantity = x.Quantity ?? 0,
+                    TotalPriceVat = x.TotalImpPriceVat ?? 0
+                });
+
+            List<InventoryItemSummary> inventoryItemSummaries = await inventoryItemSummariesTask.ConfigureAwait(false);
+
+
+            return transDetails;
+        }
     }
 }
