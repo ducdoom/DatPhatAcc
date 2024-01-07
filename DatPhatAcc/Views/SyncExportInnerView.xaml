@@ -19,6 +19,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
                 <RowDefinition />
+                <RowDefinition Height="50" />
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" Orientation="Horizontal">
@@ -89,7 +90,7 @@
                     Grid.Row="1"
                     Margin="0"
                     ItemsSource="{Binding TranDetail2s}"
-                    SelectedItem="{Binding SelectedTranDetail2}"
+                    SelectedItems="{Binding SelectedtranDetail2s}"
                     SelectionMode="MultipleRow">
                     <dxg:GridControl.View>
                         <dxg:TableView
@@ -212,7 +213,8 @@
                         <dxg:GridColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
-                                    Command="{x:Static dxg:GridCommands.DeleteFocusedRow}"  
+                                    Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType={x:Type dxg:GridControl}}}"
+                                    CommandParameter="{Binding RowData.Row}"
                                     Style="{x:Null}">
                                     <iconPacks:PackIconFontAwesome
                                         HorizontalAlignment="Center"
@@ -279,6 +281,55 @@
 
                 </dxg:GridControl>
             </Grid>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Button
+                    Margin="0,8,10,0"
+                    Command="{Binding RemoveClosingQuantityZeroCommand}"
+                    Content="Xóa tồn = 0"
+                    Style="{StaticResource PrimaryButton}"
+                    ToolTip="Xóa tất cả các mã hàng có tồn = 0" />
+
+                <Button
+                    Margin="0,8,10,0"
+                    Command="{Binding AdjustQuantityCommand}"
+                    Content="Giảm SL xuất = tồn"
+                    Style="{StaticResource PrimaryButton}" />
+
+                <Button
+                    Margin="0,8,10,0"
+                    Command="{Binding ApplyInterestRateCommand}"
+                    Content="Áp dụng tỉ lệ lãi"
+                    Style="{StaticResource PrimaryButton}" />
+
+                <TextBox
+                    Margin="20,8,0,0"
+                    materialDesign:HintAssist.Hint="Tổng tiền trước thuế mong muốn"
+                    Style="{StaticResource PrimaryTextBox}"
+                    Text="{Binding DesireAmount, UpdateSourceTrigger=PropertyChanged}" />
+
+                <Button
+                    Margin="0,8,10,0"
+                    Command="{Binding IncreaseQuantityCommand}"
+                    Content="Tăng thêm số lượng hàng hóa"
+                    Style="{StaticResource PrimaryButton}" />
+
+                <Button
+                    Margin="0,8,0,0"
+                    materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding CreateImportExcelBanHangCommand.IsRunning}"
+                    materialDesign:ButtonProgressAssist.Value="-1"
+                    Command="{Binding CreateImportExcelBanHangCommand}"
+                    Style="{StaticResource PrimaryButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconFontAwesome
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Kind="FileExportSolid" />
+                        <TextBlock Margin="5,0,0,0" Text="Xuất file import Excel" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
         </Grid>
     </materialDesign:Card>
 </UserControl>

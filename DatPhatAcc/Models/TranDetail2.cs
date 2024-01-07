@@ -28,14 +28,31 @@ namespace DatPhatAcc.Models
         [NotifyPropertyChangedFor(nameof(TotalAmountVat))]
         private InventoryItemSummary selectedInventoryItem = new();
 
+        [ObservableProperty]
+        public string inventoryItemCode =string.Empty;
+        [ObservableProperty]
+        public string inventoryItemName = string.Empty;
+        [ObservableProperty]
+        public string unitName = string.Empty;
+        [ObservableProperty]
+        public string stockCode = string.Empty;
+        [ObservableProperty]
+        public decimal closingQuantity = 0;
+        [ObservableProperty]
+        public decimal costPriceUnit = 0;
 
-        public string InventoryItemCode => SelectedInventoryItem.InventoryItemCode;
-        public string InventoryItemName => SelectedInventoryItem.InventoryItemName;
 
-        public string UnitName => SelectedInventoryItem.UnitName;
-        public string StockCode => SelectedInventoryItem.StockCode;
-        public decimal ClosingQuantity => SelectedInventoryItem.ClosingQuantity;
-        public decimal CostPriceUnit => SelectedInventoryItem.CostPriceUnit;
+        #region Events
+        partial void OnSelectedInventoryItemChanged(InventoryItemSummary value)
+        {
+            InventoryItemCode = value.InventoryItemCode;
+            InventoryItemName = value.InventoryItemName;
+            UnitName = value.UnitName;
+            StockCode = value.StockCode;
+            ClosingQuantity = value.ClosingQuantity;
+            CostPriceUnit = value.CostPriceUnit;
+        }
+        #endregion
 
         private decimal _quantity = 0;
         private decimal _price = 0;

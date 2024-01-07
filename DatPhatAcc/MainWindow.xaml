@@ -26,7 +26,7 @@
                 <MenuItem Command="{Binding ExitAppCommand}" Header="Thoát" />
             </MenuItem>
 
-            <MenuItem Header="Giao dịch">
+            <MenuItem Header="Đồng bộ giao dịch">
                 <MenuItem Command="{Binding NavigateToSyncPurchaseViewCommand}" Header="Đồng bộ giao dịch nhập hàng" />
                 <MenuItem Command="{Binding NavigateToSyncRetailTransViewCommand}" Header="Đồng bộ giao dịch bán lẻ 86LTT" />
                 <MenuItem Command="{Binding NavigateToSyncExportInnerViewCommand}" Header="Đồng bộ giao dịch Xuất nội bộ" />
