@@ -104,8 +104,6 @@
 
                     </dxg:GridControl.TotalSummary>
 
-
-
                     <dxg:GridColumn
                         AllowEditing="False"
                         FieldName="StockCode"
@@ -132,7 +130,6 @@
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
-
                     </dxg:GridColumn>
 
                     <dxg:GridColumn

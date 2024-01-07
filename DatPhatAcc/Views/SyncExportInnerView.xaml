@@ -22,10 +22,14 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <TextBlock Margin="5,0,5,0" Text="Từ ngày:" />
-                <DatePicker SelectedDate="{Binding FromDate}" />
-                <TextBlock Margin="5,0,5,0" Text="Đến ngày:" />
-                <DatePicker SelectedDate="{Binding ToDate}" />
+                <DatePicker
+                    Margin="0,0,10,0"
+                    materialDesign:HintAssist.Hint="Từ ngày"
+                    SelectedDate="{Binding FromDate}" />
+                <DatePicker
+                    Margin="0,0,10,0"
+                    materialDesign:HintAssist.Hint="Đến ngày"
+                    SelectedDate="{Binding ToDate}" />
 
                 <ComboBox
                     Width="400"
@@ -45,8 +49,22 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
 
-
-
+                <ComboBox
+                    Width="80"
+                    Margin="5,0,0,0"
+                    materialDesign:HintAssist.Hint="Thuế suất"
+                    ItemsSource="{Binding ListVats, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding SelectedListVat, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource PrimaryCombobox}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Grid.Column="0" Text="{Binding VatName}" />
+                                <TextBlock Grid.Column="1" Text=" %" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
                 <Button
                     Margin="10,0,0,0"
                     materialDesign:ButtonProgressAssist.IsIndeterminate="True"
@@ -62,6 +80,8 @@
                         <TextBlock Margin="5,0,0,0" Text="Tìm kiếm" />
                     </StackPanel>
                 </Button>
+
+
             </StackPanel>
 
             <Grid Grid.Row="1">
@@ -73,6 +93,7 @@
                     SelectionMode="MultipleRow">
                     <dxg:GridControl.View>
                         <dxg:TableView
+                            EnableImmediatePosting="True"
                             ShowCheckBoxSelectorColumn="True"
                             ShowGroupPanel="False"
                             ShowSearchPanelMode="Never">
@@ -94,55 +115,104 @@
                         <dxg:GridSummaryItem
                             CalculationMode="Mixed"
                             DisplayFormat="{}{0:N0}"
-                            FieldName="GoodId"
-                            SummaryType="Count" />
-
-                        <dxg:GridSummaryItem
-                            CalculationMode="Mixed"
-                            DisplayFormat="{}{0:N0}"
                             FieldName="Quantity"
                             SummaryType="Sum" />
                         <dxg:GridSummaryItem
                             CalculationMode="Mixed"
                             DisplayFormat="{}{0:N0}"
-                            FieldName="TotalPrice"
+                            FieldName="TotalAmount"
                             SummaryType="Sum" />
                         <dxg:GridSummaryItem
                             CalculationMode="Mixed"
                             DisplayFormat="{}{0:N0}"
-                            FieldName="TotalPriceVat"
+                            FieldName="TotalAmountVat"
                             SummaryType="Sum" />
                     </dxg:GridControl.TotalSummary>
 
                     <dxg:GridColumn Header="Mã hàng 2" Style="{StaticResource ContainsFilter}">
-                        <dxg:GridColumn.EditSettings>
-                            <dxg:LookUpEditSettings
-                                DisplayMember="InventoryItemCode"
-                                ItemsSource="{Binding InventoryItemSummary}"
-                                ValueMember="InventoryItemCode">
-                                <dxg:LookUpEditSettings.StyleSettings>
-                                    <dxg:LookUpEditStyleSettings />
-                                </dxg:LookUpEditSettings.StyleSettings>
-                            </dxg:LookUpEditSettings>
-                        </dxg:GridColumn.EditSettings>
+                        <dxg:GridColumn.CellTemplate>
+                            <DataTemplate>
+                                <dxg:LookUpEdit
+                                    AutoPopulateColumns="False"
+                                    DisplayMember="InventoryItemCode"
+                                    EditValue="{Binding RowData.Row.SelectedInventoryItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    ItemsSource="{Binding RowData.Row.InventoryItems, UpdateSourceTrigger=PropertyChanged}"
+                                    PopupMinWidth="900">
+                                    <dxg:LookUpEdit.StyleSettings>
+                                        <dxg:SearchLookUpEditStyleSettings />
+                                    </dxg:LookUpEdit.StyleSettings>
 
+                                    <dxg:LookUpEdit.PopupContentTemplate>
+                                        <ControlTemplate>
+                                            <dxg:GridControl Name="PART_GridControl">
+                                                <dxg:GridControl.Columns>
+                                                    <dxg:GridColumn FieldName="InventoryItemCode" Header="Mã hàng" />
+                                                    <dxg:GridColumn
+                                                        Width="500"
+                                                        FieldName="InventoryItemName"
+                                                        Header="Tên hàng" />
+
+                                                    <dxg:GridColumn FieldName="UnitName" Header="ĐVT" />
+
+                                                    <dxg:GridColumn
+                                                        AllowEditing="False"
+                                                        FieldName="StockCode"
+                                                        Header="Kho hàng"
+                                                        Style="{StaticResource ContainsFilter}" />
+
+                                                    <dxg:GridColumn
+                                                        AllowEditing="False"
+                                                        FieldName="ClosingQuantity"
+                                                        Header="SL cuối kỳ">
+                                                        <dxg:GridColumn.EditSettings>
+                                                            <dxe:TextEditSettings DisplayFormat="N2" />
+                                                        </dxg:GridColumn.EditSettings>
+                                                    </dxg:GridColumn>
+
+                                                    <dxg:GridColumn
+                                                        AllowEditing="False"
+                                                        FieldName="CostPriceUnit"
+                                                        Header="Đơn giá vốn">
+                                                        <dxg:GridColumn.EditSettings>
+                                                            <dxe:TextEditSettings DisplayFormat="N0" />
+                                                        </dxg:GridColumn.EditSettings>
+                                                    </dxg:GridColumn>
+
+                                                    <dxg:GridColumn
+                                                        AllowEditing="False"
+                                                        FieldName="ClosingAmount"
+                                                        Header="Giá trị cuối kỳ">
+                                                        <dxg:GridColumn.EditSettings>
+                                                            <dxe:TextEditSettings DisplayFormat="N0" />
+                                                        </dxg:GridColumn.EditSettings>
+                                                    </dxg:GridColumn>
+                                                </dxg:GridControl.Columns>
+                                                <dxg:GridControl.View>
+                                                    <dxg:TableView AutoWidth="True" />
+                                                </dxg:GridControl.View>
+                                            </dxg:GridControl>
+
+                                        </ControlTemplate>
+                                    </dxg:LookUpEdit.PopupContentTemplate>
+
+                                </dxg:LookUpEdit>
+                            </DataTemplate>
+                        </dxg:GridColumn.CellTemplate>
                     </dxg:GridColumn>
 
-                    <dxg:GridColumn
-                        FieldName="GoodId"
-                        Header="Mã hàng"
-                        Style="{StaticResource ContainsFilter}" />
-                    <dxg:GridColumn
-                        FieldName="ShortName"
-                        Header="Tên hàng"
-                        Style="{StaticResource ContainsFilter}" />
+                    <dxg:GridColumn Header="Tên hàng" Style="{StaticResource ContainsFilter}">
+                        <dxg:GridColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding RowData.Row.SelectedInventoryItem.InventoryItemName, UpdateSourceTrigger=PropertyChanged}" />
+                            </DataTemplate>
+                        </dxg:GridColumn.CellTemplate>
+                    </dxg:GridColumn>
 
                     <dxg:GridColumn Width="50">
                         <dxg:GridColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
-                                    Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType={x:Type dxg:GridControl}}}"
-                                    CommandParameter="{Binding RowData.Row}"
+                                    Command="{x:Static dxg:GridCommands.DeleteFocusedRow}"  
                                     Style="{x:Null}">
                                     <iconPacks:PackIconFontAwesome
                                         HorizontalAlignment="Center"
@@ -154,26 +224,30 @@
                         </dxg:GridColumn.CellTemplate>
                     </dxg:GridColumn>
 
-                    <dxg:GridColumn
-                        FieldName="StockCode"
-                        Header="Kho"
-                        Style="{StaticResource ContainsFilter}" />
+                    <dxg:GridColumn Header="Kho" Style="{StaticResource ContainsFilter}">
+                        <dxg:GridColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding RowData.Row.SelectedInventoryItem.StockCode, UpdateSourceTrigger=PropertyChanged}" />
+                            </DataTemplate>
+                        </dxg:GridColumn.CellTemplate>
+                    </dxg:GridColumn>
 
                     <dxg:GridColumn
                         AllowEditing="False"
                         FieldName="ClosingQuantity"
                         Header="Tồn">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
+                        <dxg:GridColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding RowData.Row.SelectedInventoryItem.ClosingQuantity, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}" />
+                            </DataTemplate>
+                        </dxg:GridColumn.CellTemplate>
                     </dxg:GridColumn>
-                    <dxg:GridColumn
-                        AllowEditing="False"
-                        FieldName="CostPriceUnit"
-                        Header="Đơn giá vốn">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N0" />
-                        </dxg:GridColumn.EditSettings>
+                    <dxg:GridColumn AllowEditing="False" Header="Đơn giá vốn">
+                        <dxg:GridColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding RowData.Row.SelectedInventoryItem.CostPriceUnit, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}" />
+                            </DataTemplate>
+                        </dxg:GridColumn.CellTemplate>
                     </dxg:GridColumn>
 
                     <dxg:GridColumn FieldName="Quantity" Header="Số lượng">
@@ -181,18 +255,22 @@
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
+
                     <dxg:GridColumn FieldName="Price" Header="Đơn giá">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="TotalPrice" Header="Thành tiền">
+
+                    <dxg:GridColumn FieldName="TotalAmount" Header="Thành tiền">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="VatValue" Header="Vat" />
-                    <dxg:GridColumn FieldName="TotalPriceVat" Header="Thành tiền VAT">
+
+                    <dxg:GridColumn FieldName="VatRate" Header="Vat" />
+
+                    <dxg:GridColumn FieldName="TotalAmountVat" Header="Thành tiền VAT">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>

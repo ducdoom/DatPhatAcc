@@ -140,6 +140,7 @@ namespace DatPhatAcc.Services
                         OutQuantity = inventoryItem.OutQuantity,
                         OutAmount = inventoryItem.OutAmount
                     })
+                    .OrderBy(x => x.InventoryItemCode)  
                     .ToList();
             }
             catch (Exception ex)

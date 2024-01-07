@@ -43,7 +43,6 @@
     <Style TargetType="dxg:GridControl">
         <!--<Setter Property="Margin" Value="{StaticResource DefaultMargin}" />-->
         <Setter Property="AllowLiveDataShaping" Value="True" />
-
     </Style>
 
     <Style TargetType="dxg:TableView">
@@ -69,6 +68,10 @@
         <Setter Property="Mask" Value="dd/MM/yyyy" />
         <Setter Property="MaskType" Value="DateTimeAdvancingCaret" />
         <Setter Property="MaskUseAsDisplayFormat" Value="True" />
+        <Setter Property="Height" Value="{StaticResource ControlHeight}" />
+    </Style>
+
+    <Style BasedOn="{StaticResource MaterialDesignFloatingHintDatePicker}" TargetType="DatePicker">
         <Setter Property="Height" Value="{StaticResource ControlHeight}" />
     </Style>
 
@@ -98,6 +101,10 @@
     <Style TargetType="dxe:TextEdit">
         <!--<Setter Property="Margin" Value="{StaticResource DefaultMargin}" />-->
         <Setter Property="Height" Value="{StaticResource ControlHeight}" />
+    </Style>
+
+    <Style TargetType="dxg:LookUpEdit">
+        <Setter Property="BorderBrush" Value="Transparent" />
     </Style>
 
     <Style TargetType="dx:DropDownButton">

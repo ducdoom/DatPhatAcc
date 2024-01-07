@@ -4,6 +4,7 @@ using DatPhatAcc.Models;
 using DatPhatAcc.Models.DTO;
 using DevExpress.Mvvm.Native;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace DatPhatAcc.Services
 {
@@ -318,10 +319,8 @@ namespace DatPhatAcc.Services
             return customers;
         }
 
-        public async Task<IEnumerable<TransDetail>> GetTransDetaiExportInnerAsync(Customer customer, DateTime fromDate, DateTime toDate)
+        public async Task<IEnumerable<TranDetailInfo>> GetTransDetaiExportInnerAsync(Customer customer, DateTime fromDate, DateTime toDate)
         {
-            Task<List<InventoryItemSummary>> inventoryItemSummariesTask = misaService.GetInventoryItemSummaryBalance(DateTime.Now, DateTime.Now);
-
             ACCOUNTINGContext context = new();
             string fromDateString = fromDate.ToTranDate();
             string toDateString = toDate.ToTranDate();
@@ -335,23 +334,48 @@ namespace DatPhatAcc.Services
                 .Select(x => x.TransactionId)
                 .ToArrayAsync().ConfigureAwait(false);
 
-            IEnumerable<TransDetail> transDetails = await context.TransDetails
+            var transDetails = context.TransDetails
                 .AsNoTracking()
-                .Where(x => transactionIds.Contains(x.TransactionId))
-                .ToArrayAsync().ConfigureAwait(false);
+                .Where(x => transactionIds.Contains(x.TransactionId));
 
-            IEnumerable<TransDetailDTO> transDetailDTOs = transDetails
-                .Select(x => new TransDetailDTO() 
+            Debug.WriteLine("transDetails Count: " + transDetails.Count());
+
+            var tranDetailsSum = transDetails
+                .GroupBy(x => x.GoodId)
+                .Select(group => new TransDetail
                 {
-                    GoodId = x.GoodId,
-                    Quantity = x.Quantity ?? 0,
-                    TotalPriceVat = x.TotalImpPriceVat ?? 0
+                    GoodId = group.Key,
+                    Quantity = group.Sum(x => x.Quantity),
+                    TotalExpPriceVat = group.Sum(x => x.TotalExpPriceVat)
                 });
 
-            List<InventoryItemSummary> inventoryItemSummaries = await inventoryItemSummariesTask.ConfigureAwait(false);
+            Debug.WriteLine("tranDetailsSum Count: " + tranDetailsSum.Count());
 
+            var tranDetailsWithName = tranDetailsSum
+                .Join(context.Goods.AsNoTracking(), t => t.GoodId, g => g.GoodId, (t, g) => new TranDetailInfo
+                {
+                    GoodId = t.GoodId,
+                    UnitId = g.UnitId,
+                    Quantity = (decimal)t.Quantity,
+                    TotalAmountVat = (decimal)t.TotalExpPriceVat,
+                    ShortName = g.ShortName
+                });
+            Debug.WriteLine("tranDetailsWithName Count: " + tranDetailsWithName.Count());
 
-            return transDetails;
+            var tranDetailsWithUnitName = tranDetailsWithName
+                .Join(context.Units.AsNoTracking(), t => t.UnitId, u => u.UnitId, (t, u) => new TranDetailInfo
+                {
+                    GoodId = t.GoodId,
+                    UnitId = t.UnitId,
+                    UnitName = u.UnitName,
+                    Quantity = t.Quantity,
+                    TotalAmountVat = t.TotalAmountVat,
+                    ShortName = t.ShortName
+                });
+            Debug.WriteLine("tranDetailsWithUnitName Count: " + tranDetailsWithUnitName.Count());
+
+            IEnumerable<TranDetailInfo> result = await tranDetailsWithUnitName.ToArrayAsync().ConfigureAwait(false);
+            return result;
         }
     }
 }

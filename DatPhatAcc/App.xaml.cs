@@ -31,6 +31,7 @@ namespace DatPhatAcc
 
             services.AddSingleton<AccountingService>(); //services
             services.AddSingleton<MisaService>();
+            services.AddSingleton<Sync2Service>();
             services.AddSingleton<MisaUltis>();
             services.AddSingleton<Ihoadon>();
 
