@@ -28,8 +28,8 @@
 
             <MenuItem Header="Đồng bộ giao dịch">
                 <MenuItem Command="{Binding NavigateToSyncPurchaseViewCommand}" Header="Đồng bộ giao dịch nhập hàng" />
-                <MenuItem Command="{Binding NavigateToSyncRetailTransViewCommand}" Header="Đồng bộ giao dịch bán lẻ 86LTT" />
-                <MenuItem Command="{Binding NavigateToSyncExportInnerViewCommand}" Header="Đồng bộ giao dịch Xuất nội bộ" />
+                <!--<MenuItem Command="{Binding NavigateToSyncRetailTransViewCommand}" Header="Đồng bộ giao dịch bán lẻ 86LTT" />-->
+                <MenuItem Command="{Binding NavigateToSyncExportInnerViewCommand}" Header="Đồng bộ giao dịch xuất hàng" />
             </MenuItem>
 
             <MenuItem Command="{Binding NavigateToOutwardViewCommand}" Header="Bán hàng" />

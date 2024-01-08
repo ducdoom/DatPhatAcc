@@ -329,6 +329,7 @@ namespace DatPhatAcc.Services
                 .AsNoTracking()
                 .Where(x => x.ImportId.Equals(customer.CustomerId)
                     && x.TransCode.Equals("23")
+                    && x.Status.Equals("1")
                     && string.Compare(x.TransDate, fromDateString) >= 0
                     && string.Compare(x.TransDate, toDateString) <= 0)
                 .Select(x => x.TransactionId)

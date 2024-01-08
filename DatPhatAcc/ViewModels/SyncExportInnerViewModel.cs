@@ -1,13 +1,14 @@
 ﻿using AsyncAwaitBestPractices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DatPhatAcc.AccountingDbContext;
 using DatPhatAcc.Helpers;
 using DatPhatAcc.Models;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Windows;
 
 namespace DatPhatAcc.ViewModels
 {
@@ -16,12 +17,14 @@ namespace DatPhatAcc.ViewModels
         private readonly Sync2Service sync2Service;
         private readonly ShareViewModel shareViewModel;
         private readonly SettingViewModel settingViewModel;
+        private readonly MisaUltis misaUltis;
 
-        public SyncExportInnerViewModel(Sync2Service sync2Service, ShareViewModel shareViewModel, SettingViewModel settingViewModel)
+        public SyncExportInnerViewModel(Sync2Service sync2Service, ShareViewModel shareViewModel, SettingViewModel settingViewModel, MisaUltis misaUltis)
         {
             this.sync2Service = sync2Service;
             this.shareViewModel = shareViewModel;
             this.settingViewModel = settingViewModel;
+            this.misaUltis = misaUltis;
 
             Init();
         }
@@ -32,10 +35,14 @@ namespace DatPhatAcc.ViewModels
             ListVats = shareViewModel.ListVats;
             SelectedListVat = ListVats.First(listVat => listVat.VatValue.Equals(10));
 
+            SyncTransactionTypes = shareViewModel.SyncTransactionTypes;
+            SelectedSyncTransactionType = SyncTransactionTypes.First();
+
             SelectedtranDetail2s.CollectionChanged += SelectedtranDetail2s_CollectionChanged;
             TranDetail2s.CollectionChanged += TranDetail2s_CollectionChanged;
         }
 
+        #region Events
         private void TranDetail2s_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             NotifyCanExecuteChangedForAllCommands();
@@ -52,7 +59,10 @@ namespace DatPhatAcc.ViewModels
             AdjustQuantityCommand.NotifyCanExecuteChanged();
             ApplyInterestRateCommand.NotifyCanExecuteChanged();
             IncreaseQuantityCommand.NotifyCanExecuteChanged();
+            CreateImportExcelBanHangCommand.NotifyCanExecuteChanged();
         }
+
+        #endregion
 
         #region Properties
 
@@ -62,9 +72,9 @@ namespace DatPhatAcc.ViewModels
         private DateTime toDate = DateTime.Now;
 
         [ObservableProperty]
-        private ObservableCollection<ListVat> listVats = new();
+        private ObservableCollection<AccountingDbContext.ListVat> listVats = new();
         [ObservableProperty]
-        private ListVat selectedListVat = new();
+        private AccountingDbContext.ListVat selectedListVat = new();
 
         [ObservableProperty]
         private ObservableCollection<AccountingDbContext.Customer> customers = new();
@@ -85,10 +95,24 @@ namespace DatPhatAcc.ViewModels
         [ObservableProperty]
         decimal desireAmount = 0;
 
+        [ObservableProperty]
+        private ObservableCollection<SyncTransactionType> syncTransactionTypes = new();
+        [ObservableProperty]
+        private SyncTransactionType selectedSyncTransactionType = new();
+
+        [ObservableProperty]
+        private Visibility isRetailTransaction = Visibility.Visible;
+        [ObservableProperty]
+        private Visibility isInnerTransaction = Visibility.Visible;
+
+        [ObservableProperty]
+        private string transactionIds = string.Empty;
+
+
         #endregion
 
         #region Event
-        partial void OnSelectedListVatChanged(ListVat value)
+        partial void OnSelectedListVatChanged(AccountingDbContext.ListVat value)
         {
             if (!TranDetail2s.Any()) return;
 
@@ -112,6 +136,20 @@ namespace DatPhatAcc.ViewModels
         {
             NotifyCanExecuteChangedForAllCommands();
         }
+
+        partial void OnSelectedSyncTransactionTypeChanged(SyncTransactionType value)
+        {
+            if (value.TransactionTypeId.Equals("1"))
+            {
+                IsRetailTransaction = Visibility.Visible;
+                IsInnerTransaction = Visibility.Collapsed;
+            }
+            else
+            {
+                IsRetailTransaction = Visibility.Collapsed;
+                IsInnerTransaction = Visibility.Visible;
+            }
+        }
         #endregion
 
         #region Commands
@@ -125,7 +163,41 @@ namespace DatPhatAcc.ViewModels
         }
 
         [RelayCommand]
-        private async Task GetTransDetaiExportInner()
+        private async Task Search()
+        {
+            if (SelectedSyncTransactionType.TransactionTypeId.Equals("1"))
+            {
+                await GetRetailTranDetail();
+            }
+            if (SelectedSyncTransactionType.TransactionTypeId.Equals("2"))
+            {
+                await GetExportInnerTranDetail();
+            }
+        }
+
+        private async Task GetRetailTranDetail()
+        {
+            TranDetail2s.Clear();
+
+            List<TranDetail2> retailTrans = new();
+            await Task.Run(async () =>
+            {
+                retailTrans = (List<TranDetail2>)await sync2Service.GetRetailTranDetail(FromDate, ToDate, TransactionIds.Trim());
+            });
+            TranDetail2s = new ObservableCollection<TranDetail2>(retailTrans);
+
+            SetAllVatValue();
+        }
+
+        private void SetAllVatValue()
+        {
+            foreach (var item in TranDetail2s)
+            {
+                item.VatRate = SelectedListVat.VatValue;
+            }
+        }
+
+        private async Task GetExportInnerTranDetail()
         {
             TranDetail2s.Clear();
             List<TranDetail2> tranDetail2List = new();
@@ -188,17 +260,17 @@ namespace DatPhatAcc.ViewModels
             }
         }
 
-        private bool CanCreateImportExcelBanHang() => SelectedtranDetail2s.Any();
+
         private bool CanIncreaseQuantity()
-        { 
-            if(!SelectedtranDetail2s.Any())
+        {
+            bool containData = SelectedtranDetail2s.Any();
+            if (!containData)
             {
                 return false;
             }
 
-            bool containData = SelectedtranDetail2s.Any();
             decimal currentTotalAmount = SelectedtranDetail2s.Sum(x => x.TotalAmount);
-            return containData && DesireAmount > currentTotalAmount;
+            return containData && currentTotalAmount < DesireAmount;
         }
 
         [RelayCommand(CanExecute = nameof(CanIncreaseQuantity))]
@@ -221,6 +293,31 @@ namespace DatPhatAcc.ViewModels
 
                     currentTotalAmount = SelectedtranDetail2s.Sum(x => x.TotalAmount);
                 }
+            }
+        }
+
+        private bool CanCreateImportExcelBanHang() => SelectedtranDetail2s.Any();
+        [RelayCommand(CanExecute = nameof(CanCreateImportExcelBanHang))]
+        private async Task CreateImportExcelBanHang()
+        {
+            SaveFileDialog saveFileDialog = new()
+            {
+                Filter = "Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true
+            };
+
+            if (saveFileDialog.ShowDialog() == false)
+            {
+                return;
+            }
+
+            string fileName = saveFileDialog.FileName;
+
+            bool success = await misaUltis.ImportExcel.CreateFileImportBanHang2(SelectedtranDetail2s, fileName);
+            if (success)
+            {
+                MessageBox.Show("Tạo file import bán hàng thành công", "Thông báo");
             }
         }
         #endregion

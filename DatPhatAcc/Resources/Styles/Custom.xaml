@@ -16,6 +16,15 @@
         <Setter Property="FontSize" Value="12" />
     </Style>
 
+    <Style TargetType="ToolTip" BasedOn="{StaticResource MaterialDesignToolTip}">
+        <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
+        <!--  Time in milliseconds before the tooltip opens  -->
+        <Setter Property="ToolTipService.ShowDuration" Value="5000" />
+        <!--  Duration the tooltip stays open  -->
+        <Setter Property="ToolTipService.BetweenShowDelay" Value="200" />
+        <!--  Time between tooltips if one closes and another opens  -->
+    </Style>
+
 
     <Style
         x:Key="PrimaryButton"

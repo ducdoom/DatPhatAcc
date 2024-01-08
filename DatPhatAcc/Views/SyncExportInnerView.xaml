@@ -33,12 +33,43 @@
                     SelectedDate="{Binding ToDate}" />
 
                 <ComboBox
-                    Width="400"
+                    Width="150"
+                    Margin="5,0,0,0"
+                    materialDesign:HintAssist.Hint="Loại giao dịch"
+                    ItemsSource="{Binding SyncTransactionTypes}"
+                    SelectedItem="{Binding SelectedSyncTransactionType}"
+                    Style="{StaticResource PrimaryCombobox}">
+
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding TransactionTypeId}" />
+                                <TextBlock Text=" - " />
+                                <TextBlock Text="{Binding TransactionTypeName}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <TextBox
+                    Grid.Column="0"
+                    Width="250"
+                    Margin="5,0,0,0"
+                    materialDesign:HintAssist.Hint="Nhập mã giao dịch (để trống = tất cả)"
+                    Style="{StaticResource PrimaryTextBox}"
+                    Text="{Binding TransactionIds, UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Nhiều giao dịch cách nhau bằng dấu phẩy"
+                    ToolTipService.InitialShowDelay="0"
+                    Visibility="{Binding IsRetailTransaction}" />
+
+                <ComboBox
+                    Width="250"
                     Margin="5,0,0,0"
                     materialDesign:HintAssist.Hint="Siêu thị thành viên"
                     ItemsSource="{Binding Customers}"
                     SelectedItem="{Binding SelectedCustomer}"
-                    Style="{StaticResource PrimaryCombobox}">
+                    Style="{StaticResource PrimaryCombobox}"
+                    Visibility="{Binding IsInnerTransaction}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -49,6 +80,7 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
+
 
                 <ComboBox
                     Width="80"
@@ -69,9 +101,9 @@
                 <Button
                     Margin="10,0,0,0"
                     materialDesign:ButtonProgressAssist.IsIndeterminate="True"
-                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding GetTransDetaiExportInnerCommand.IsRunning}"
+                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding SearchCommand.IsRunning}"
                     materialDesign:ButtonProgressAssist.Value="-1"
-                    Command="{Binding GetTransDetaiExportInnerCommand}"
+                    Command="{Binding SearchCommand}"
                     Style="{StaticResource PrimaryButton}">
                     <StackPanel Orientation="Horizontal">
                         <iconPacks:PackIconFontAwesome
@@ -116,6 +148,11 @@
                         <dxg:GridSummaryItem
                             CalculationMode="Mixed"
                             DisplayFormat="{}{0:N0}"
+                            FieldName="InventoryItemCode"
+                            SummaryType="Count" />
+                        <dxg:GridSummaryItem
+                            CalculationMode="Mixed"
+                            DisplayFormat="{}{0:N0}"
                             FieldName="Quantity"
                             SummaryType="Sum" />
                         <dxg:GridSummaryItem
@@ -130,7 +167,10 @@
                             SummaryType="Sum" />
                     </dxg:GridControl.TotalSummary>
 
-                    <dxg:GridColumn Header="Mã hàng 2" Style="{StaticResource ContainsFilter}">
+                    <dxg:GridColumn
+                        FieldName="InventoryItemCode"
+                        Header="Mã hàng 2"
+                        Style="{StaticResource ContainsFilter}">
                         <dxg:GridColumn.CellTemplate>
                             <DataTemplate>
                                 <dxg:LookUpEdit
@@ -201,7 +241,10 @@
                         </dxg:GridColumn.CellTemplate>
                     </dxg:GridColumn>
 
-                    <dxg:GridColumn Header="Tên hàng" Style="{StaticResource ContainsFilter}">
+                    <dxg:GridColumn
+                        FieldName="InventoryItemName"
+                        Header="Tên hàng"
+                        Style="{StaticResource ContainsFilter}">
                         <dxg:GridColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding RowData.Row.SelectedInventoryItem.InventoryItemName, UpdateSourceTrigger=PropertyChanged}" />
@@ -226,28 +269,31 @@
                         </dxg:GridColumn.CellTemplate>
                     </dxg:GridColumn>
 
-                    <dxg:GridColumn Header="Kho" Style="{StaticResource ContainsFilter}">
+                    <dxg:GridColumn
+                        FieldName="StockCode"
+                        Header="Kho"
+                        Style="{StaticResource ContainsFilter}">
                         <dxg:GridColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding RowData.Row.SelectedInventoryItem.StockCode, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text="{Binding RowData.Row.StockCode, UpdateSourceTrigger=PropertyChanged}" />
                             </DataTemplate>
                         </dxg:GridColumn.CellTemplate>
                     </dxg:GridColumn>
 
-                    <dxg:GridColumn
-                        AllowEditing="False"
-                        FieldName="ClosingQuantity"
-                        Header="Tồn">
+                    <dxg:GridColumn FieldName="ClosingQuantity" Header="Tồn">
                         <dxg:GridColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding RowData.Row.SelectedInventoryItem.ClosingQuantity, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text="{Binding RowData.Row.ClosingQuantity, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}" />
                             </DataTemplate>
                         </dxg:GridColumn.CellTemplate>
                     </dxg:GridColumn>
-                    <dxg:GridColumn AllowEditing="False" Header="Đơn giá vốn">
+                    <dxg:GridColumn
+                        AllowEditing="False"
+                        FieldName="CostPriceUnit"
+                        Header="Đơn giá vốn">
                         <dxg:GridColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding RowData.Row.SelectedInventoryItem.CostPriceUnit, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text="{Binding RowData.Row.CostPriceUnit, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}" />
                             </DataTemplate>
                         </dxg:GridColumn.CellTemplate>
                     </dxg:GridColumn>
@@ -306,13 +352,19 @@
                     Margin="20,8,0,0"
                     materialDesign:HintAssist.Hint="Tổng tiền trước thuế mong muốn"
                     Style="{StaticResource PrimaryTextBox}"
-                    Text="{Binding DesireAmount, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding DesireAmount, UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Yêu cầu phải tích chọn các mặt hàng, kể cả sau khi lọc"
+                    ToolTipService.InitialShowDelay="0"
+                    ToolTipService.ShowOnDisabled="True" />
 
                 <Button
                     Margin="0,8,10,0"
                     Command="{Binding IncreaseQuantityCommand}"
-                    Content="Tăng thêm số lượng hàng hóa"
-                    Style="{StaticResource PrimaryButton}" />
+                    Content="Tăng SL hàng"
+                    Style="{StaticResource PrimaryButton}"
+                    ToolTip="Yêu cầu phải tích chọn các mặt hàng, kể cả sau khi lọc"
+                    ToolTipService.InitialShowDelay="0"
+                    ToolTipService.ShowOnDisabled="True" />
 
                 <Button
                     Margin="0,8,0,0"
@@ -320,7 +372,10 @@
                     materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding CreateImportExcelBanHangCommand.IsRunning}"
                     materialDesign:ButtonProgressAssist.Value="-1"
                     Command="{Binding CreateImportExcelBanHangCommand}"
-                    Style="{StaticResource PrimaryButton}">
+                    Style="{StaticResource PrimaryButton}"
+                    ToolTip="Yêu cầu phải tích chọn các mặt hàng, kể cả sau khi lọc"
+                    ToolTipService.InitialShowDelay="0"
+                    ToolTipService.ShowOnDisabled="True">
                     <StackPanel Orientation="Horizontal">
                         <iconPacks:PackIconFontAwesome
                             HorizontalAlignment="Center"

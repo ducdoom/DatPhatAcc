@@ -14,22 +14,10 @@ namespace DatPhatAcc.Models
         private ObservableCollection<InventoryItemSummary> inventoryItems = new();
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(InventoryItemCode))]
-        [NotifyPropertyChangedFor(nameof(InventoryItemName))]
-        [NotifyPropertyChangedFor(nameof(UnitName))]
-        [NotifyPropertyChangedFor(nameof(StockCode))]
-        [NotifyPropertyChangedFor(nameof(ClosingQuantity))]
-        [NotifyPropertyChangedFor(nameof(CostPriceUnit))]
-        [NotifyPropertyChangedFor(nameof(Quantity))]
-        [NotifyPropertyChangedFor(nameof(Price))]
-        [NotifyPropertyChangedFor(nameof(TotalAmount))]
-        [NotifyPropertyChangedFor(nameof(VatRate))]
-        [NotifyPropertyChangedFor(nameof(VatAmount))]
-        [NotifyPropertyChangedFor(nameof(TotalAmountVat))]
         private InventoryItemSummary selectedInventoryItem = new();
 
         [ObservableProperty]
-        public string inventoryItemCode =string.Empty;
+        public string inventoryItemCode = string.Empty;
         [ObservableProperty]
         public string inventoryItemName = string.Empty;
         [ObservableProperty]

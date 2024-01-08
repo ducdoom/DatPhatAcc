@@ -55,6 +55,7 @@
                         <ColumnDefinition />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
+                    
                     <TextBox
                         Grid.Column="0"
                         materialDesign:HintAssist.Hint="Nhập mã giao dịch (cách nhau bởi dấu phẩy)"
