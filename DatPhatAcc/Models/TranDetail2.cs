@@ -97,6 +97,7 @@ namespace DatPhatAcc.Models
             {
                 SetProperty(ref _vatRate, value);
                 SetProperty(ref _totalAmount, _totalAmountVat / (1 + _vatRate / 100), nameof(TotalAmount));
+                SetProperty(ref _vatAmount, _totalAmount * _vatRate / 100, nameof(VatAmount));
                 SetProperty(ref _price, _quantity > 0 ? _totalAmount / _quantity : 0, nameof(Price));
             }
         }
@@ -106,7 +107,7 @@ namespace DatPhatAcc.Models
             get => _vatAmount;
             set
             {
-                SetProperty(ref _vatAmount, _totalAmount * _vatRate / 100);
+                SetProperty(ref _vatAmount, value);
             }
         }
 

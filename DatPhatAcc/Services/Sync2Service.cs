@@ -123,7 +123,7 @@ namespace DatPhatAcc.Services
             Debug.WriteLine("tranDetailInfoSum Count: " + tranDetailInfoSum.Count());
 
             var tranDetailInfoWithShortName = tranDetailInfoSum
-                .Join(accountingDbContext.Goods, t => t.GoodId, g => g.GoodId, (tranDetail, good) => new TranDetailInfo
+                .Join(accountingDbContext.Goods.AsNoTracking(), t => t.GoodId, g => g.GoodId, (tranDetail, good) => new TranDetailInfo
                 {
                     GoodId = tranDetail.GoodId,
                     ShortName = good.ShortName,
@@ -134,19 +134,8 @@ namespace DatPhatAcc.Services
 
             Debug.WriteLine("tranDetailInfoWithShortName Count: " + tranDetailInfoWithShortName.Count());
 
-            int i = 0;
-            foreach (TranDetailInfo t in tranDetailInfoWithShortName)
-            {
-                Debug.WriteLine($"tranDetailInfoWithShortName: {t.GoodId} - {t.ShortName} - {t.UnitId}");
-                i++;
-                if (i > 10)
-                {
-                    break;
-                }
-            }
-
             var tranDetailInfoWithUnitName = tranDetailInfoWithShortName
-                .Join(accountingDbContext.Units, td => td.UnitId, u => u.UnitId, (tranDetail, unit) => new TranDetailInfo
+                .Join(accountingDbContext.Units.AsNoTracking(), td => td.UnitId, u => u.UnitId, (tranDetail, unit) => new TranDetailInfo
                 {
                     GoodId = tranDetail.GoodId,
                     ShortName = tranDetail.ShortName,
