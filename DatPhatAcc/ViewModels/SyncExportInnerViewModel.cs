@@ -182,11 +182,11 @@ namespace DatPhatAcc.ViewModels
             List<TranDetail2> retailTrans = new();
             await Task.Run(async () =>
             {
-                retailTrans = (List<TranDetail2>)await sync2Service.GetRetailTranDetail(FromDate, ToDate, TransactionIds.Trim());
+                retailTrans = (List<TranDetail2>)await sync2Service.GetRetailTranDetailv2(FromDate, ToDate, SelectedListVat, TransactionIds.Trim());
             });
             TranDetail2s = new ObservableCollection<TranDetail2>(retailTrans);
 
-            SetAllVatValue();
+            //SetAllVatValue();
         }
 
         private void SetAllVatValue()
@@ -200,6 +200,7 @@ namespace DatPhatAcc.ViewModels
         private async Task GetExportInnerTranDetail()
         {
             TranDetail2s.Clear();
+
             List<TranDetail2> tranDetail2List = new();
             await Task.Run(async () =>
             {
@@ -253,7 +254,14 @@ namespace DatPhatAcc.ViewModels
                 Models.BranchInterestRate? interestRate = branchInterestRate.FirstOrDefault(x => x.BranchId.Equals(branchId));
                 if (interestRate != null)
                 {
-                    interestValue = interestRate.RetailInterestRate;
+                    if (SelectedSyncTransactionType.TransactionTypeId.Equals("1"))
+                    {
+                        interestValue = interestRate.RetailInterestRate;
+                    }
+                    if (SelectedSyncTransactionType.TransactionTypeId.Equals("2"))
+                    {
+                        interestValue = interestRate.WholeSaleInterestRate;
+                    }
                 }
 
                 item.Price = item.CostPriceUnit * (1 + interestValue / 100);
@@ -292,6 +300,10 @@ namespace DatPhatAcc.ViewModels
                     }
 
                     currentTotalAmount = SelectedtranDetail2s.Sum(x => x.TotalAmount);
+                    if (currentTotalAmount >= DesireAmount)
+                    {
+                        break;
+                    }
                 }
             }
         }

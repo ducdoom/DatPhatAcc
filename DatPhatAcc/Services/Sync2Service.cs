@@ -26,7 +26,12 @@ namespace DatPhatAcc.Services
 
 
             var tranDetalInfos = await transDetailsTask.ConfigureAwait(false);
+
             var inventoryItemSummaries = await inventoryItemSummariesTask.ConfigureAwait(false);
+            inventoryItemSummaries = inventoryItemSummaries
+                .OrderBy(item => item.InventoryItemCode)
+                .ThenByDescending(item => item.StockCode.StartsWith("BAN"))
+                .ToList();
 
             foreach (TranDetailInfo tranDetal in tranDetalInfos)
             {
@@ -60,7 +65,7 @@ namespace DatPhatAcc.Services
             return tranDetail2s;
         }
 
-        public async Task<IEnumerable<TranDetail2>> GetRetailTranDetail(DateTime fromDate, DateTime toDate, string transactionIds = "")
+        public async Task<IEnumerable<TranDetail2>> GetRetailTranDetail(DateTime fromDate, DateTime toDate, ListVat selectedListVat, string transactionIds = "")
         {
             Task<List<InventoryItemSummary>> getInventoryItemSummaryBalanceTask = misaService.GetInventoryItemSummaryBalance(DateTime.Now, DateTime.Now);
 
@@ -142,13 +147,92 @@ namespace DatPhatAcc.Services
                     UnitId = tranDetail.UnitId,
                     UnitName = unit.UnitName,
                     Quantity = tranDetail.Quantity,
-                    TotalAmountVat = tranDetail.TotalAmountVat
+                    TotalAmountVat = tranDetail.TotalAmountVat,
+                    VatRate = selectedListVat.VatValue
                 });
 
             Debug.WriteLine("tranDetailInfoWithUnitName Count: " + tranDetailInfoWithUnitName.Count());
 
             //add closing quantity
             IEnumerable<TranDetail2> tranDetail2s = ConvertToTranDetail2(tranDetailInfoWithUnitName.ToList(), inventoryItemSummaries);
+
+            return tranDetail2s;
+        }
+
+        public async Task<IEnumerable<TranDetail2>> GetRetailTranDetailv2(DateTime fromDate, DateTime toDate, ListVat selectedListVat, string transactionIds = "")
+        {
+            Task<List<InventoryItemSummary>> getInventoryItemSummaryBalanceTask = misaService.GetInventoryItemSummaryBalance(DateTime.Now, DateTime.Now);
+
+            string fromDateString = fromDate.ToString("yyyyMMdd");
+            string toDateString = toDate.ToString("yyyyMMdd");
+            List<string> tranIdList = transactionIds.Split(',').ToList();
+
+            Accounting_LTTDbContext.ACCOUNTING_LTTContext accounting_LTTContext = new();
+            ACCOUNTINGContext accountingDbContext = new();
+
+            // Query for retail transactions with AsNoTracking for better performance
+            var retailTransQuery = accounting_LTTContext.RetailTranDetails
+                .AsNoTracking()
+                .Where(x => (string.IsNullOrEmpty(transactionIds) || tranIdList.Contains(x.TransactionId))
+                    && x.Status.Equals("1")
+                    && string.Compare(x.TransDate, fromDateString) >= 0
+                    && string.Compare(x.TransDate, toDateString) <= 0)
+
+                // Left join with TransactionDiscountDetails
+                .GroupJoin(
+                    accounting_LTTContext.TransactionDiscountDetails.AsNoTracking(), // The second dataset
+                    rtd => rtd.TransDetailId, // Key from the first dataset
+                    tdd => tdd.TransDetailId, // Key from the second dataset
+                    (rtd, tddGroup) => new { rtd, tddGroup } // Result selector
+                )
+                .SelectMany(
+                    x => x.tddGroup.DefaultIfEmpty(), // This creates a left join effect
+                    (x, tdd) => new TranDetailInfo
+                    {
+                        GoodId = x.rtd.GoodId,
+                        Quantity = (decimal)(x.rtd.OrginalQty ?? 0),
+                        TotalAmountVat = (decimal)(x.rtd.TotalPriceVatorg ?? 0) - (tdd != null ? tdd.DiscountAmount : 0)
+                    })
+
+                //group by goodid
+                .GroupBy(x => x.GoodId)
+                .Select(tran => new TranDetailInfo
+                {
+                    GoodId = tran.Key,
+                    Quantity = tran.Sum(x => x.Quantity),
+                    TotalAmountVat = tran.Sum(x => x.TotalAmountVat)
+                }).ToArray();
+
+            var tranDetailInfoWithGoodName = retailTransQuery
+            //join good
+            .Join(accountingDbContext.Goods.AsNoTracking(), t => t.GoodId, g => g.GoodId, (tranDetail, good) => new TranDetailInfo
+            {
+                GoodId = tranDetail.GoodId,
+                ShortName = good.ShortName,
+                UnitId = good.UnitId,
+                Quantity = tranDetail.Quantity,
+                TotalAmountVat = tranDetail.TotalAmountVat
+            })
+
+            //join unit
+            .Join(accountingDbContext.Units.AsNoTracking(), td => td.UnitId, u => u.UnitId, (tranDetail, unit) => new TranDetailInfo
+            {
+                GoodId = tranDetail.GoodId,
+                ShortName = tranDetail.ShortName,
+                UnitId = tranDetail.UnitId,
+                UnitName = unit.UnitName,
+                Quantity = tranDetail.Quantity,
+                TotalAmountVat = tranDetail.TotalAmountVat,
+                VatRate = selectedListVat.VatValue
+            });
+
+            List<InventoryItemSummary> inventoryItemSummaries = await getInventoryItemSummaryBalanceTask.ConfigureAwait(false);
+            inventoryItemSummaries = inventoryItemSummaries
+                .OrderBy(item => item.InventoryItemCode)
+                .ThenByDescending(item => item.StockCode.StartsWith("KHANG"))
+                .ToList();
+            //add closing quantity
+            IEnumerable<TranDetail2> tranDetail2s = ConvertToTranDetail2(tranDetailInfoWithGoodName.ToList(), inventoryItemSummaries);
 
             return tranDetail2s;
         }
@@ -180,6 +264,7 @@ namespace DatPhatAcc.Services
                     SelectedInventoryItem = inventoryItemSummaries.First(item => item.InventoryItemCode.Equals(t.GoodId)),
                     Quantity = t.Quantity,
                     TotalAmountVat = t.TotalAmountVat,
+                    VatRate = t.VatRate
                 };
                 tranDetail2s.Add(tranDetail2);
             }
