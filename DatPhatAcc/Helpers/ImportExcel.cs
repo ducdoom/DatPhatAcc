@@ -3,15 +3,57 @@ using DatPhatAcc.Models.DTO;
 using OfficeOpenXml;
 using System.IO;
 using System.Windows;
+using System.Windows.Shapes;
 
 namespace DatPhatAcc.Helpers
 {
     public class ImportExcel
     {
+
         public ImportExcel()
         {
 
         }
+
+        public async Task<bool> CreateFileImportPurchase(IEnumerable<Models.DTO.TempTransDetailDTO> TempTransDetailDTOs, string saveFile)
+        {
+            try
+            {
+                FileInfo file = new("Resources\\MisaExcelTemplates\\Mua_hang_qua_kho_VND.xlsx");
+                ExcelPackage excelPackage = new(file);
+
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.First();
+
+                int startRow = 2;
+                string purchaseRefNoStr = RefNoAuto.GetNewPurchaseRefNo();
+                foreach (var tran in TempTransDetailDTOs)
+                {
+                    worksheet.Cells["E" + startRow].Value = DateTime.Now;
+                    worksheet.Cells["F" + startRow].Value = DateTime.Now;
+                    worksheet.Cells["G" + startRow].Value = $"NK{purchaseRefNoStr}";
+                    worksheet.Cells["K" + startRow].Value = "0";
+                    worksheet.Cells["R" + startRow].Value = tran.GoodId;
+                    worksheet.Cells["V" + startRow].Value = "1561";
+                    worksheet.Cells["W" + startRow].Value = "331";
+                    worksheet.Cells["Y" + startRow].Value = tran.Quantity;
+                    worksheet.Cells["Z" + startRow].Value = tran.Price;
+                    worksheet.Cells["AA" + startRow].Value = tran.TotalPrice;
+                    worksheet.Cells["AE" + startRow].Value = tran.VatValue;
+                    worksheet.Cells["AG" + startRow].Value = tran.VatAmount;
+                    worksheet.Cells["AI" + startRow].Value = "1331";
+
+                    startRow++;
+                }
+
+                await excelPackage.SaveAsAsync(new System.IO.FileInfo(saveFile)).ConfigureAwait(false);
+                return true;
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
+
 
         public async Task<bool> CreateFileImportNewInventoryItem(IEnumerable<Models.NewInventoryItem> newInventoryItems, string saveFile)
         {
@@ -91,6 +133,7 @@ namespace DatPhatAcc.Helpers
 
         public async Task<bool> CreateFileImportBanHang2(IEnumerable<TranDetail2> transDetail2s, string saveFile)
         {
+            string saleRefNoStr = RefNoAuto.GetNewSaleRefNo();
             try
             {
                 FileInfo file = new("Resources\\MisaExcelTemplates\\Ban_hang_VND.xlsx");
@@ -103,10 +146,10 @@ namespace DatPhatAcc.Helpers
                     worksheet.Cells["G" + startRow].Value = 1;// đã lập hóa đơn
                     worksheet.Cells["H" + startRow].Value = DateTime.Now;// ngày hạch toán
                     worksheet.Cells["I" + startRow].Value = DateTime.Now;// ngày hạch toán
-                    worksheet.Cells["J" + startRow].Value = $"BH{DateTime.Now:yyyyMMddHHmmss}";// ngày hạch toán
-                    worksheet.Cells["K" + startRow].Value = $"XK{DateTime.Now:yyyyMMddHHmmss}";// ngày hạch toán
+                    worksheet.Cells["J" + startRow].Value = $"BH{saleRefNoStr}";// ngày hạch toán
+                    worksheet.Cells["K" + startRow].Value = $"XK{saleRefNoStr}";// ngày hạch toán
                     worksheet.Cells["L" + startRow].Value = "Xuất kho bán hàng theo hóa đơn";// lý do xuất
-                    worksheet.Cells["M" + startRow].Value = $"HD{DateTime.Now:yyyyMMddHHmmss}";// số hóa đơn
+                    worksheet.Cells["M" + startRow].Value = $"HD{saleRefNoStr}";// số hóa đơn
                     worksheet.Cells["N" + startRow].Value = DateTime.Now;// ngày hóa đơn
                     worksheet.Cells["V" + startRow].Value = transDetail2.InventoryItemCode;// mã hàng
                     worksheet.Cells["Y" + startRow].Value = "131";// TK Nợ
