@@ -59,6 +59,12 @@ namespace DatPhatAcc.ViewModels
             NavigationService.Navigate<SyncExportInnerViewModel>();
         }
 
+        [RelayCommand]
+        private void NavigateToTCTInvoiceView()
+        {
+            NavigationService.Navigate<TCTInvoiceViewModel>();
+        }
+
 
     }
 

@@ -36,6 +36,10 @@
                 <view:OutwardView />
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type TypeName=viewmodel:TCTInvoiceViewModel}">
+                <view:TCTInvoiceView />
+            </DataTemplate>
+
 
 
             <!--  Styles  -->

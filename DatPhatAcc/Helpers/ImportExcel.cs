@@ -133,7 +133,7 @@ namespace DatPhatAcc.Helpers
 
         public async Task<bool> CreateFileImportBanHang2(IEnumerable<TranDetail2> transDetail2s, string saveFile)
         {
-            string saleRefNoStr = RefNoAuto.GetNewSaleRefNo();
+            string saleRefNoStr = RefNoAuto.GetNewPurchaseRefNo();
             try
             {
                 FileInfo file = new("Resources\\MisaExcelTemplates\\Ban_hang_VND.xlsx");

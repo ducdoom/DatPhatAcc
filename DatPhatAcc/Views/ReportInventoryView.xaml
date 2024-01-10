@@ -43,6 +43,14 @@
 
                     </StackPanel>
                 </Button>
+
+                <Button
+                    materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding ExportExcelCommand.IsRunning}"
+                    materialDesign:ButtonProgressAssist.Value="-1"
+                    Command="{Binding ExportExcelCommand, Mode=OneWay}"
+                    Content="Export file Excel"
+                    Style="{StaticResource MaterialDesignFlatSecondaryButton}" />
             </StackPanel>
 
             <Grid Grid.Row="1">
