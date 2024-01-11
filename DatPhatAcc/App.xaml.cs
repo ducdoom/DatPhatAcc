@@ -35,6 +35,7 @@ namespace DatPhatAcc
             services.AddSingleton<Sync2Service>();
             services.AddSingleton<MisaUltis>();
             services.AddSingleton<Ihoadon>();
+            services.AddSingleton<ExcelHelper>();
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 

@@ -40,7 +40,6 @@
                             VerticalAlignment="Center"
                             Kind="SearchSolid" />
                         <TextBlock Margin="5,0,0,0" Text="Tổng hợp tồn kho" />
-
                     </StackPanel>
                 </Button>
 
