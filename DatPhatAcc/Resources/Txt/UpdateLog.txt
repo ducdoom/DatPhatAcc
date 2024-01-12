@@ -1,0 +1,11 @@
+﻿13/01/2024:
+- Bổ sung chức năng đọc file excel từ tổng cục thuế, bao gồm:
+	+ Hóa đơn có mã cơ quan thuế
+	+ Hóa đơn không có mã cơ quan thuế
+
+----------------------------------------------------
+
+12/01/2024: 
+- Cập nhật công thức tính giá vốn trong báo cáo Tổng hợp tồn kho:
+	Đơn giá xuất kho trong kỳ bình quân của 1 sản phẩm = (Giá trị hàng tồn kho đầu kỳ + Giá trị hàng tồn kho nhập trong kỳ) / (Số lượng hàng tồn kho đầu kỳ + Số lượng hàng tồn kho nhập trong kỳ)
+- Giá vốn chỉ được tính trên khoảng thời gian xem báo cáo, không tính theo cả tháng hay cả năm. Ví dụ: Báo cáo từ ngày 01/01/2024 đến ngày 05/01/2024 thì giá vốn chỉ tính trên khoảng thời gian này, không tính theo cả tháng 01/2024 hay cả năm 2024.

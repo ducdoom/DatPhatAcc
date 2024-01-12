@@ -12,6 +12,8 @@
     Title="DatPhatAcc"
     Width="1200"
     Height="600"
+    MinWidth="800"
+    MinHeight="600"
     d:DataContext="{d:DesignInstance Type={x:Type viewmodels:MainViewModel}}"
     Background="{StaticResource BackgroundColor}"
     FontFamily="{materialDesign:MaterialDesignFont}"
@@ -39,6 +41,7 @@
                 <MenuItem Command="{Binding NavigateToReportInventoryViewCommand}" Header="Tổng hợp tồn kho" />
             </MenuItem>
             <MenuItem Command="{Binding NavigateToSettingViewCommand}" Header="Cài đặt" />
+            <MenuItem Command="{Binding NavigateToUpdateLogViewCommand}" Header="Lịch sử cập nhật" />
 
         </Menu>
 

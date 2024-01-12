@@ -133,7 +133,7 @@
                         AllowEditing="False"
                         FieldName="CostPriceUnit"
                         Header="Đơn giá vốn"
-                        Style="{StaticResource ContainsFilter}">
+                        >
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>

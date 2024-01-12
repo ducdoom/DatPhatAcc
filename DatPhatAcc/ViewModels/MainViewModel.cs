@@ -65,6 +65,12 @@ namespace DatPhatAcc.ViewModels
             NavigationService.Navigate<TCTInvoiceViewModel>();
         }
 
+        [RelayCommand]
+        private void NavigateToUpdateLogView()
+        {
+            NavigationService.Navigate<UpdateLogViewModel>();
+        }
+
 
     }
 

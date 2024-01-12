@@ -24,18 +24,17 @@ namespace DatPhatAcc.Helpers
             {
                 Invoice invoice = new()
                 {
-                    RowNumber = rowNumber,
                     InvoiceTemplateCode = worksheet.Cells["b" + rowNumber].GetValue<string>() ?? string.Empty,
                     InvoiceCode = worksheet.Cells["c" + rowNumber].GetValue<string>() ?? string.Empty,
                     InvoiceNumber = worksheet.Cells["d" + rowNumber].GetValue<string>() ?? string.Empty,
-                    InvoiceDate = worksheet.Cells["e" + rowNumber].GetValue<string>() ?? string.Empty,
+                    InvoiceDateString = worksheet.Cells["e" + rowNumber].GetValue<string>() ?? string.Empty,
                     SellerTaxCode = worksheet.Cells["f" + rowNumber].GetValue<string>() ?? string.Empty,
                     SellerName = worksheet.Cells["g" + rowNumber].GetValue<string>() ?? string.Empty,
-                    TotalAmountWithoutTax = worksheet.Cells["h" + rowNumber].GetValue<double>(),
+                    //TotalAmountWithoutTax = worksheet.Cells["h" + rowNumber].GetValue<double>(),
                     TotalTaxAmount = worksheet.Cells["i" + rowNumber].GetValue<double>(),
                     TotalDiscountAmount = worksheet.Cells["j" + rowNumber].GetValue<double>(),
                     TotalFeeAmount = worksheet.Cells["k" + rowNumber].GetValue<double>(),
-                    TotalAmount = worksheet.Cells["l" + rowNumber].GetValue<double>(),
+                    TotalAmountVAT = worksheet.Cells["l" + rowNumber].GetValue<double>(),
                     CurrencyUnit = worksheet.Cells["m" + rowNumber].GetValue<string>() ?? string.Empty,
                     InvoiceStatus = worksheet.Cells["n" + rowNumber].GetValue<string>() ?? string.Empty,
                     InvoiceCheckResult = worksheet.Cells["o" + rowNumber].GetValue<string>() ?? string.Empty

@@ -18,40 +18,32 @@ namespace DatPhatAcc.Services
         private Dictionary<string, string> refTypeDictionary = new();
         public async Task<Dictionary<string, string>> GetRefTypeDictionary()
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             if (refTypeDictionary.Count > 0)
             {
                 return refTypeDictionary;
             }
 
             MisaDbContext.AAMisaDbContext context = new();
+            Debug.WriteLine($"{DateTime.Now} GetSearchRefTypes");
             var searchRefTypes = await context.SearchRefTypes.ToArrayAsync().ConfigureAwait(false);
+            Debug.WriteLine($"{DateTime.Now} Done GetSearchRefTypes");
 
             foreach (var item in searchRefTypes)
             {
                 string[] array = item.RefType.Split(',');
                 foreach (string type in array)
                 {
-                    refTypeDictionary[type] = item.RefTypeName;
+                    refTypeDictionary[type] = item.RefTypeName ?? string.Empty;
+                    Debug.WriteLine($"{DateTime.Now} RefTypeDictionary: {type} - {item.RefTypeName}");
                 }
             }
 
-            return refTypeDictionary;
-        }
+            stopwatch.Stop();
+            Debug.WriteLine($"GetRefTypeDictionary: {stopwatch.ElapsedMilliseconds} ms");
 
-        private List<InventoryItem> inventoryItems = new();
-        private List<InventoryItem> InventoryItems()
-        {
-            MisaDbContext.AAMisaDbContext context = new();
-            var newInventoryItems = context.InventoryItems.AsNoTracking().ToList();
-            if (inventoryItems.Count.Equals(newInventoryItems.Count))
-            {
-                return inventoryItems;
-            }
-            else
-            {
-                inventoryItems = newInventoryItems;
-                return inventoryItems;
-            }
+            return refTypeDictionary;
         }
 
         public async Task<List<InventoryItemSummary>> GetInventoryItemSummaryBalance(DateTime fromDate, DateTime toDate)
@@ -64,38 +56,39 @@ namespace DatPhatAcc.Services
             toDate = toDate.ToEndOfDate();
 
             MisaDbContext.AAMisaDbContext context = new();
-            var inventoryLedger = context.InventoryLedgers.AsNoTracking();
 
             //lấy dữ liệu số dư đầu kỳ với điều kiện PostedDate < fromDate
-            var opening = context.InventoryLedgers
+            var opening = await context.InventoryLedgers
                 .AsNoTracking()
                 .Where(x => x.PostedDate < fromDate)
                 .GroupBy(x => new { x.InventoryItemCode, x.StockCode })
                 .Select(group => new InventoryItemSummary
                 {
-                    InventoryItemCode = group.Key.InventoryItemCode,
+                    InventoryItemCode = group.Key.InventoryItemCode ?? string.Empty,
                     StockCode = group.Key.StockCode ?? string.Empty,
                     OpeningQuantity = group.Sum(x => x.InwardQuantity ?? decimal.Zero) - group.Sum(x => x.OutwardQuantity ?? decimal.Zero),
                     OpeningAmount = group.Sum(x => x.InwardAmount) - group.Sum(x => x.OutwardAmount)
-                }).AsEnumerable();
-            //.ToList();
+                })
+                .ToListAsync().ConfigureAwait(false);
 
             await getRefTypeDictionaryTask.ConfigureAwait(false);
 
             //lấy dữ liệu nhập xuất kho trong khoảng thời gian fromDate - toDate
-            var inOutWard = inventoryLedger.ToArray()
+            var inventoryLedger = await context.InventoryLedgers.AsNoTracking().ToListAsync().ConfigureAwait(false);
+            var inOutWard = inventoryLedger
                 .Where(x => GetRefTypeName(x.RefType).Equals(INWARD) || GetRefTypeName(x.RefType).Equals(OUTWARD))
                 .Where(x => x.PostedDate >= fromDate && x.PostedDate <= toDate)
                 .GroupBy(x => new { x.InventoryItemCode, x.StockCode })
                 .Select(group => new InventoryItemSummary
                 {
-                    InventoryItemCode = group.Key.InventoryItemCode,
+                    InventoryItemCode = group.Key.InventoryItemCode ?? string.Empty,
                     StockCode = group.Key.StockCode ?? string.Empty,
                     InQuantity = group.Sum(x => x.InwardQuantity ?? decimal.Zero),
                     InAmount = group.Sum(x => x.InwardAmount),
                     OutQuantity = group.Sum(x => x.OutwardQuantity ?? decimal.Zero),
                     OutAmount = group.Sum(x => x.OutwardAmount)
-                });
+                })
+                .ToList();
 
             List<InventoryItemSummary> inventoryItemSummaries = new();
             try
@@ -140,7 +133,7 @@ namespace DatPhatAcc.Services
                         OutQuantity = inventoryItem.OutQuantity,
                         OutAmount = inventoryItem.OutAmount
                     })
-                    .OrderBy(x => x.InventoryItemCode)  
+                    .OrderBy(x => x.InventoryItemCode)
                     .ToList();
             }
             catch (Exception ex)
@@ -187,7 +180,7 @@ namespace DatPhatAcc.Services
             DateTime toDateEnd = toDate.ToEndOfDate();
 
             MisaDbContext.AAMisaDbContext context = new();
-            var saleLedgers = context.SaleLedgers.AsNoTracking()
+            var saleLedgers = await context.SaleLedgers.AsNoTracking()
                  .OrderByDescending(x => x.InvNo)
                  .Where(x => x.PostedDate >= fromDateStart && x.PostedDate <= toDateEnd)
                  .GroupBy(group => group.InvNo)
@@ -198,15 +191,15 @@ namespace DatPhatAcc.Services
                      PostedDate = x.First().PostedDate,
                      AccountObjectName = x.First().AccountObjectName,
                      SaleAmount = x.Sum(x => x.SaleAmount)
-                 });
+                 }).ToArrayAsync().ConfigureAwait(false);
 
-            return await saleLedgers.ToArrayAsync().ConfigureAwait(false);
+            return saleLedgers;
         }
 
         public async Task<IEnumerable<Models.SaleLedgerDetail>> GetSaleLedgersDetail(Guid refId)
         {
             MisaDbContext.AAMisaDbContext context = new();
-            IEnumerable<SaleLedgerDetail> saleLedgerDetails = context.SaleLedgers.AsNoTracking()
+            IEnumerable<SaleLedgerDetail> saleLedgerDetails = await context.SaleLedgers.AsNoTracking()
                 .Where(x => x.RefId.Equals(refId))
                 .Join(context.Units, sl => sl.UnitId, unit => unit.UnitId, (sld, unit) => new Models.SaleLedgerDetail
                 {
@@ -219,10 +212,48 @@ namespace DatPhatAcc.Services
                     SaleQuantity = sld.SaleQuantity,
                     SaleAmount = sld.SaleAmount,
                     Vatrate = sld.Vatrate,
-                    Vatamount = sld.Vatamount                    
-                });
+                    Vatamount = sld.Vatamount
+                }).ToListAsync().ConfigureAwait(false);
 
             return saleLedgerDetails;
+        }
+
+        public async Task CheckInvoice(Invoice invoice)
+        {
+            MisaDbContext.AAMisaDbContext context = new();
+            var invoiceFound = await context.PurchaseLedgers
+                .AsNoTracking()
+                .Where(x => (x.InvSeries ?? string.Empty).Equals(invoice.InvoiceSeries)
+                        && (x.InvNo ?? string.Empty).Equals(invoice.InvoiceNumber)
+                        && x.InvDate.Equals(invoice.InvoiceDate)
+                        && (x.AccountObjectTaxCode ?? string.Empty).Equals(invoice.SellerTaxCode)
+                        )
+                .GroupBy(x => x.RefId)
+                .Select(x => new Invoice
+                {
+                    InvoiceTemplateCode = invoice.InvoiceTemplateCode,
+                    InvoiceCode = invoice.InvoiceCode,
+                    InvoiceNumber = x.First().InvNo ?? string.Empty,
+                    InvoiceDateString = x.First().InvDate.GetValueOrDefault().ToString("dd/MM/yyyy") ?? DateTime.MinValue.ToString("dd/MM/yyyy"),
+                    SellerTaxCode = x.First().AccountObjectTaxCode ?? string.Empty,
+                    SellerName = x.First().AccountObjectName ?? string.Empty,
+                    TotalAmountVAT = (double)x.Sum(x => x.PurchaseAmount + x.Vatamount),
+                    TotalTaxAmount = (double)x.Sum(x => x.Vatamount)
+                })
+                .ToListAsync().ConfigureAwait(false);
+
+            if (invoiceFound.Count == 1
+                && invoiceFound.First().TotalAmountWithoutTax == invoice.TotalAmountWithoutTax
+                && invoiceFound.First().TotalTaxAmount == invoice.TotalTaxAmount
+                && invoiceFound.First().TotalAmountVAT == invoice.TotalAmountVAT
+                )
+            {
+                invoice.Checked = true;
+            }
+
+            invoice.InvoiceCount = invoiceFound.Count;
+
+            Debug.WriteLine($"Invoice {invoice.InvoiceSeries} {invoice.InvoiceNumber}");
         }
     }
 }

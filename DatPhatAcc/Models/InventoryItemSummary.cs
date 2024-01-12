@@ -15,7 +15,19 @@
         public decimal OutAmount { get; set; } = 0;
         public decimal ClosingQuantity => OpeningQuantity + InQuantity - OutQuantity;
         public decimal ClosingAmount => OpeningAmount + InAmount - OutAmount;
-        public decimal CostPriceUnit => ClosingQuantity == 0 ? 0 : ClosingAmount / ClosingQuantity;
+        public decimal CostPriceUnit
+        {
+            get
+            {
+                if ((OpeningQuantity + InQuantity) == 0)
+                {
+                    return 0;
+                }
+
+                return (OpeningAmount + InAmount) / (OpeningQuantity + InQuantity);
+            }
+        }
+
 
     }
 }

@@ -29,6 +29,7 @@ namespace DatPhatAcc
             services.AddSingleton<ShareViewModel>();
             services.AddSingleton<OutwardViewModel>();
             services.AddSingleton<TCTInvoiceViewModel>();
+            services.AddSingleton<UpdateLogViewModel>();
 
             services.AddSingleton<AccountingService>(); //services
             services.AddSingleton<MisaService>();

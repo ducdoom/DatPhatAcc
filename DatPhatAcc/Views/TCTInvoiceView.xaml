@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:DatPhatAcc.Views"
@@ -36,12 +37,93 @@
                 </StackPanel>
             </Button>
 
-            <dxg:GridControl AutoGenerateColumns="AddNew" Grid.Row="1" ItemsSource="{Binding Invoices}">
+            <dxg:GridControl Grid.Row="1" ItemsSource="{Binding Invoices}">
                 <dxg:GridControl.View>
-                    <dxg:TableView />
+                    <dxg:TableView>
+                        <dxg:TableView.FormatConditions>
+                            <dxg:FormatCondition
+                                FieldName="Checked"
+                                PredefinedFormatName="GreenFillWithDarkGreenText"
+                                Value1="True"
+                                ValueRule="Equal" />
+
+                            <dxg:FormatCondition
+                                FieldName="InvoiceStatus"
+                                PredefinedFormatName="LightRedFillWithDarkRedText"
+                                Value1="Hóa đơn đã bị xóa bỏ/hủy bỏ"
+                                ValueRule="Equal" />
+
+                            <dxg:FormatCondition
+                                FieldName="InvoiceStatus"
+                                PredefinedFormatName="LightRedFillWithDarkRedText"
+                                Value1="Hóa đơn đã bị thay thế"
+                                ValueRule="Equal" />
+                            
+                            <dxg:FormatCondition
+                                FieldName="InvoiceStatus"
+                                PredefinedFormatName="LightRedFillWithDarkRedText"
+                                Value1="Hóa đơn đã bị điều chỉnh"
+                                ValueRule="Equal" />
+                        </dxg:TableView.FormatConditions>
+                    </dxg:TableView>
                 </dxg:GridControl.View>
 
-                <dxg:GridColumn />
+
+                <dxg:GridColumn
+                    FieldName="InvoiceSeries"
+                    Header="Ký hiệu"
+                    Style="{StaticResource ContainsFilter}" />
+                <dxg:GridColumn
+                    FieldName="InvoiceNumber"
+                    Header="Số HĐ"
+                    Style="{StaticResource ContainsFilter}" />
+                <dxg:GridColumn
+                    FieldName="InvoiceDate"
+                    Header="Ngày HĐ"
+                    Style="{StaticResource ContainsFilter}" />
+                <dxg:GridColumn
+                    FieldName="SellerTaxCode"
+                    Header="MST"
+                    Style="{StaticResource ContainsFilter}" />
+                <dxg:GridColumn
+                    FieldName="SellerName"
+                    Header="Tên NCC"
+                    Style="{StaticResource ContainsFilter}" />
+                <dxg:GridColumn FieldName="TotalAmountWithoutTax" Header="Tổng tiền">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N0" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="TotalTaxAmount" Header="Tiền thuế">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N0" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="TotalAmountVAT" Header="Tổng tiền có VAT">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N0" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn
+                    FieldName="InvoiceStatus"
+                    Header="Trạng thái"
+                    Style="{StaticResource ContainsFilter}" />
+                <dxg:GridColumn
+                    FieldName="InvoiceCheckResult"
+                    Header="Đã cấp mã"
+                    Style="{StaticResource ContainsFilter}" />
+
+                <dxg:GridColumn
+                    AllowEditing="False"
+                    FieldName="Checked"
+                    Header="Checked" />
+
+                <dxg:GridColumn
+                    AllowEditing="False"
+                    FieldName="InvoiceCount"
+                    Header="InvoiceCount" />
+
+
             </dxg:GridControl>
         </Grid>
     </materialDesign:Card>
