@@ -1,4 +1,6 @@
 ﻿13/01/2024:
+- Bôi màu cho chức năng kiểm tra hóa đơn TCT
+- Sửa lỗi lấy tồn kho hàng hóa trong đó có mã hàng không có đơn vị tính
 - Bổ sung chức năng đọc file excel từ tổng cục thuế, bao gồm:
 	+ Hóa đơn có mã cơ quan thuế
 	+ Hóa đơn không có mã cơ quan thuế

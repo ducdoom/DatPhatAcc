@@ -73,9 +73,11 @@ namespace DatPhatAcc.Services
 
             await getRefTypeDictionaryTask.ConfigureAwait(false);
 
-            //lấy dữ liệu nhập xuất kho trong khoảng thời gian fromDate - toDate
             var inventoryLedger = await context.InventoryLedgers.AsNoTracking().ToListAsync().ConfigureAwait(false);
+
+            //lấy dữ liệu nhập xuất kho trong khoảng thời gian fromDate - toDate
             var inOutWard = inventoryLedger
+                //vì sử dụng hàm riêng GetRefTypeName nên không thể cho vào linq được
                 .Where(x => GetRefTypeName(x.RefType).Equals(INWARD) || GetRefTypeName(x.RefType).Equals(OUTWARD))
                 .Where(x => x.PostedDate >= fromDate && x.PostedDate <= toDate)
                 .GroupBy(x => new { x.InventoryItemCode, x.StockCode })
@@ -112,7 +114,7 @@ namespace DatPhatAcc.Services
                         InventoryItemCode = x.InventoryItemCode,
                         InventoryItemName = y.InventoryItemName ?? string.Empty,
                         StockCode = x.StockCode,
-                        UnitId = (Guid)y.UnitId,
+                        UnitId = y.UnitId ?? new Guid(),
                         OpeningQuantity = x.OpeningQuantity,
                         OpeningAmount = x.OpeningAmount,
                         InQuantity = x.InQuantity,

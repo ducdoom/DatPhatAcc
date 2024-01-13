@@ -58,12 +58,25 @@
                                 PredefinedFormatName="LightRedFillWithDarkRedText"
                                 Value1="Hóa đơn đã bị thay thế"
                                 ValueRule="Equal" />
-                            
+
                             <dxg:FormatCondition
                                 FieldName="InvoiceStatus"
                                 PredefinedFormatName="LightRedFillWithDarkRedText"
                                 Value1="Hóa đơn đã bị điều chỉnh"
                                 ValueRule="Equal" />
+
+                            <dxg:FormatCondition
+                                FieldName="InvoiceCount"
+                                PredefinedFormatName="GreenFillWithDarkGreenText"
+                                Value1="1"
+                                ValueRule="Equal" />
+
+                            <dxg:FormatCondition
+                                FieldName="InvoiceCount"
+                                PredefinedFormatName="LightRedFillWithDarkRedText"
+                                Value1="1"
+                                ValueRule="Greater" />
+                            
                         </dxg:TableView.FormatConditions>
                     </dxg:TableView>
                 </dxg:GridControl.View>
@@ -116,12 +129,12 @@
                 <dxg:GridColumn
                     AllowEditing="False"
                     FieldName="Checked"
-                    Header="Checked" />
+                    Header="Đúng số tiền" />
 
                 <dxg:GridColumn
                     AllowEditing="False"
                     FieldName="InvoiceCount"
-                    Header="InvoiceCount" />
+                    Header="Số lượng hóa đơn" />
 
 
             </dxg:GridControl>
