@@ -18,16 +18,26 @@ namespace DatPhatAcc.ViewModels
         {
             this.excelHelper = excelHelper;
             this.misaService = misaService;
+            LoadExplainNote();
         }
 
         #region Properties
         [ObservableProperty]
         private ObservableCollection<Invoice> invoices = new();
 
+        [ObservableProperty]
+        private string explainNote = string.Empty;
+
 
         #endregion
 
         #region Commands
+        private void LoadExplainNote()
+        {
+            string ExplainNoteTextFile = "Resources\\Txt\\TCTExplainNote.txt";
+            ExplainNote = System.IO.File.ReadAllText(ExplainNoteTextFile);
+        }
+
         [RelayCommand]
         private async Task ReadExcelFiles()
         {
@@ -48,25 +58,29 @@ namespace DatPhatAcc.ViewModels
             Invoices.Clear();
             foreach (string file in fileNames)
             {
-                var a = await excelHelper.ReadExcelFile(file);
-                if (!a.Any())
+                var invoiceList = await excelHelper.ReadExcelFile(file);
+                if (!invoiceList.Any())
                 {
                     MessageBox.Show(Application.Current.MainWindow, $"Không đọc được dữ liệu trong file {file}", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                invoices.AddRange(a);
+                invoices.AddRange(invoiceList);
             }
 
             List<Task> tasks = new();
             foreach (var invoice in invoices)
             {
-                Task t = misaService.CheckInvoice(invoice);
-                tasks.Add(t);
-                Debug.WriteLine($"Task added: {t.Id}");
+                //Task t = Task.Run(() => misaService.CheckInvoice(invoice));
+                await misaService.CheckInvoice(invoice);
+                //tasks.Add(t);
+                //Debug.WriteLine($"Task added: {t.Id}");
             }
 
-            await Task.WhenAll(tasks);
+            //await Task.WhenAll(tasks);
+
+            await misaService.AddMoreInvoiceThatDoesNotExistInTCT(invoices);
+
             Invoices = new(invoices);
 
             MessageBox.Show(Application.Current.MainWindow, $"Đọc dữ liệu thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);

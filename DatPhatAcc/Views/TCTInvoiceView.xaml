@@ -19,6 +19,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
                 <RowDefinition />
+                <RowDefinition Height="100" />
             </Grid.RowDefinitions>
 
             <Button
@@ -76,7 +77,7 @@
                                 PredefinedFormatName="LightRedFillWithDarkRedText"
                                 Value1="1"
                                 ValueRule="Greater" />
-                            
+
                         </dxg:TableView.FormatConditions>
                     </dxg:TableView>
                 </dxg:GridControl.View>
@@ -138,6 +139,10 @@
 
 
             </dxg:GridControl>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="2">
+                <TextBlock VerticalAlignment="Stretch" TextWrapping="Wrap" Text="{Binding ExplainNote}" />
+            </ScrollViewer>
         </Grid>
     </materialDesign:Card>
 </UserControl>

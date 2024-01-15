@@ -1,0 +1,5 @@
+﻿* Tiêu chí so sánh hóa đơn có tồn tại trên Misa hay không:
+	- Ký hiệu hóa đơn
+	- Ngày hóa đơn
+	- Số hóa đơn
+	- Mã số thuế NCC

@@ -16,6 +16,7 @@
     <None Remove="Resources\MisaExcelTemplates\Ban_hang_VND.xlsx" />
     <None Remove="Resources\MisaExcelTemplates\Mau_danh_muc_vat_tu_hang_hoa_VND.xlsx" />
     <None Remove="Resources\MisaExcelTemplates\Mua_hang_qua_kho_VND.xlsx" />
+    <None Remove="Resources\Txt\TCTExplainNote.txt" />
     <None Remove="Resources\Txt\UpdateLog.txt" />
   </ItemGroup>
 
@@ -31,6 +32,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\MisaExcelTemplates\Mua_hang_qua_kho_VND.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Txt\TCTExplainNote.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Txt\UpdateLog.txt">

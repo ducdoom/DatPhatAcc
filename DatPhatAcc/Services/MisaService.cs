@@ -257,5 +257,34 @@ namespace DatPhatAcc.Services
 
             Debug.WriteLine($"Invoice {invoice.InvoiceSeries} {invoice.InvoiceNumber}");
         }
+
+        internal async Task AddMoreInvoiceThatDoesNotExistInTCT(List<Invoice> invoices)
+        {
+            MisaDbContext.AAMisaDbContext context = new();
+            var purchaseLedgers = await context.PurchaseLedgers
+                .AsNoTracking()
+                .GroupBy(x => x.RefId)
+                .Select(x => new Invoice
+                {
+                    InvoiceSeriesManual = x.First().InvSeries ?? string.Empty,
+                    InvoiceNumber = x.First().InvNo ?? string.Empty,                    
+                    InvoiceDateString = x.First().InvDate.GetValueOrDefault().ToString("dd/MM/yyyy") ?? DateTime.MinValue.ToString("dd/MM/yyyy"),
+                    SellerTaxCode = x.First().AccountObjectTaxCode ?? string.Empty,
+                    SellerName = x.First().AccountObjectName ?? string.Empty,
+                    TotalAmountVAT = (double)x.Sum(x => x.PurchaseAmount + x.Vatamount),
+                    TotalTaxAmount = (double)x.Sum(x => x.Vatamount),
+                    InvoiceCheckResult = "Có trên Misa, Không có trên TCT"
+                })
+                .ToListAsync().ConfigureAwait(false);
+
+            var result = purchaseLedgers
+                .Where(purchaseLedger => !invoices.Any(invoice => 
+                    purchaseLedger.InvoiceSeriesManual.Equals(invoice.InvoiceSeries)
+                    && purchaseLedger.InvoiceNumber.Equals(invoice.InvoiceNumber)
+                    && purchaseLedger.SellerTaxCode.Equals(invoice.SellerTaxCode)
+                    )).ToList();
+
+            invoices.AddRange(result);
+        }
     }
 }

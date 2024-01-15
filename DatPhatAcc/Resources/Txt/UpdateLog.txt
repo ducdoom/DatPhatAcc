@@ -1,4 +1,10 @@
-﻿13/01/2024:
+﻿16/01/2024:
+- [Kiểm tra hóa đơn TCT]: bổ sung chức năng so sánh các hóa đơn có trên Misa nhưng không có trên TCT. 
+	Nguyên nhân: nhập sai mã số thuế, nhập sai số hóa đơn, nhập sai ký hiệu hóa đơn...
+
+----------------------------------------------------
+
+13/01/2024:
 - Bôi màu cho chức năng kiểm tra hóa đơn TCT
 - Sửa lỗi lấy tồn kho hàng hóa trong đó có mã hàng không có đơn vị tính
 - Bổ sung chức năng đọc file excel từ tổng cục thuế, bao gồm:
