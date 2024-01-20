@@ -71,6 +71,11 @@ namespace DatPhatAcc.ViewModels
             NavigationService.Navigate<UpdateLogViewModel>();
         }
 
+        [RelayCommand]
+        private void NavigateToDebtView()
+        {
+            NavigationService.Navigate<DebtViewModel>();
+        }
 
     }
 

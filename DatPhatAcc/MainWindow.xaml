@@ -36,6 +36,7 @@
 
             <MenuItem Command="{Binding NavigateToOutwardViewCommand}" Header="Bán hàng" />
             <MenuItem Command="{Binding NavigateToTCTInvoiceViewCommand}" Header="Hóa đơn TCT" />
+            <MenuItem Command="{Binding NavigateToDebtViewCommand}" Header="Công nợ" />
 
             <MenuItem Header="Báo cáo">
                 <MenuItem Command="{Binding NavigateToReportInventoryViewCommand}" Header="Tổng hợp tồn kho" />

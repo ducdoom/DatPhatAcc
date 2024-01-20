@@ -378,5 +378,25 @@ namespace DatPhatAcc.Services
             IEnumerable<TranDetailInfo> result = await tranDetailsWithUnitName.ToArrayAsync().ConfigureAwait(false);
             return result;
         }
+
+        public async Task<List<AccountingReportDetailByOneAccountResult>> DetailByOneAccount(DateTime fromDate, DateTime toDate, string accountNumber, string supplyIDs)
+        {
+            string fromDateString = fromDate.ToTranDate();
+            string toDateString = toDate.ToTranDate();
+
+            try
+            {
+                ACCOUNTINGContext context = new();
+                ACCOUNTINGContextProcedures procedures = new(context);
+                var results = await procedures.AccountingReportDetailByOneAccountAsync(fromDateString, toDateString, "", accountNumber, "", "", "", "", "", "", "", "", supplyIDs, "", "", "", "", "", "", "", "", "", "", "", "").ConfigureAwait(false);
+                    
+                return results;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+        }
     }
 }
