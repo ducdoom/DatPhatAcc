@@ -1,4 +1,12 @@
-﻿16/01/2024:
+﻿29/02/2024:
+- Bổ sung tài khoản chi tiết trong chức năng import file excel
+	- 51111: doanh thu bán lẻ
+	- 51112: doanh thu bán buôn
+	- 6321: Giá vốn hàng bán lẻ
+	- 6322: Giá vốn hàng bán buôn
+	- 3311: Phải trả người bán
+
+16/01/2024:
 - [Kiểm tra hóa đơn TCT]: bổ sung chức năng so sánh các hóa đơn có trên Misa nhưng không có trên TCT. 
 	Nguyên nhân: nhập sai mã số thuế, nhập sai số hóa đơn, nhập sai ký hiệu hóa đơn...
 

@@ -326,7 +326,7 @@ namespace DatPhatAcc.ViewModels
 
             string fileName = saveFileDialog.FileName;
 
-            bool success = await misaUltis.ImportExcel.CreateFileImportBanHang2(SelectedtranDetail2s, fileName);
+            bool success = await misaUltis.ImportExcel.CreateFileImportBanHang3(SelectedtranDetail2s, fileName, SelectedSyncTransactionType);
             if (success)
             {
                 MessageBox.Show("Tạo file import bán hàng thành công", "Thông báo");

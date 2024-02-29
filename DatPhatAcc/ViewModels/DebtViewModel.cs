@@ -12,6 +12,11 @@ namespace DatPhatAcc.ViewModels
             this.accountingService = accountingService;
         }
 
+        [ObservableProperty]
+        private DateTime fromDateMisa = DateTime.Now;
+        [ObservableProperty]
+        private DateTime toDateMisa = DateTime.Now;
+
         [RelayCommand]
         private async Task GetStored()
         {
