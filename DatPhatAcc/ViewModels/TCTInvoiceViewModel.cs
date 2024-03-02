@@ -5,7 +5,6 @@ using DatPhatAcc.Models;
 using DatPhatAcc.Services;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows;
 
 namespace DatPhatAcc.ViewModels
@@ -27,6 +26,12 @@ namespace DatPhatAcc.ViewModels
 
         [ObservableProperty]
         private string explainNote = string.Empty;
+
+        [ObservableProperty]
+        private DateTime fromDate = DateTime.Now;
+
+        [ObservableProperty]
+        private DateTime toDate = DateTime.Now;
 
 
         #endregion
@@ -68,18 +73,19 @@ namespace DatPhatAcc.ViewModels
                 invoices.AddRange(invoiceList);
             }
 
-            List<Task> tasks = new();
+            List<DateTime> dateTimes = new();
             foreach (var invoice in invoices)
             {
                 //Task t = Task.Run(() => misaService.CheckInvoice(invoice));
                 await misaService.CheckInvoice(invoice);
-                //tasks.Add(t);
+                dateTimes.Add(invoice.InvoiceDate);
                 //Debug.WriteLine($"Task added: {t.Id}");
             }
 
             //await Task.WhenAll(tasks);
-
-            await misaService.AddMoreInvoiceThatDoesNotExistInTCT(invoices);
+            DateTime minDate = dateTimes.Min();
+            DateTime maxDate = dateTimes.Max();
+            await misaService.AddMoreInvoiceThatDoesNotExistInTCT(invoices, minDate, maxDate);
 
             Invoices = new(invoices);
 

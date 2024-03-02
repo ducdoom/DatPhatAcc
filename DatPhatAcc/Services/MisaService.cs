@@ -258,11 +258,12 @@ namespace DatPhatAcc.Services
             Debug.WriteLine($"Invoice {invoice.InvoiceSeries} {invoice.InvoiceNumber}");
         }
 
-        internal async Task AddMoreInvoiceThatDoesNotExistInTCT(List<Invoice> invoices)
+        internal async Task AddMoreInvoiceThatDoesNotExistInTCT(List<Invoice> invoices, DateTime fromDate, DateTime toDate)
         {
             MisaDbContext.AAMisaDbContext context = new();
             var purchaseLedgers = await context.PurchaseLedgers
                 .AsNoTracking()
+                .Where(x => x.PostedDate >= fromDate && x.PostedDate <= toDate)
                 .GroupBy(x => x.RefId)
                 .Select(x => new Invoice
                 {
