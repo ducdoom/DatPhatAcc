@@ -225,8 +225,10 @@ namespace DatPhatAcc.Services
             MisaDbContext.AAMisaDbContext context = new();
             var invoiceFound = await context.PurchaseLedgers
                 .AsNoTracking()
-                .Where(x => (x.InvSeries ?? string.Empty).Equals(invoice.InvoiceSeries)
-                        && (x.InvNo ?? string.Empty).Equals(invoice.InvoiceNumber)
+                .Where(x => 
+                //(x.InvSeries ?? string.Empty).Equals(invoice.InvoiceSeries) //hóa đơn dịch vụ MISA không cho nhập ký hiệu hóa đơn, nên null hết
+                //        && 
+                        (x.InvNo ?? string.Empty).Equals(invoice.InvoiceNumber)
                         && x.InvDate.Equals(invoice.InvoiceDate)
                         && (x.AccountObjectTaxCode ?? string.Empty).Equals(invoice.SellerTaxCode)
                         )
