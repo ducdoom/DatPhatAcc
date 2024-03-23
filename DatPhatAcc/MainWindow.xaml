@@ -40,6 +40,7 @@
             </MenuItem>
             <MenuItem Command="{Binding NavigateToSettingViewCommand}" Header="Cài đặt" />
             <MenuItem Command="{Binding NavigateToUpdateLogViewCommand}" Header="Lịch sử cập nhật" />
+            <MenuItem Command="{Binding NavigateToAutmationViewCommand}" Header="Automation" />
 
         </Menu>
 

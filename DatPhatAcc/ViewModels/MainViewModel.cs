@@ -11,6 +11,8 @@ namespace DatPhatAcc.ViewModels
         public MainViewModel(INavigationService navigationService)
         {
             NavigationService = navigationService;
+            SimpleTcpServer server = new SimpleTcpServer("127.0.0.1", 8080);
+            server.Listen();
         }
 
         [ObservableProperty]
@@ -75,6 +77,12 @@ namespace DatPhatAcc.ViewModels
         private void NavigateToDebtView()
         {
             NavigationService.Navigate<DebtViewModel>();
+        }
+
+        [RelayCommand]
+        private void NavigateToAutmationView()
+        {
+            NavigationService.Navigate<AutomationViewModel>();
         }
 
     }
