@@ -9,6 +9,7 @@ namespace DatPhatAcc.ViewModels
 {
     public partial class AutomationViewModel : ObservableObject
     {
+        
         public AutomationViewModel()
         {
 
@@ -17,15 +18,17 @@ namespace DatPhatAcc.ViewModels
         [RelayCommand]
         private async Task RunAutomation()
         {
-            ProcessStartInfo processStartInfo = new ProcessStartInfo();
-            processStartInfo.FileName = "C:\\Users\\ducdo\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Thinh\\Thinh\\Thanh Cong Accounting.appref-ms";
-            processStartInfo.UseShellExecute = true;
+            ProcessStartInfo processStartInfo = new ProcessStartInfo
+            {
+                FileName = "C:\\Users\\ducdo\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Thinh\\Thinh\\Thanh Cong Accounting.appref-ms",
+                UseShellExecute = true
+            };
             //Process.Start(processStartInfo);
 
-            
+
             await Task.Delay(5000);
 
-            var app = FlaUI.Core.Application.Attach(processStartInfo);
+            var app = FlaUI.Core.Application.AttachOrLaunch(processStartInfo);
             var mainWindow = app.GetMainWindow(new FlaUI.UIA2.UIA2Automation());
 
             ConditionFactory cf = new ConditionFactory(new UIA2PropertyLibrary());

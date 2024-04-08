@@ -155,7 +155,7 @@
                         ItemsSource="{Binding TransDetailDTOs}"
                         SelectedItems="{Binding SelectedTransDetailDTOs}">
                         <dxg:GridControl.View>
-                            <dxg:TableView
+                            <dxg:TableView NewItemRowPosition="Bottom"
                                 ShowCheckBoxSelectorColumn="True"
                                 ShowGroupPanel="False"
                                 ShowSearchPanelMode="Never">

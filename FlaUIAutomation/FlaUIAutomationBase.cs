@@ -1,4 +1,4 @@
-﻿namespace FlaUIAuto
+﻿namespace FlaUIAutomation
 {
     public abstract class FlaUIAutomationBase
     {
@@ -6,14 +6,14 @@
 
         public void Attach()
         {
-            //find the process by name
+            //get process by name
             var process = System.Diagnostics.Process.GetProcessesByName(ProcessName).FirstOrDefault();
             if (process == null)
             {
-                throw new System.Exception("Process not found");
+                throw new System.Exception($"Process {ProcessName} not found");
             }
-            //attach to the process
+           
+            FlaUI.Core.Application.Attach(process.Id);
         }
-
     }
 }

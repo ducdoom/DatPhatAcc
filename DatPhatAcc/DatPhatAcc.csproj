@@ -67,7 +67,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HttpListener\ServerTCP.csproj" />
+    <ProjectReference Include="..\FlaUIAutomation\FlaUIAutomation.csproj" />
   </ItemGroup>
 
   <ItemGroup>

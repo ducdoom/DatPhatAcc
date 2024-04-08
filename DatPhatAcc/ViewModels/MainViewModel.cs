@@ -11,8 +11,6 @@ namespace DatPhatAcc.ViewModels
         public MainViewModel(INavigationService navigationService)
         {
             NavigationService = navigationService;
-            SimpleTcpServer server = new SimpleTcpServer("127.0.0.1", 8080);
-            server.Listen();
         }
 
         [ObservableProperty]

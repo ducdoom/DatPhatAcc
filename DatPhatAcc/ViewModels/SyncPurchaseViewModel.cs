@@ -237,7 +237,7 @@ namespace DatPhatAcc.ViewModels
             }
 
             string saveFilePath = saveFileDialog.FileName;
-           
+
             bool success = await misaUltis.ImportExcel.CreateFileImportPurchase(TempTransDetailDTOs, saveFilePath);
             if (success)
             {
@@ -277,15 +277,15 @@ namespace DatPhatAcc.ViewModels
                 .Join(accountingContext.Goods, temp => temp.GoodId, good => good.GoodId, (temp, good) => new NewInventoryItem
                 {
                     ProductId = temp.GoodId,
-                    ProductName = good.ShortName,
-                    UnitId = good.UnitId
+                    ProductName = good.ShortName ?? string.Empty,
+                    UnitId = good.UnitId ?? string.Empty
                 })
-                .Join(accountingContext.Units, newII=> newII.UnitId, unit => unit.UnitId, (item, unit)=>new NewInventoryItem 
+                .Join(accountingContext.Units, newII => newII.UnitId, unit => unit.UnitId, (item, unit) => new NewInventoryItem
                 {
                     ProductId = item.ProductId,
                     ProductName = item.ProductName,
                     UnitId = item.UnitId,
-                    UnitName = unit.UnitName
+                    UnitName = unit.UnitName ?? string.Empty,
                 });
 
             Helpers.MisaUltis misaUltis = new();
