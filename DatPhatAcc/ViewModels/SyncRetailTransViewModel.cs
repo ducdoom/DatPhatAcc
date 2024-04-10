@@ -5,6 +5,7 @@ using DatPhatAcc.Helpers;
 using DatPhatAcc.Models.DTO;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
+using DevExpress.Mvvm.Xpf;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -215,6 +216,13 @@ namespace DatPhatAcc.ViewModels
         private void RemoveItem(TransDetailDTO transDetailDTO)
         {
             TransDetailDTOs.Remove(transDetailDTO);
+        }
+
+        [RelayCommand]
+        private void AddNewRow(NewRowArgs args)
+        {
+            args.Item = new TransDetailDTO();
+
         }
 
 

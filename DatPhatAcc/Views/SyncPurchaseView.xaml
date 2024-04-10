@@ -76,6 +76,8 @@
                             <TextBlock Margin="4,0,0,0" Text="Tìm kiếm" />
                         </StackPanel>
                     </Button>
+                    <Button Margin="10,0,0,0" Command="{Binding LoadXmlFileCommand}" Content="Load file XML Thành Đô"  Style="{StaticResource PrimaryButton}"/>
+                    
                 </StackPanel>
 
                 <Grid Grid.Row="1">
@@ -230,12 +232,10 @@
                         </dxg:GridControl.TotalSummary>
 
                         <dxg:GridColumn
-                            
                             FieldName="GoodId"
                             Header="Mã hàng"
                             Style="{StaticResource ContainsFilter}" />
                         <dxg:GridColumn
-                            
                             FieldName="ShortName"
                             Header="Tên hàng"
                             Style="{StaticResource ContainsFilter}" />
@@ -307,7 +307,7 @@
 
                             <dx:DropDownButton Content="Kết xuất">
                                 <StackPanel Orientation="Vertical">
-                                    <Button Command="{Binding CreatePurchaseImportExcelFileCommand}" Style="{StaticResource NormalButton}">
+                                    <Button Command="{Binding CreatePurchaseImportExcelFileCommand}" Style="{StaticResource NormalButton}" HorizontalContentAlignment="Left">
                                         <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
                                             <iconPacks:PackIconFontAwesome
                                                 HorizontalAlignment="Center"
@@ -319,7 +319,7 @@
                                     </Button>
 
                                     <Button
-                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
                                         Command="{Binding CreateImportGoodsExcelFileCommand}"
                                         Style="{StaticResource NormalButton}">
                                         <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
@@ -329,6 +329,20 @@
                                                 Foreground="#107C41"
                                                 Kind="FileExcelRegular" />
                                             <TextBlock Margin="5,0,0,0" Text="Xuất file import vật tư" />
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Button
+                                        HorizontalContentAlignment="Left"
+                                        Command="{Binding CreateImportGoodExcelFileWithoutCheckCommand}"
+                                        Style="{StaticResource NormalButton}">
+                                        <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
+                                            <iconPacks:PackIconFontAwesome
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Foreground="#107C41"
+                                                Kind="FileExcelRegular" />
+                                            <TextBlock Margin="5,0,0,0" Text="Xuất file import vật tư Thành Đô" />
                                         </StackPanel>
                                     </Button>
 
@@ -382,12 +396,10 @@
                         </dxg:GridControl.TotalSummary>
 
                         <dxg:GridColumn
-                            
                             FieldName="GoodId"
                             Header="Mã hàng"
                             Style="{StaticResource ContainsFilter}" />
                         <dxg:GridColumn
-                            
                             FieldName="ShortName"
                             Header="Tên hàng"
                             Style="{StaticResource ContainsFilter}" />

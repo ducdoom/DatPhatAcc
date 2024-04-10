@@ -9,7 +9,11 @@ using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
+using System.Xml;
+using System.Xml.Serialization;
 using ListVat = DatPhatAcc.AccountingDbContext.ListVat;
 
 namespace DatPhatAcc.ViewModels
@@ -272,7 +276,7 @@ namespace DatPhatAcc.ViewModels
             string saveFilePath = saveFileDialog.FileName;
 
             ACCOUNTINGContext accountingContext = new();
-
+            //tìm xem nội bộ thành công để lấy đơn vị tính của nó
             var newInventoryItems = TempTransDetailDTOs
                 .Join(accountingContext.Goods, temp => temp.GoodId, good => good.GoodId, (temp, good) => new NewInventoryItem
                 {
@@ -290,6 +294,7 @@ namespace DatPhatAcc.ViewModels
 
             Helpers.MisaUltis misaUltis = new();
 
+            Debug.WriteLine("NewInventoryItems: " + newInventoryItems.Count());
             bool success = false;
             try
             {
@@ -311,6 +316,55 @@ namespace DatPhatAcc.ViewModels
 
         }
 
+        [RelayCommand]
+        private async Task CreateImportGoodExcelFileWithoutCheck()//tạo mã mới thành đô
+        {
+            SaveFileDialog saveFileDialog = new()
+            {
+                Filter = "Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true
+            };
+
+            if (saveFileDialog.ShowDialog() == false)
+            {
+                return;
+            }
+
+            string saveFilePath = saveFileDialog.FileName;
+
+            List<NewInventoryItem> newInventoryItemList = new();
+            foreach (var tempTransDetailDTO in TempTransDetailDTOs)
+            {
+                NewInventoryItem newInventoryItem = new()
+                {
+                    ProductId = tempTransDetailDTO.GoodId,
+                    ProductName = tempTransDetailDTO.ShortName,
+                    UnitId = string.Empty,
+                    UnitName = tempTransDetailDTO.UnitName,
+                };
+                newInventoryItemList.Add(newInventoryItem);
+            }
+
+            bool success = false;
+            try
+            {
+                success = await misaUltis.ImportExcel.CreateFileImportNewInventoryItem(newInventoryItemList, saveFilePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            if (success)
+            {
+                MessageBox.Show("Tạo file excel thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Tạo file excel thất bại", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         #endregion
 
         private async Task LoadCustomersAsync()
@@ -339,6 +393,80 @@ namespace DatPhatAcc.ViewModels
                 transDetailDTO.TotalPriceVat = transDetailDTO.TotalPrice * (1m + listVat.VatValue / 100m);
             }
         }
+
+        //đọc dữ liệu từ file xml
+        [RelayCommand]
+        private async Task LoadXmlFile()
+        {
+            // display open file dialog to select xml file, single option
+            OpenFileDialog openFileDialog = new()
+            {
+                Filter = "XML files (*.xml)|*.xml"
+            };
+
+            if (openFileDialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            // read xml file
+            string xmlFilePath = openFileDialog.FileName;
+            string xmlContent = await File.ReadAllTextAsync(xmlFilePath);
+
+            // parse xml content into object
+            XmlSerializer serializer = new(typeof(HDon));
+            using StringReader reader = new(xmlContent);
+            using XmlReader xmlReader = XmlReader.Create(reader);
+
+            HDon hDon = null;
+            try
+            {
+                hDon = (HDon)serializer.Deserialize(xmlReader);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+            //check null
+            if (hDon is null)
+            {
+                MessageBox.Show("File xml không đúng định dạng");
+                return;
+            }
+
+            var a = new List<HHDVu>(hDon.DLHDon.NDHDon.DSHHDVu.HHDVu);
+            ObservableCollection<TempTransDetailDTO> tempTransDetailDTOList = new();
+            TempTransDetailDTOs.Clear();
+
+            foreach (var item in a)
+            {
+                TempTransDetailDTO tempTransDetailDTO = new()
+                {
+                    GoodId = item.MHHDVu,
+                    ShortName = item.THHDVu,
+                    Quantity = decimal.Parse(item.SLuong),
+                    Price = decimal.Parse(item.DGia),
+                    VatValue = int.Parse(item.TSuat.Replace("%", "")),
+                    TotalPrice = decimal.Parse(item.ThTien),
+                    UnitName = item.DVTinh
+                };
+
+                tempTransDetailDTO.TotalPriceVat = tempTransDetailDTO.TotalPrice * (1m + tempTransDetailDTO.VatValue / 100m);
+
+                TempTransDetailDTOs.Add(tempTransDetailDTO);
+            }
+
+            //show message box
+            MessageBox.Show("Đọc file xml thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+
+
+
+
+
+        }
+
+
 
 
 

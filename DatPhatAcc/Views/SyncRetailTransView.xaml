@@ -55,7 +55,7 @@
                         <ColumnDefinition />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    
+
                     <TextBox
                         Grid.Column="0"
                         materialDesign:HintAssist.Hint="Nhập mã giao dịch (cách nhau bởi dấu phẩy)"
@@ -150,12 +150,16 @@
 
                 <Grid Grid.Row="1" Margin="0,8,0,0">
                     <dxg:GridControl
-                        Grid.Row="1" SelectionMode="MultipleRow"
+                        Grid.Row="1"
                         Margin="0"
+                        AutoGenerateColumns="AddNew"
                         ItemsSource="{Binding TransDetailDTOs}"
-                        SelectedItems="{Binding SelectedTransDetailDTOs}">
+                        SelectedItems="{Binding SelectedTransDetailDTOs}"
+                        SelectionMode="MultipleRow">
                         <dxg:GridControl.View>
-                            <dxg:TableView NewItemRowPosition="Bottom"
+                            <dxg:TableView
+                                AddingNewRowCommand="{Binding AddNewRowCommand}"
+                                NewItemRowPosition="Bottom"
                                 ShowCheckBoxSelectorColumn="True"
                                 ShowGroupPanel="False"
                                 ShowSearchPanelMode="Never">

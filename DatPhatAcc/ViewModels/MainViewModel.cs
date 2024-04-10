@@ -83,6 +83,12 @@ namespace DatPhatAcc.ViewModels
             NavigationService.Navigate<AutomationViewModel>();
         }
 
+        [RelayCommand]
+        private void NavigateToCreateSaleInvoiceView()
+        {
+            NavigationService.Navigate<CreateSaleInvoiceViewModel>();
+        }
+
     }
 
 }

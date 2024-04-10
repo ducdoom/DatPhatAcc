@@ -32,7 +32,7 @@
             </MenuItem>
 
             <MenuItem Header="Xuất hàng" >
-                <MenuItem Command="{Binding }" Header="Xuất hóa đơn" />
+                <MenuItem Command="{Binding NavigateToCreateSaleInvoiceViewCommand}" Header="Xuất hóa đơn" />
                 <MenuItem Command="{Binding NavigateToOutwardViewCommand}" Header="Xuất file excel import hóa đơn điện tử" />
             </MenuItem>
             <MenuItem Command="{Binding NavigateToTCTInvoiceViewCommand}" Header="Hóa đơn TCT" />

@@ -52,6 +52,10 @@
                 <view:AutomationView />
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type TypeName=viewmodel:CreateSaleInvoiceViewModel}">
+                <view:CreateSaleInvoiceView />
+            </DataTemplate>
+
 
 
             <!--  Styles  -->

@@ -105,5 +105,8 @@ namespace DatPhatAcc.Models.DTO
             //    OnPropertyChanged(nameof(Price));
             //}
         }
+
+        //sử dụng cho Thành Đô
+        public string UnitName { get; set; } = string.Empty;
     }
 }
