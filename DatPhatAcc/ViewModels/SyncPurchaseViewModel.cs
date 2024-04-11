@@ -447,10 +447,21 @@ namespace DatPhatAcc.ViewModels
                     ShortName = item.THHDVu,
                     Quantity = decimal.Parse(item.SLuong),
                     Price = decimal.Parse(item.DGia),
-                    VatValue = int.Parse(item.TSuat.Replace("%", "")),
                     TotalPrice = decimal.Parse(item.ThTien),
                     UnitName = item.DVTinh
                 };
+
+                string thueSuat = item.TSuat;
+                if(thueSuat.Contains('%'))
+                {
+                    thueSuat = thueSuat.Replace("%", "");
+                    tempTransDetailDTO.VatValue = int.Parse(thueSuat);
+                }
+
+                if (thueSuat.ToLower().Equals("kct"))
+                {
+                    tempTransDetailDTO.VatValue = 0;                   
+                }
 
                 tempTransDetailDTO.TotalPriceVat = tempTransDetailDTO.TotalPrice * (1m + tempTransDetailDTO.VatValue / 100m);
 
