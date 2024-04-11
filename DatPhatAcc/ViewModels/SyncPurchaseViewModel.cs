@@ -71,6 +71,7 @@ namespace DatPhatAcc.ViewModels
         {
             ReCalculateTotalPriceCommand.NotifyCanExecuteChanged();
             CreateImportGoodsExcelFileCommand.NotifyCanExecuteChanged();
+            CreateImportGoodExcelFileWithoutCheckCommand.NotifyCanExecuteChanged();
             CreatePurchaseImportExcelFileCommand.NotifyCanExecuteChanged();
             RemoveAllTransDetailFromTempCommand.NotifyCanExecuteChanged();
         }
@@ -105,6 +106,7 @@ namespace DatPhatAcc.ViewModels
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(CreateImportGoodsExcelFileCommand))]
+        [NotifyCanExecuteChangedFor(nameof(CreateImportGoodExcelFileWithoutCheckCommand))]
         [NotifyCanExecuteChangedFor(nameof(CreatePurchaseImportExcelFileCommand))]
         private ObservableCollection<TempTransDetailDTO> tempTransDetailDTOs = new();
 
@@ -316,7 +318,7 @@ namespace DatPhatAcc.ViewModels
 
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanCreateImportExcelFile))]
         private async Task CreateImportGoodExcelFileWithoutCheck()//tạo mã mới thành đô
         {
             SaveFileDialog saveFileDialog = new()
