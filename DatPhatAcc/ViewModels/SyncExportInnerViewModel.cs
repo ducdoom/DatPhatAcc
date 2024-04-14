@@ -5,6 +5,7 @@ using DatPhatAcc.Helpers;
 using DatPhatAcc.Models;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
+using DevExpress.Pdf.Native.BouncyCastle.X509;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -18,13 +19,20 @@ namespace DatPhatAcc.ViewModels
         private readonly ShareViewModel shareViewModel;
         private readonly SettingViewModel settingViewModel;
         private readonly MisaUltis misaUltis;
+        private readonly MisaService misaService;
 
-        public SyncExportInnerViewModel(Sync2Service sync2Service, ShareViewModel shareViewModel, SettingViewModel settingViewModel, MisaUltis misaUltis)
+        public SyncExportInnerViewModel(
+            Sync2Service sync2Service, 
+            ShareViewModel shareViewModel, 
+            SettingViewModel settingViewModel, 
+            MisaUltis misaUltis,
+            MisaService misaService)
         {
             this.sync2Service = sync2Service;
             this.shareViewModel = shareViewModel;
             this.settingViewModel = settingViewModel;
             this.misaUltis = misaUltis;
+            this.misaService = misaService;
 
             Init();
         }
@@ -60,6 +68,7 @@ namespace DatPhatAcc.ViewModels
             ApplyInterestRateCommand.NotifyCanExecuteChanged();
             IncreaseQuantityCommand.NotifyCanExecuteChanged();
             CreateImportExcelBanHangCommand.NotifyCanExecuteChanged();
+            AddNewTranDetail2Command.NotifyCanExecuteChanged();
         }
 
         #endregion
@@ -108,6 +117,7 @@ namespace DatPhatAcc.ViewModels
         [ObservableProperty]
         private string transactionIds = string.Empty;
 
+        private ObservableCollection<Models.InventoryItemSummary> inventoryItemSummarieSource = new();
 
         #endregion
 
@@ -160,6 +170,17 @@ namespace DatPhatAcc.ViewModels
             var customers = await sync2Service.AccountingService.GetCustomersAsync();
             Customers = new ObservableCollection<AccountingDbContext.Customer>(customers);
             SelectedCustomer = Customers.First();
+        }
+
+        [RelayCommand]
+        private async Task UpdateLastestInventoryItemBalance()
+        {
+            await Task.Delay(0);
+
+            var inventoryItemSummary = await misaService.GetInventoryItemSummaryBalance(DateTime.Now, DateTime.Now);
+            inventoryItemSummarieSource = new ObservableCollection<Models.InventoryItemSummary>(inventoryItemSummary);
+            AddNewTranDetail2Command.NotifyCanExecuteChanged();
+            
         }
 
         [RelayCommand]
@@ -331,6 +352,17 @@ namespace DatPhatAcc.ViewModels
             {
                 MessageBox.Show("Tạo file import bán hàng thành công", "Thông báo");
             }
+        }
+
+        private bool CanAddNewTranDetail2() => inventoryItemSummarieSource.Any();
+
+        [RelayCommand(CanExecute =nameof(CanAddNewTranDetail2))]
+        private void AddNewTranDetail2()
+        {
+            TranDetail2 tranDetail2 = new TranDetail2();
+            tranDetail2.InventoryItems = inventoryItemSummarieSource;
+            TranDetail2s.Add(tranDetail2);
+           
         }
         #endregion
     }

@@ -33,7 +33,7 @@
                     SelectedDate="{Binding ToDate}" />
 
                 <ComboBox
-                    Width="150"
+                    Width="120"
                     Margin="5,0,0,0"
                     materialDesign:HintAssist.Hint="Loại giao dịch"
                     ItemsSource="{Binding SyncTransactionTypes}"
@@ -53,7 +53,7 @@
 
                 <TextBox
                     Grid.Column="0"
-                    Width="250"
+                    Width="150"
                     Margin="5,0,0,0"
                     materialDesign:HintAssist.Hint="Nhập mã giao dịch (để trống = tất cả)"
                     Style="{StaticResource PrimaryTextBox}"
@@ -63,7 +63,7 @@
                     Visibility="{Binding IsRetailTransaction}" />
 
                 <ComboBox
-                    Width="250"
+                    Width="150"
                     Margin="5,0,0,0"
                     materialDesign:HintAssist.Hint="Siêu thị thành viên"
                     ItemsSource="{Binding Customers}"
@@ -83,7 +83,7 @@
 
 
                 <ComboBox
-                    Width="80"
+                    Width="60"
                     Margin="5,0,0,0"
                     materialDesign:HintAssist.Hint="Thuế suất"
                     ItemsSource="{Binding ListVats, UpdateSourceTrigger=PropertyChanged}"
@@ -111,6 +111,28 @@
                             VerticalAlignment="Center"
                             Kind="SearchSolid" />
                         <TextBlock Margin="5,0,0,0" Text="Tìm kiếm" />
+                    </StackPanel>
+                </Button>
+
+                <Button
+                    Margin="5,0,0,0"
+                    materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding UpdateLastestInventoryItemBalanceCommand.IsRunning}"
+                    materialDesign:ButtonProgressAssist.Value="-1"
+                    Command="{Binding UpdateLastestInventoryItemBalanceCommand}"
+                    Content="Cập nhật tồn kho mới nhất"
+                    Style="{StaticResource MaterialDesignOutlinedButton}" />
+
+                <Button
+                    Margin="5,0,0,0"
+                    Command="{Binding AddNewTranDetail2Command}"
+                    Style="{StaticResource MaterialDesignFlatAccentButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconFontAwesome
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Kind="PlusCircleSolid" />
+                        <TextBlock Margin="5,0,0,0" Text="Thêm dòng mới" />
                     </StackPanel>
                 </Button>
 

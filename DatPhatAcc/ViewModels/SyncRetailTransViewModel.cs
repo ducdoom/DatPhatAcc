@@ -219,11 +219,12 @@ namespace DatPhatAcc.ViewModels
         }
 
         [RelayCommand]
-        private void AddNewRow(NewRowArgs args)
+        private void AddNewRow()
         {
-            args.Item = new TransDetailDTO();
 
         }
+
+
 
 
 

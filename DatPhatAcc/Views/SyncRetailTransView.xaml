@@ -157,8 +157,7 @@
                         SelectedItems="{Binding SelectedTransDetailDTOs}"
                         SelectionMode="MultipleRow">
                         <dxg:GridControl.View>
-                            <dxg:TableView
-                                AddingNewRowCommand="{Binding AddNewRowCommand}"
+                            <dxg:TableView                                
                                 NewItemRowPosition="Bottom"
                                 ShowCheckBoxSelectorColumn="True"
                                 ShowGroupPanel="False"
