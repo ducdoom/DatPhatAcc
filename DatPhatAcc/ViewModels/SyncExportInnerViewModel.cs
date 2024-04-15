@@ -272,18 +272,29 @@ namespace DatPhatAcc.ViewModels
 
                 string branchId = ThanhCongAccountingHelper.GetBranchFromGoodId(item.InventoryItemCode);
                 decimal interestValue = 10;
-                Models.BranchInterestRate? interestRate = branchInterestRate.FirstOrDefault(x => x.BranchId.Equals(branchId));
-                if (interestRate != null)
+                //Models.BranchInterestRate? interestRate = branchInterestRate.FirstOrDefault(x => x.BranchId.Equals(branchId));
+
+                //if InventoryItemCode start with branchInterestRate then get interest rate
+                foreach (var branch in branchInterestRate)
                 {
-                    if (SelectedSyncTransactionType.TransactionTypeId.Equals("1"))
+                    if (item.InventoryItemCode.StartsWith(branch.BranchId))
                     {
-                        interestValue = interestRate.RetailInterestRate;
-                    }
-                    if (SelectedSyncTransactionType.TransactionTypeId.Equals("2"))
-                    {
-                        interestValue = interestRate.WholeSaleInterestRate;
+                        interestValue = SelectedSyncTransactionType.TransactionTypeId.Equals("1") ? branch.RetailInterestRate : branch.WholeSaleInterestRate;
+                        break;
                     }
                 }
+
+                //if (interestRate != null)
+                //{
+                //    if (SelectedSyncTransactionType.TransactionTypeId.Equals("1"))
+                //    {
+                //        interestValue = interestRate.RetailInterestRate;
+                //    }
+                //    if (SelectedSyncTransactionType.TransactionTypeId.Equals("2"))
+                //    {
+                //        interestValue = interestRate.WholeSaleInterestRate;
+                //    }
+                //}
 
                 item.Price = item.CostPriceUnit * (1 + interestValue / 100);
             }
