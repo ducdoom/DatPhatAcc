@@ -14,11 +14,14 @@ namespace DatPhatAcc.ViewModels.Shared
         private readonly AccountingService accountingService;
         private Models.DbContext.BranchInterestRateDbContext branchInterestRateDbContext;
 
+        private LarkSuite.CustomApp customApp;
+
         public SettingViewModel(AccountingService accountingService)
         {
             this.accountingService = accountingService;
             branchInterestRateDbContext = new();
             Init();
+            customApp = new("cli_a69a528f75b8d010", "KQBjyFL6Yx0qBlLtOUDcvbVjFAbjNrd3");
         }
 
         private void Init()
@@ -73,6 +76,12 @@ namespace DatPhatAcc.ViewModels.Shared
             int rows = await branchInterestRateDbContext.SaveChangesAsync().ConfigureAwait(false);
             Debug.WriteLine($"SaveSettings: {rows}");
             MessageBox.Show("Lưu thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        [RelayCommand]
+        private async LoadInterestRateFromLarkBase()
+        {
+
         }
 
     }

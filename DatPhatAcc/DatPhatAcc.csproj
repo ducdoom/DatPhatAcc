@@ -67,6 +67,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ducdoom\LarkClient\LarkSuite\LarkSuite.csproj" />
     <ProjectReference Include="..\FlaUIAutomation\FlaUIAutomation.csproj" />
   </ItemGroup>
 
