@@ -14,19 +14,19 @@ namespace DatPhatAcc.ViewModels.Shared
         private readonly AccountingService accountingService;
         private Models.DbContext.BranchInterestRateDbContext branchInterestRateDbContext;
 
-        private LarkSuite.CustomApp customApp;
+        private Services.DatPhatCustomApp datPhatCustomApp;
 
-        public SettingViewModel(AccountingService accountingService)
+        public SettingViewModel(AccountingService accountingService, DatPhatCustomApp datPhatCustomApp)
         {
             this.accountingService = accountingService;
+            this.datPhatCustomApp = datPhatCustomApp;
             branchInterestRateDbContext = new();
             Init();
-            customApp = new("cli_a69a528f75b8d010", "KQBjyFL6Yx0qBlLtOUDcvbVjFAbjNrd3");
         }
 
         private void Init()
         {
-            LoadBranchList().SafeFireAndForget();
+            LoadInterestRateFromLarkBase().SafeFireAndForget();
         }
 
         [ObservableProperty]
@@ -79,9 +79,10 @@ namespace DatPhatAcc.ViewModels.Shared
         }
 
         [RelayCommand]
-        private async LoadInterestRateFromLarkBase()
+        private async Task LoadInterestRateFromLarkBase()
         {
-
+            List<Models.BranchInterestRate> list = await datPhatCustomApp.GetInteresRateList();
+            BranchInterestRates = new(list);
         }
 
     }

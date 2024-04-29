@@ -40,6 +40,7 @@ namespace DatPhatAcc
             services.AddSingleton<MisaUltis>();
             services.AddSingleton<Ihoadon>();
             services.AddSingleton<ExcelHelper>();
+            services.AddSingleton<DatPhatCustomApp>();
 
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

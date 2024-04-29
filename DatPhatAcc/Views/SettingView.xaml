@@ -47,19 +47,37 @@
             </DockPanel>
         </materialDesign:Card>
 
-        <Button
-            Grid.Row="1"
-            Margin="16,0,0,0"
-            VerticalAlignment="Top"
-            Command="{Binding SaveSettingsCommand}"
-            Style="{StaticResource PrimaryButton}">
-            <StackPanel Orientation="Horizontal">
-                <iconPacks:PackIconFontAwesome
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Kind="SaveSolid" />
-                <TextBlock Margin="8,0,0,0" Text="Lưu" />
-            </StackPanel>
-        </Button>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button
+                Grid.Row="1"
+                Margin="16,0,0,0"
+                VerticalAlignment="Top"
+                Command="{Binding SaveSettingsCommand}"
+                Style="{StaticResource PrimaryButton}">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconFontAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Kind="SaveSolid" />
+                    <TextBlock Margin="8,0,0,0" Text="Lưu" />
+                </StackPanel>
+            </Button>
+
+            <Button
+                Grid.Row="1"
+                Margin="16,0,0,0"
+                VerticalAlignment="Top"
+                Command="{Binding LoadInterestRateFromLarkBaseCommand}"
+                Style="{StaticResource PrimaryButton}">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconFontAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Kind="SaveSolid" />
+                    <TextBlock Margin="8,0,0,0" Text="Load" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
     </Grid>
 </UserControl>
