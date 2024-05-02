@@ -21,12 +21,12 @@ namespace DatPhatAcc.ViewModels.Shared
             this.accountingService = accountingService;
             this.datPhatCustomApp = datPhatCustomApp;
             branchInterestRateDbContext = new();
-            Init();
+            Init().ConfigureAwait(false);
         }
 
-        private void Init()
+        private async Task Init()
         {
-            LoadInterestRateFromLarkBase().SafeFireAndForget();
+           await LoadInterestRateFromLarkBase();
         }
 
         [ObservableProperty]

@@ -270,7 +270,7 @@ namespace DatPhatAcc.ViewModels
                     item.Price = item.CostPriceUnit;
                 }
 
-                string branchId = ThanhCongAccountingHelper.GetBranchFromGoodId(item.InventoryItemCode);
+                //string branchId = ThanhCongAccountingHelper.GetBranchFromGoodId(item.InventoryItemCode);
                 decimal interestValue = 10;
                 //Models.BranchInterestRate? interestRate = branchInterestRate.FirstOrDefault(x => x.BranchId.Equals(branchId));
 
