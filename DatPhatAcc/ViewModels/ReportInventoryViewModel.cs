@@ -65,22 +65,28 @@ namespace DatPhatAcc.ViewModels
             worksheet.Cells["C1"].Value = "Tên hàng";
             worksheet.Cells["D1"].Value = "Đơn vị tính";
             worksheet.Cells["E1"].Value = "Số lượng tồn";
-            worksheet.Cells["F1"].Value = "Giá bán chưa VAT";
+            worksheet.Cells["F1"].Value = "Giá vốn";
+            worksheet.Cells["G1"].Value = "Giá bán chưa VAT";
 
             var branchInterestRate = settingViewModel.BranchInterestRates;
 
             int startRow = 2;
             worksheet.Column(5).Style.Numberformat.Format = "#,##0";
             worksheet.Column(6).Style.Numberformat.Format = "#,##0";
+            worksheet.Column(7).Style.Numberformat.Format = "#,##0";
 
             foreach (InventoryItemSummary item in InventoryItemSummaries)
             {
-                string branchId = ThanhCongAccountingHelper.GetBranchFromGoodId(item.InventoryItemCode);
                 decimal interestValue = 10;
-                Models.BranchInterestRate? interestRate = branchInterestRate.FirstOrDefault(x => x.BranchId.Equals(branchId));
-                if (interestRate != null)
+
+                //if InventoryItemCode start with branchInterestRate then get interest rate
+                foreach (var branch in branchInterestRate)
                 {
-                    interestValue = interestRate.RetailInterestRate;
+                    if (item.InventoryItemCode.StartsWith(branch.BranchId))
+                    {
+                        interestValue = branch.RetailInterestRate;
+                        break;
+                    }
                 }
 
                 worksheet.Cells["A" + startRow].Value = item.StockCode;
@@ -88,7 +94,8 @@ namespace DatPhatAcc.ViewModels
                 worksheet.Cells["C" + startRow].Value = item.InventoryItemName;
                 worksheet.Cells["D" + startRow].Value = item.UnitName;
                 worksheet.Cells["E" + startRow].Value = item.ClosingQuantity;
-                worksheet.Cells["F" + startRow].Value = item.CostPriceUnit * (1 + interestValue / 100);
+                worksheet.Cells["F" + startRow].Value = item.CostPriceUnit;//giá vốn
+                worksheet.Cells["G" + startRow].Value = item.CostPriceUnit * (1 + interestValue / 100);//giá bán chưa VAT
 
                 startRow++;
             }
