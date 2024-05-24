@@ -1410,7 +1410,7 @@ public partial class AAMisaDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         string connectionString = ConfigurationManager.ConnectionStrings["MisaDbContext"].ConnectionString;
-        optionsBuilder.UseSqlServer("Data Source=192.168.0.253\\MISASME2023;Initial Catalog=DATPHAT2024;Persist Security Info=True;User ID=sa;Password=12345678@Abc;Encrypt=False;", x => x.UseDateOnlyTimeOnly()); 
+        optionsBuilder.UseSqlServer("Data Source=192.168.0.253\\SQLSERVER2016;Initial Catalog=DATPHAT2024;Persist Security Info=True;User ID=sa;Password=12345678@Abc;Encrypt=False;", x => x.UseDateOnlyTimeOnly()); 
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

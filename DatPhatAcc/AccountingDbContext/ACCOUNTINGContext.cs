@@ -432,10 +432,6 @@ public partial class ACCOUNTINGContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        //if (!optionsBuilder.IsConfigured)
-        //{
-        //optionsBuilder.UseSqlServer("Data Source=192.168.0.9;Initial Catalog=ACCOUNTING;Persist Security Info=True;User ID=sa;Password=datphat@hanoi;Encrypt=True", x => x.UseDateOnlyTimeOnly());
-        //}
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["ACCOUNTINGContext"].ConnectionString);
