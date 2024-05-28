@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Windows.Navigation;
 
 namespace DatPhatAcc.Models
 {
@@ -10,7 +9,7 @@ namespace DatPhatAcc.Models
         public string InvoiceTemplateCode { get; set; } = string.Empty;
         public string InvoiceCode { get; set; } = string.Empty;
         public string InvoiceSeries => string.Concat(InvoiceTemplateCode, InvoiceCode);
-        public string InvoiceSeriesManual 
+        public string InvoiceSeriesManual
         {
             get
             {
@@ -18,7 +17,7 @@ namespace DatPhatAcc.Models
             }
             set
             {
-                if(IsValidFormat(value))
+                if (IsValidFormat(value))
                 {
                     //2C24TQP
                     InvoiceTemplateCode = value.Substring(0, 1); // 2
@@ -38,6 +37,7 @@ namespace DatPhatAcc.Models
 
         public string SellerTaxCode { get; set; } = string.Empty;
         public string SellerName { get; set; } = string.Empty;
+        public string SellerAddress { get; set; } = string.Empty;
         public double TotalAmountWithoutTax => TotalAmountVAT - TotalTaxAmount;
         public double TotalTaxAmount { get; set; } = 0;
         public double TotalDiscountAmount { get; set; } = 0;

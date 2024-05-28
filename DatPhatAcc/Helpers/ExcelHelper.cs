@@ -1,5 +1,6 @@
 ﻿using DatPhatAcc.Models;
 using OfficeOpenXml;
+using System.Diagnostics;
 
 namespace DatPhatAcc.Helpers
 {
@@ -18,26 +19,33 @@ namespace DatPhatAcc.Helpers
 
             int startRow = 7;
             int lastRow = worksheet.Dimension.End.Row;
+            int lastColumn = worksheet.Dimension.End.Column;
+
+            Dictionary<string, int> headerDictionary = worksheet.CreateHeaderDictionary(6);
+
+            Debug.WriteLine($"lastColumn: {lastColumn}");
             List<Invoice> invoices = new();
 
             for (int rowNumber = startRow; rowNumber <= lastRow; rowNumber++)
             {
+                
                 Invoice invoice = new()
                 {
-                    InvoiceTemplateCode = worksheet.Cells["b" + rowNumber].GetValue<string>() ?? string.Empty,
-                    InvoiceCode = worksheet.Cells["c" + rowNumber].GetValue<string>() ?? string.Empty,
-                    InvoiceNumber = worksheet.Cells["d" + rowNumber].GetValue<string>() ?? string.Empty,
-                    InvoiceDateString = worksheet.Cells["e" + rowNumber].GetValue<string>() ?? string.Empty,
-                    SellerTaxCode = worksheet.Cells["f" + rowNumber].GetValue<string>() ?? string.Empty,
-                    SellerName = worksheet.Cells["g" + rowNumber].GetValue<string>() ?? string.Empty,
-                    //TotalAmountWithoutTax = worksheet.Cells["h" + rowNumber].GetValue<double>(),
-                    TotalTaxAmount = worksheet.Cells["i" + rowNumber].GetValue<double>(),
-                    TotalDiscountAmount = worksheet.Cells["j" + rowNumber].GetValue<double>(),
-                    TotalFeeAmount = worksheet.Cells["k" + rowNumber].GetValue<double>(),
-                    TotalAmountVAT = worksheet.Cells["l" + rowNumber].GetValue<double>(),
-                    CurrencyUnit = worksheet.Cells["m" + rowNumber].GetValue<string>() ?? string.Empty,
-                    InvoiceStatus = worksheet.Cells["n" + rowNumber].GetValue<string>() ?? string.Empty,
-                    InvoiceCheckResult = worksheet.Cells["o" + rowNumber].GetValue<string>() ?? string.Empty
+                    InvoiceTemplateCode = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.InvoiceTemplateCode]].GetValue<string>(),
+                    InvoiceCode = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.InvoiceCode]].GetValue<string>(),
+                    InvoiceNumber = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.InvoiceNumber]].GetValue<string>(),
+                    InvoiceDateString = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.InvoiceDate]].GetValue<string>(),
+                    SellerTaxCode = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.SellerTaxCode]].GetValue<string>(),
+                    SellerName = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.SellerName]].GetValue<string>(),
+                    SellerAddress = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.SellerAddress]].GetValue<string>(),
+                    TotalTaxAmount = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.TotalTaxAmount]].GetValue<double>(),
+                    TotalDiscountAmount = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.TotalDiscountAmount]].GetValue<double>(),
+                    TotalFeeAmount = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.TotalFeeAmount]].GetValue<double>(),
+                    TotalAmountVAT = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.TotalAmount]].GetValue<double>(),
+                    CurrencyUnit = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.CurrencyUnit]].GetValue<string>(),
+                    InvoiceStatus = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.InvoiceStatus]].GetValue<string>(),
+                    InvoiceCheckResult = worksheet.Cells[rowNumber, headerDictionary[TCTInvoiceColumnName.InvoiceCheckResult]].GetValue<string>(),
+
                 };
 
                 invoices.Add(invoice);
@@ -58,14 +66,16 @@ namespace DatPhatAcc.Helpers
             if ((bool)!worksheet.Cells["e" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.InvoiceDate)) return false;
             if ((bool)!worksheet.Cells["f" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.SellerTaxCode)) return false;
             if ((bool)!worksheet.Cells["g" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.SellerName)) return false;
-            if ((bool)!worksheet.Cells["h" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.TotalAmountWithoutTax)) return false;
-            if ((bool)!worksheet.Cells["i" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.TotalTaxAmount)) return false;
-            if ((bool)!worksheet.Cells["j" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.TotalDiscountAmount)) return false;
-            if ((bool)!worksheet.Cells["k" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.TotalFeeAmount)) return false;
-            if ((bool)!worksheet.Cells["l" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.TotalAmount)) return false;
-            if ((bool)!worksheet.Cells["m" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.CurrencyUnit)) return false;
-            if ((bool)!worksheet.Cells["n" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.InvoiceStatus)) return false;
-            if ((bool)!worksheet.Cells["o" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.InvoiceCheckResult)) return false;
+            if ((bool)!worksheet.Cells["h" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.SellerAddress)) return false;
+            if ((bool)!worksheet.Cells["i" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.TotalAmountWithoutTax)) return false;
+            if ((bool)!worksheet.Cells["j" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.TotalTaxAmount)) return false;
+            if ((bool)!worksheet.Cells["k" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.TotalDiscountAmount)) return false;
+            if ((bool)!worksheet.Cells["l" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.TotalFeeAmount)) return false;
+            if ((bool)!worksheet.Cells["m" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.TotalAmount)) return false;
+            if ((bool)!worksheet.Cells["n" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.CurrencyUnit)) return false;
+            if ((bool)!worksheet.Cells["o" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.ExchangeRate)) return false;
+            if ((bool)!worksheet.Cells["p" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.InvoiceStatus)) return false;
+            if ((bool)!worksheet.Cells["q" + rowNumber].Value?.ToString().Equals(TCTInvoiceColumnName.InvoiceCheckResult)) return false;
 
             return true;
         }
