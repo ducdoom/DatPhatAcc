@@ -29,9 +29,7 @@ namespace DatPhatAcc
             services.AddSingleton<ShareViewModel>();
             services.AddSingleton<OutwardViewModel>();
             services.AddSingleton<TCTInvoiceViewModel>();
-            services.AddSingleton<UpdateLogViewModel>();
             services.AddSingleton<DebtViewModel>();
-            services.AddSingleton<AutomationViewModel>();
             services.AddSingleton<CreateSaleInvoiceViewModel>();
 
             services.AddSingleton<AccountingService>(); //services
@@ -41,6 +39,7 @@ namespace DatPhatAcc
             services.AddSingleton<Ihoadon>();
             services.AddSingleton<ExcelHelper>();
             services.AddSingleton<DatPhatCustomApp>();
+            services.AddSingleton<MISAService.MisaService>();
 
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

@@ -1,15 +1,15 @@
-﻿using AsyncAwaitBestPractices;
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Windows;
+using AsyncAwaitBestPractices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DatPhatAcc.Helpers;
 using DatPhatAcc.Models;
 using DatPhatAcc.Services;
 using DatPhatAcc.ViewModels.Shared;
-using DevExpress.Pdf.Native.BouncyCastle.X509;
 using Microsoft.Win32;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Windows;
+using MISAService.Models;
 
 namespace DatPhatAcc.ViewModels
 {
@@ -20,19 +20,23 @@ namespace DatPhatAcc.ViewModels
         private readonly SettingViewModel settingViewModel;
         private readonly MisaUltis misaUltis;
         private readonly MisaService misaService;
+        private readonly MISAService.MisaService misaService2;
 
         public SyncExportInnerViewModel(
-            Sync2Service sync2Service, 
-            ShareViewModel shareViewModel, 
-            SettingViewModel settingViewModel, 
+            Sync2Service sync2Service,
+            ShareViewModel shareViewModel,
+            SettingViewModel settingViewModel,
             MisaUltis misaUltis,
-            MisaService misaService)
+            MisaService misaService,
+            MISAService.MisaService misaService2
+            )
         {
             this.sync2Service = sync2Service;
             this.shareViewModel = shareViewModel;
             this.settingViewModel = settingViewModel;
             this.misaUltis = misaUltis;
             this.misaService = misaService;
+            this.misaService2 = misaService2;
 
             Init();
         }
@@ -177,10 +181,32 @@ namespace DatPhatAcc.ViewModels
         {
             await Task.Delay(0);
 
-            var inventoryItemSummary = await misaService.GetInventoryItemSummaryBalance(DateTime.Now, DateTime.Now);
+            //var inventoryItemSummary = await misaService.GetInventoryItemSummaryBalance(DateTime.Now, DateTime.Now);
+            var inventory2 = await misaService2.Reports.GetINInventoryBalanceSummaryResults(DateTime.Now, DateTime.Now);
+
+            var inventoryItemSummary = new List<InventoryItemSummary>();
+            foreach (var item in inventory2)
+            {
+                Models.InventoryItemSummary inventoryItem = new Models.InventoryItemSummary()
+                {
+                    InventoryItemCode = item.InventoryItemCode,
+                    InventoryItemName = item.InventoryItemName,
+                    StockCode = item.StockCode,
+                    UnitName = item.UnitName,
+                    OpeningQuantity = item.OriginalQuantity,
+                    OpeningAmount = item.OriginalAmount,
+                    InQuantity = item.TotalInQuantity,
+                    InAmount = item.TotalInAmount,
+                    OutQuantity = item.TotalOutQuantity,
+                    OutAmount = item.TotalOutAmount
+                };
+
+                inventoryItemSummary.Add(inventoryItem);
+            }
+
             inventoryItemSummarieSource = new ObservableCollection<Models.InventoryItemSummary>(inventoryItemSummary);
             AddNewTranDetail2Command.NotifyCanExecuteChanged();
-            
+
         }
 
         [RelayCommand]
@@ -353,13 +379,13 @@ namespace DatPhatAcc.ViewModels
 
         private bool CanAddNewTranDetail2() => inventoryItemSummarieSource.Any();
 
-        [RelayCommand(CanExecute =nameof(CanAddNewTranDetail2))]
+        [RelayCommand(CanExecute = nameof(CanAddNewTranDetail2))]
         private void AddNewTranDetail2()
         {
             TranDetail2 tranDetail2 = new TranDetail2();
             tranDetail2.InventoryItems = inventoryItemSummarieSource;
             TranDetail2s.Add(tranDetail2);
-           
+
         }
         #endregion
     }

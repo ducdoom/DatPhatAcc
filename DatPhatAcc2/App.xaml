@@ -1,0 +1,21 @@
+﻿<Application
+    x:Class="DatPhatAcc2.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:DatPhatAcc2"
+    xmlns:viewmodels="clr-namespace:DatPhatAcc2.ViewModels"
+    xmlns:views="clr-namespace:DatPhatAcc2.Views"
+    DispatcherUnhandledException="Application_DispatcherUnhandledException"
+    >
+    <!--StartupUri="MainWindow.xaml"-->
+    <Application.Resources>
+        <ResourceDictionary>
+            <DataTemplate DataType="{x:Type TypeName=viewmodels:ReportInventorySummaryViewModel}">
+                <views:ReportInventorySummaryPage />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type TypeName=viewmodels:CheckInvoiceViewModel}">
+                <views:ReportInventorySummaryPage />
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

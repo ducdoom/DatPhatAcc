@@ -15,8 +15,6 @@
     d:DesignWidth="1366"
     mc:Ignorable="d">
 
-
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -76,8 +74,12 @@
                             <TextBlock Margin="4,0,0,0" Text="Tìm kiếm" />
                         </StackPanel>
                     </Button>
-                    <Button Margin="10,0,0,0" Command="{Binding LoadXmlFileCommand}" Content="Load file XML Thành Đô"  Style="{StaticResource PrimaryButton}"/>
-                    
+                    <Button
+                        Margin="10,0,0,0"
+                        Command="{Binding LoadXmlFileCommand}"
+                        Content="Load file XML Thành Đô"
+                        Style="{StaticResource PrimaryButton}" />
+
                 </StackPanel>
 
                 <Grid Grid.Row="1">
@@ -307,7 +309,10 @@
 
                             <dx:DropDownButton Content="Kết xuất">
                                 <StackPanel Orientation="Vertical">
-                                    <Button Command="{Binding CreatePurchaseImportExcelFileCommand}" Style="{StaticResource NormalButton}" HorizontalContentAlignment="Left">
+                                    <Button
+                                        HorizontalContentAlignment="Left"
+                                        Command="{Binding CreatePurchaseImportExcelFileCommand}"
+                                        Style="{StaticResource NormalButton}">
                                         <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
                                             <iconPacks:PackIconFontAwesome
                                                 HorizontalAlignment="Center"

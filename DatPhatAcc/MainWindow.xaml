@@ -36,14 +36,14 @@
                 <MenuItem Command="{Binding NavigateToOutwardViewCommand}" Header="Xuất file excel import hóa đơn điện tử" />
             </MenuItem>
             <MenuItem Command="{Binding NavigateToTCTInvoiceViewCommand}" Header="Hóa đơn TCT" />
-            <MenuItem Command="{Binding NavigateToDebtViewCommand}" Header="Công nợ" />
+            <!--<MenuItem Command="{Binding NavigateToDebtViewCommand}" Header="Công nợ" />-->
 
             <MenuItem Header="Báo cáo">
                 <MenuItem Command="{Binding NavigateToReportInventoryViewCommand}" Header="Tổng hợp tồn kho" />
             </MenuItem>
             <MenuItem Command="{Binding NavigateToSettingViewCommand}" Header="Cài đặt" />
-            <MenuItem Command="{Binding NavigateToUpdateLogViewCommand}" Header="Lịch sử cập nhật" />
-            <MenuItem Command="{Binding NavigateToAutmationViewCommand}" Header="Automation" />
+            <!--<MenuItem Command="{Binding NavigateToUpdateLogViewCommand}" Header="Lịch sử cập nhật" />
+            <MenuItem Command="{Binding NavigateToAutmationViewCommand}" Header="Automation" />-->
 
         </Menu>
 

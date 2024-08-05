@@ -1,20 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace DatPhatAcc.Services;
-
-public interface INavigationService
-{
-    ObservableObject CurrentView
-    {
-        get;
-    }
-    void Navigate<T>() where T : ObservableObject;
-}
-
-public partial class NavigationService : ObservableObject, INavigationService
+namespace DatPhatAcc2.Services;
+public partial class NavigationService : ObservableObject
 {
     private Func<Type, ObservableObject> _viewModelFactory;
-
 
     [ObservableProperty]
     private ObservableObject? currentView;
@@ -23,7 +17,6 @@ public partial class NavigationService : ObservableObject, INavigationService
     {
         _viewModelFactory = viewModelFactory;
     }
-
 
     public void Navigate<TViewModel>() where TViewModel : ObservableObject
     {
