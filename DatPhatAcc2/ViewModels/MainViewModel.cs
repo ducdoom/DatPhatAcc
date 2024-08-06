@@ -17,6 +17,12 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void NavigateToReportInventorySummaryPage()
     {
-        NavigationService.Navigate<ViewModels.ReportInventorySummaryViewModel>();
+        NavigationService.Navigate<ReportInventorySummaryViewModel>();
+    }
+
+    [RelayCommand]
+    private void ExitApp()
+    {
+        App.Current.Shutdown();
     }
 }

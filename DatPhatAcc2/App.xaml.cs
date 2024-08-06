@@ -3,9 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using DatPhatAcc2.Services;
 using DatPhatAcc2.ViewModels;
 using DatPhatAcc2.Views;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace DatPhatAcc2;
 /// <summary>
@@ -46,18 +44,6 @@ public partial class App : Application
 
         base.OnStartup(e);
     }
-
-    private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
-    {
-        services.AddSingleton<NavigationService>();
-
-        services.AddSingleton<MainViewModel>();
-        services.AddSingleton<MainWindow>();
-
-        services.AddSingleton<ViewModels.CheckInvoiceViewModel>();
-        services.AddSingleton<ViewModels.ReportInventorySummaryViewModel>();
-    }
-
 
     private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
     {

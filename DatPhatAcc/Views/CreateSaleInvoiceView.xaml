@@ -18,8 +18,8 @@
         </Grid.RowDefinitions>
 
         <DockPanel>
-            <Button Command="{Binding LoadXmlFileCommand}" Content="Chọn file" Width="Auto" Style="{StaticResource PrimaryButton}"></Button>
-            <TextBox Text="" Style="{StaticResource PrimaryTextBox}"></TextBox>
+            <Button Command="{Binding LoadXmlFileCommand}" Content="Chọn file" Width="Auto"></Button>
+            <TextBox Text="" ></TextBox>
         </DockPanel>
 
     </Grid>

@@ -14,12 +14,15 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
+            <RowDefinition Height="25" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
         <Menu Grid.Row="0">
-            <MenuItem Command="" Header="Hệ thống" />
+            <MenuItem Header="Hệ thống">
+                <MenuItem Command="{Binding ExitAppCommand}" Header="Thoát" />
+            </MenuItem>
+
             <MenuItem Header="Báo cáo">
                 <MenuItem Command="{Binding NavigateToReportInventorySummaryPageCommand}" Header="Báo cáo nhập xuất tồn" />
             </MenuItem>

@@ -106,7 +106,7 @@ namespace DatPhatAcc.ViewModels
         private ObservableCollection<Models.InventoryItemSummary> inventoryItemSummary1 = new();
 
         [ObservableProperty]
-        decimal desireAmount = 0;
+        private decimal desireAmount = 0;
 
         [ObservableProperty]
         private ObservableCollection<SyncTransactionType> syncTransactionTypes = new();
